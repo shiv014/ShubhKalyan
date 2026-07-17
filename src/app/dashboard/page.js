@@ -209,6 +209,9 @@ function DashboardPortal() {
       if (res.ok) {
         setEvent(data.event);
         showToast('success', `Theme switched!`);
+        // Auto-advance to next step
+        setActiveTab('photos');
+        window.scrollTo(0, 0);
       } else {
         showToast('danger', data.error || 'Failed to update theme');
       }

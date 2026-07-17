@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { ExternalLink, CheckCircle, XCircle, Edit3, Paintbrush, Image as ImageIcon, Mail, Link as LinkIcon, MapPin, UploadCloud, Star, Copy, RefreshCw } from 'lucide-react';
+import { ExternalLink, CheckCircle, XCircle, Edit3, Paintbrush, Image as ImageIcon, Mail, Link as LinkIcon, MapPin, UploadCloud, Star, Copy, RefreshCw, Download } from 'lucide-react';
 import { getTemplates, getTemplateById } from '@/lib/templates';
 import TemplateRenderer from '@/components/TemplateRenderer';
 import { toPng } from 'html-to-image';

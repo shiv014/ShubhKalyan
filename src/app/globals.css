@@ -301,9 +301,9 @@ a:hover { color: var(--color-primary-hover); }
     padding-top: 3.5rem;
     min-height: auto;
   }
-  .brand-logo { height: 48px !important; margin: -8px 0; }
-  .brand-logo-footer { height: 44px !important; margin: -6px 0; }
-  .brand-logo-large { height: 64px !important; margin: -10px 0; }
+  .brand-logo { height: 28px !important; }
+  .brand-logo-footer { height: 26px !important; }
+  .brand-logo-large { height: 42px !important; }
   .landing-navbar { justify-content: center; }
   .section { padding: 3rem 0; } 
   .container { padding: 0 1rem; }
@@ -331,23 +331,20 @@ a:hover { color: var(--color-primary-hover); }
 }
 
 .brand-logo {
-  height: 64px;
+  height: 38px;
   width: auto;
   object-fit: contain;
-  margin: -12px 0;
   transition: all 0.3s ease;
 }
 
 .brand-logo-footer {
-  height: 52px;
+  height: 34px;
   width: auto;
   object-fit: contain;
-  margin: -8px 0;
 }
 
 .brand-logo-large {
-  height: 90px;
+  height: 52px;
   width: auto;
   object-fit: contain;
-  margin: -16px 0;
 }

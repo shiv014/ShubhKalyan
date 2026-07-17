@@ -40,7 +40,9 @@ export default function LandingPage() {
       {/* ---- NAVBAR ---- */}
       <nav className="navbar">
         <div className="container navbar-container">
-          <div className="logo">Shubh<span>Kalyan</span></div>
+          <Link href="/" className="logo" style={{ display: 'flex', alignItems: 'center' }}>
+            <img src="/logo.jpg" alt="ShubhKalyan Logo" style={{ height: '44px', width: 'auto', borderRadius: '4px' }} />
+          </Link>
           <div className="nav-links">
             <a href="#browse" className="nav-link">Templates</a>
             <a href="#how-it-works" className="nav-link">How It Works</a>
@@ -325,8 +327,8 @@ export default function LandingPage() {
         <div className="container">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '2rem', marginBottom: '2.5rem' }}>
             <div>
-              <div style={{ fontFamily: 'var(--font-serif)', fontSize: '1.6rem', fontWeight: '700', color: '#fff', marginBottom: '0.5rem' }}>
-                Shubh<span style={{ color: '#cfa830' }}>Kalyan</span>
+              <div style={{ background: '#fff', padding: '0.5rem', borderRadius: '8px', display: 'inline-block', marginBottom: '1rem' }}>
+                <img src="/logo.jpg" alt="ShubhKalyan Logo" style={{ height: '45px', width: 'auto', display: 'block' }} />
               </div>
               <p style={{ fontSize: '0.85rem', maxWidth: '280px', lineHeight: 1.7, color: 'rgba(255,255,255,0.5)', marginBottom: 0 }}>
                 Beautiful digital wedding invitations, hosted at your own custom URL on shubhkalyan.in.

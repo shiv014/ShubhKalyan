@@ -1,9 +1,26 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Search, Crown, Flower2, Sparkles, ScrollText, Paintbrush, Edit3, Link as LinkIcon, Check, ArrowRight, ArrowDown, X, Menu } from 'lucide-react';
 import { getTemplates } from '@/lib/templates';
+
+function useScrollReveal() {
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('reveal-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+    
+    return () => observer.disconnect();
+  }, []);
+}
 
 const CATEGORY_COLORS = {
   Royal: { bg: 'rgba(124,34,48,0.08)', color: '#7c2230' },
@@ -25,6 +42,8 @@ export default function LandingPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedPreviewTpl, setSelectedPreviewTpl] = useState(null);
   const [hoveredId, setHoveredId] = useState(null);
+
+  useScrollReveal();
 
   const allTemplates = getTemplates();
 
@@ -68,7 +87,7 @@ export default function LandingPage() {
       </nav>
 
       {/* ---- HERO ---- */}
-      <section className="hero-section-wrapper">
+      <section className="hero-section-wrapper hero-gradient-bg">
         {/* Background decorative circles — clipped to section bounds only */}
         <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
           <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(207,168,48,0.12), transparent 70%)' }} />
@@ -147,7 +166,7 @@ export default function LandingPage() {
 
       {/* ---- HOW IT WORKS ---- */}
       <section id="how-it-works" style={{ padding: '5rem 0', background: '#fff', borderBottom: '1px solid var(--border-color)' }}>
-        <div className="container">
+        <div className="container reveal-on-scroll">
           <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: '700', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--color-secondary)', display: 'block', marginBottom: '0.75rem' }}>Simple Process</span>
             <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.4rem', color: 'var(--color-primary)', fontWeight: '700' }}>Create Your Site in 3 Steps</h2>
@@ -172,7 +191,7 @@ export default function LandingPage() {
       </section>
 
       {/* ---- TEMPLATES BROWSER ---- */}
-      <section id="browse" style={{ padding: '5.5rem 0', background: 'var(--bg-primary)' }}>
+      <section id="browse" className="section reveal-on-scroll" style={{ padding: '5.5rem 0', background: 'var(--bg-primary)' }}>
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: '700', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--color-secondary)', display: 'block', marginBottom: '0.75rem' }}>120+ Designs</span>

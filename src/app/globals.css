@@ -370,3 +370,29 @@ a:hover { color: var(--color-primary-hover); }
   width: auto;
   object-fit: contain;
 }
+
+/* Advanced Animations */
+@keyframes gradientBgMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.hero-gradient-bg {
+  background: linear-gradient(-45deg, #1e0a0f, #3d1020, #2a1a35, #4a1525);
+  background-size: 400% 400%;
+  animation: gradientBgMove 15s ease infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}

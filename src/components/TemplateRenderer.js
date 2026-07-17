@@ -5,6 +5,10 @@ import { MapPin, Calendar, Download, Image as ImageIcon } from 'lucide-react';
 import * as htmlToImage from 'html-to-image';
 import { QRCodeCanvas } from 'qrcode.react';
 import dynamic from 'next/dynamic';
+import confetti from 'canvas-confetti';
+import PhotoLightbox from './PhotoLightbox';
+import AudioPlayer from './AudioPlayer';
+import CountdownTimer from './CountdownTimer';
 
 const MapViewer = dynamic(() => import('@/components/MapViewer'), {
   ssr: false,
@@ -51,7 +55,14 @@ function RsvpForm({ event, previewMode, primary, secondary }) {
         body: JSON.stringify({ eventId: event.id, name: rsvpName, email: rsvpEmail, attending: parseInt(rsvpAttending), guestsCount: parseInt(rsvpGuests), message: rsvpMessage })
       });
       const data = await res.json();
-      if (res.ok) { setStatus('success'); setStatusMsg('Thank you! Your RSVP has been received.'); setRsvpName(''); setRsvpEmail(''); setRsvpMessage(''); setRsvpGuests('1'); }
+      if (res.ok) { 
+        setStatus('success'); 
+        setStatusMsg('Thank you! Your RSVP has been received.'); 
+        setRsvpName(''); setRsvpEmail(''); setRsvpMessage(''); setRsvpGuests('1'); 
+        if (!previewMode) {
+          confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+        }
+      }
       else { setStatus('error'); setStatusMsg(data.error || 'Failed. Please try again.'); }
     } catch { setStatus('error'); setStatusMsg('Connection error. Please try again.'); }
   };
@@ -277,12 +288,13 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
           <div style={{ fontFamily: template.fontNames, fontSize: 'clamp(2.2rem, 8vw, 3.2rem)', color: '#fff', lineHeight: 1.1, textShadow: '0 2px 12px rgba(0,0,0,0.5)' }}>{bride} <span style={{ fontFamily: template.fontTitle, fontSize: '1.2rem', fontWeight: '400' }}>&amp;</span> {groom}</div>
           <div style={{ width: '35px', height: '1px', background: template.secondaryColor, opacity: 0.7 }} />
           <span style={{ fontSize: '0.6rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.9)', fontWeight: '600' }}>{dateStr}</span>
-          <button onClick={() => scrollTo('rsvp')} style={{ marginTop: '0.5rem', padding: '0.6rem 2rem', background: 'transparent', border: `1px solid ${template.secondaryColor}`, color: template.secondaryColor, fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', transition: 'all 0.3s' }}
-            onMouseEnter={e=>{e.currentTarget.style.background=template.secondaryColor;e.currentTarget.style.color='#fff';}} onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.color=template.secondaryColor;}}>
-            RSVP Online
-          </button>
-        </div>
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '60px', background: template.bgColor, borderRadius: '50% 50% 0 0 / 100% 100% 0 0', zIndex: 3 }} />
+            <button onClick={() => scrollTo('rsvp')} style={{ marginTop: '0.5rem', padding: '0.6rem 2rem', background: 'transparent', border: `1px solid ${template.secondaryColor}`, color: template.secondaryColor, fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', transition: 'all 0.3s' }}
+              onMouseEnter={e=>{e.currentTarget.style.background=template.secondaryColor;e.currentTarget.style.color='#fff';}} onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.color=template.secondaryColor;}}>
+              RSVP Online
+            </button>
+            <CountdownTimer eventDate={event?.event_date} />
+          </div>
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '60px', background: template.bgColor, borderRadius: '50% 50% 0 0 / 100% 100% 0 0', zIndex: 3 }} />
       </header>
       {/* Details */}
       <section id="details" className="tpl-section-standard" style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto' }}>
@@ -343,6 +355,7 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
           <div style={{ width: '50px', height: '2px', background: template.secondaryColor, margin: '1rem auto', borderRadius: '2px', opacity: 0.85 }} />
           <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.75rem', letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: '600' }}>{dateStr}</p>
           <button onClick={() => scrollTo('rsvp')} style={{ marginTop: '1.5rem', padding: '0.7rem 2rem', background: template.primaryColor, border: 'none', borderRadius: '50px', color: '#fff', fontSize: '0.7rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer' }}>RSVP Now</button>
+          <CountdownTimer eventDate={event?.event_date} />
         </div>
       </header>
       <section id="details" className="tpl-section-standard" style={{ textAlign: 'center', maxWidth: '650px', margin: '0 auto' }}>
@@ -400,6 +413,7 @@ function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, pho
           <p style={{ fontSize: '0.75rem', letterSpacing: '2px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.55, marginBottom: '0.5rem', lineHeight: 1.9 }}>{dateStr}</p>
           <p style={{ fontSize: '0.75rem', color: template.primaryColor, opacity: 0.45, lineHeight: 1.9 }}>{venue}</p>
           <button onClick={() => scrollTo('rsvp')} style={{ marginTop: '2rem', padding: '0.8rem 2rem', background: template.primaryColor, color: '#fff', border: 'none', fontSize: '0.65rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', alignSelf: 'flex-start' }}>RSVP</button>
+          <div style={{ alignSelf: 'flex-start' }}><CountdownTimer eventDate={event?.event_date} /></div>
         </div>
         <div style={{ overflow: 'hidden' }}>
           <img src={cover} alt="Wedding" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
@@ -463,6 +477,7 @@ function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos
             <span style={{ fontSize: '0.6rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,245,220,0.8)' }}>{dateStr}</span>
           </div>
           <button onClick={() => scrollTo('rsvp')} style={{ marginTop: '1.25rem', padding: '0.65rem 2rem', background: 'transparent', border: '1px solid #dca658', color: '#dca658', fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', fontFamily: template.fontTitle }}>Kindly Reply</button>
+          <CountdownTimer eventDate={event?.event_date} />
         </div>
       </header>
       <section id="details" className="tpl-section-standard" style={{ textAlign: 'center', maxWidth: '650px', margin: '0 auto' }}>
@@ -499,73 +514,7 @@ function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos
   );
 }
 
-// ---- IMAGE MODAL CAROUSEL ----
-function ImageModal({ photos, currentIndex, onClose, setCarouselIndex }) {
-  if (currentIndex === null || !photos || !photos[currentIndex]) return null;
-  
-  const photo = photos[currentIndex];
-  
-  const handlePrev = (e) => {
-    e.stopPropagation();
-    setCarouselIndex(currentIndex === 0 ? photos.length - 1 : currentIndex - 1);
-  };
-  
-  const handleNext = (e) => {
-    e.stopPropagation();
-    setCarouselIndex(currentIndex === photos.length - 1 ? 0 : currentIndex + 1);
-  };
-
-  const handleDownload = async (e) => {
-    e.stopPropagation();
-    try {
-      const response = await fetch(photo.file_path);
-      const blob = await response.blob();
-      const blobUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.download = `wedding-photo-${photo.id}.jpg`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(blobUrl);
-    } catch (err) {
-      window.open(photo.file_path, '_blank');
-    }
-  };
-
-  return (
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.92)', zIndex: 9999, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem' }} onClick={onClose}>
-      <button onClick={onClose} style={{ position: 'absolute', top: '1.5rem', right: '2rem', background: 'transparent', border: 'none', color: '#fff', fontSize: '3rem', cursor: 'pointer', lineHeight: 1, zIndex: 10 }}>&times;</button>
-      
-      {photos.length > 1 && (
-        <button onClick={handlePrev} style={{ position: 'absolute', left: '1.5rem', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', fontSize: '1.5rem', cursor: 'pointer', width: '50px', height: '50px', borderRadius: '50%', zIndex: 10, transition: 'background 0.3s', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onMouseEnter={e=>e.target.style.background='rgba(255,255,255,0.3)'} onMouseLeave={e=>e.target.style.background='rgba(255,255,255,0.1)'}>
-          &#10094;
-        </button>
-      )}
-
-      <img src={photo.file_path} alt={photo.caption || ''} style={{ maxWidth: '100%', maxHeight: '75vh', objectFit: 'contain', borderRadius: '4px', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }} onClick={e => e.stopPropagation()} />
-      
-      {photo.caption && <p style={{ color: '#fff', marginTop: '1.5rem', fontSize: '1.2rem', fontFamily: 'var(--font-serif)' }}>{photo.caption}</p>}
-      
-      {photos.length > 1 && (
-        <button onClick={handleNext} style={{ position: 'absolute', right: '1.5rem', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', fontSize: '1.5rem', cursor: 'pointer', width: '50px', height: '50px', borderRadius: '50%', zIndex: 10, transition: 'background 0.3s', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onMouseEnter={e=>e.target.style.background='rgba(255,255,255,0.3)'} onMouseLeave={e=>e.target.style.background='rgba(255,255,255,0.1)'}>
-          &#10095;
-        </button>
-      )}
-
-      <button onClick={handleDownload} style={{ marginTop: '2rem', padding: '0.9rem 2rem', background: '#fff', color: '#000', border: 'none', borderRadius: '50px', fontSize: '0.85rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'transform 0.2s', zIndex: 10 }} onMouseEnter={e=>e.target.style.transform='scale(1.05)'} onMouseLeave={e=>e.target.style.transform='scale(1)'}>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-        Download Photo
-      </button>
-      
-      {photos.length > 1 && (
-        <div style={{ color: '#aaa', fontSize: '0.85rem', marginTop: '1rem', letterSpacing: '2px' }}>
-          {currentIndex + 1} / {photos.length}
-        </div>
-      )}
-    </div>
-  );
-}
+// Removed ImageModal because we are using PhotoLightbox now
 
 // ---- MAIN EXPORT ----
 export default function TemplateRenderer({ event, template, photos = [], previewMode = false }) {
@@ -621,7 +570,14 @@ export default function TemplateRenderer({ event, template, photos = [], preview
        cat === 'vintage' ? <VintageLayout {...props} /> :
        <RoyalLayout {...props} />}
        
-      {carouselIndex !== null && <ImageModal photos={photos} currentIndex={carouselIndex} setCarouselIndex={setCarouselIndex} onClose={() => setCarouselIndex(null)} />}
+      <PhotoLightbox 
+        photos={photos} 
+        currentIndex={carouselIndex} 
+        onNavigate={setCarouselIndex} 
+        onClose={() => setCarouselIndex(null)} 
+      />
+
+      <AudioPlayer />
 
       {/* Floating Action Button for Download Poster */}
       {!previewMode && (

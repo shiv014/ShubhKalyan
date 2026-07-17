@@ -18,6 +18,7 @@ function formatTime(dateStr) {
   } catch { return ''; }
 }
 
+// ---- RSVP FORM ----
 function RsvpForm({ event, previewMode, primary, secondary }) {
   const [rsvpName, setRsvpName] = useState('');
   const [rsvpEmail, setRsvpEmail] = useState('');
@@ -27,8 +28,8 @@ function RsvpForm({ event, previewMode, primary, secondary }) {
   const [status, setStatus] = useState(null);
   const [statusMsg, setStatusMsg] = useState('');
 
-  const inputStyle = { width: '100%', padding: '0.7rem 0.9rem', border: '1px solid rgba(0,0,0,0.12)', borderRadius: '4px', fontSize: '0.95rem', outline: 'none', fontFamily: 'inherit', backgroundColor: '#fff', boxSizing: 'border-box' };
-  const labelStyle = { display: 'block', fontSize: '0.7rem', fontWeight: '700', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '0.4rem', color: primary };
+  const inputStyle = { width: '100%', padding: '0.85rem 1rem', border: `1px solid ${secondary}`, borderRadius: '6px', fontSize: '0.95rem', outline: 'none', fontFamily: 'inherit', backgroundColor: '#fff', boxSizing: 'border-box', transition: 'border-color 0.3s, box-shadow 0.3s' };
+  const labelStyle = { display: 'block', fontSize: '0.75rem', fontWeight: '700', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '0.5rem', color: primary };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,39 +49,90 @@ function RsvpForm({ event, previewMode, primary, secondary }) {
 
   return (
     <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-      {status === 'success' && <div style={{ padding: '0.75rem 1rem', background: 'rgba(60,125,83,0.1)', color: '#2b5c3b', borderRadius: '6px', marginBottom: '1rem', fontSize: '0.85rem', textAlign: 'center' }}>✓ {statusMsg}</div>}
-      {status === 'error' && <div style={{ padding: '0.75rem 1rem', background: 'rgba(169,60,60,0.1)', color: '#7b2929', borderRadius: '6px', marginBottom: '1rem', fontSize: '0.85rem', textAlign: 'center' }}>{statusMsg}</div>}
-      <div style={{ marginBottom: '1rem' }}>
+      {status === 'success' && <div style={{ padding: '0.85rem 1rem', background: '#e6f4ea', color: '#137333', border: '1px solid #ceead6', borderRadius: '6px', marginBottom: '1.25rem', fontSize: '0.9rem', textAlign: 'center', fontWeight: '500' }}>✓ {statusMsg}</div>}
+      {status === 'error' && <div style={{ padding: '0.85rem 1rem', background: '#fce8e6', color: '#c5221f', border: '1px solid #fad2cf', borderRadius: '6px', marginBottom: '1.25rem', fontSize: '0.9rem', textAlign: 'center', fontWeight: '500' }}>⚠ {statusMsg}</div>}
+      <div style={{ marginBottom: '1.25rem' }}>
         <label style={labelStyle}>Full Name</label>
-        <input type="text" required value={rsvpName} onChange={e => setRsvpName(e.target.value)} placeholder="Your name" style={inputStyle} />
+        <input type="text" required value={rsvpName} onChange={e => setRsvpName(e.target.value)} placeholder="Your full name" style={inputStyle} onFocus={e => {e.target.style.borderColor=primary; e.target.style.boxShadow=`0 0 0 3px rgba(0,0,0,0.05)`}} onBlur={e => {e.target.style.borderColor=secondary; e.target.style.boxShadow='none'}} />
       </div>
-      <div style={{ marginBottom: '1rem' }}>
-        <label style={labelStyle}>Email</label>
-        <input type="email" required value={rsvpEmail} onChange={e => setRsvpEmail(e.target.value)} placeholder="your@email.com" style={inputStyle} />
+      <div style={{ marginBottom: '1.25rem' }}>
+        <label style={labelStyle}>Email Address</label>
+        <input type="email" required value={rsvpEmail} onChange={e => setRsvpEmail(e.target.value)} placeholder="your.email@example.com" style={inputStyle} onFocus={e => {e.target.style.borderColor=primary; e.target.style.boxShadow=`0 0 0 3px rgba(0,0,0,0.05)`}} onBlur={e => {e.target.style.borderColor=secondary; e.target.style.boxShadow='none'}} />
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
         <div>
           <label style={labelStyle}>Attending?</label>
-          <select value={rsvpAttending} onChange={e => setRsvpAttending(e.target.value)} style={inputStyle}>
-            <option value="1">Yes, I'll be there ✓</option>
-            <option value="0">No, can't make it</option>
+          <select value={rsvpAttending} onChange={e => setRsvpAttending(e.target.value)} style={inputStyle} onFocus={e => {e.target.style.borderColor=primary}} onBlur={e => {e.target.style.borderColor=secondary}}>
+            <option value="1">Joyfully Accept ✓</option>
+            <option value="0">Regretfully Decline</option>
           </select>
         </div>
         <div>
-          <label style={labelStyle}>Guests</label>
-          <select value={rsvpGuests} onChange={e => setRsvpGuests(e.target.value)} disabled={rsvpAttending === '0'} style={inputStyle}>
+          <label style={labelStyle}>Total Guests</label>
+          <select value={rsvpGuests} onChange={e => setRsvpGuests(e.target.value)} disabled={rsvpAttending === '0'} style={{...inputStyle, backgroundColor: rsvpAttending === '0' ? '#f5f5f5' : '#fff'}} onFocus={e => {e.target.style.borderColor=primary}} onBlur={e => {e.target.style.borderColor=secondary}}>
             {[1,2,3,4,5].map(n => <option key={n} value={String(n)}>{n}{n===5?' +':''} guest{n>1?'s':''}</option>)}
           </select>
         </div>
       </div>
-      <div style={{ marginBottom: '1.25rem' }}>
-        <label style={labelStyle}>Message (optional)</label>
-        <textarea value={rsvpMessage} onChange={e => setRsvpMessage(e.target.value)} rows={3} placeholder="Send a warm wish to the couple..." style={{ ...inputStyle, resize: 'vertical' }}></textarea>
+      <div style={{ marginBottom: '1.5rem' }}>
+        <label style={labelStyle}>Message for the Couple</label>
+        <textarea value={rsvpMessage} onChange={e => setRsvpMessage(e.target.value)} rows={3} placeholder="Send a warm wish..." style={{ ...inputStyle, resize: 'vertical' }} onFocus={e => {e.target.style.borderColor=primary; e.target.style.boxShadow=`0 0 0 3px rgba(0,0,0,0.05)`}} onBlur={e => {e.target.style.borderColor=secondary; e.target.style.boxShadow='none'}}></textarea>
       </div>
-      <button type="submit" disabled={status === 'submitting'} style={{ width: '100%', padding: '0.9rem', background: primary, color: '#fff', border: 'none', borderRadius: '4px', fontSize: '0.8rem', fontWeight: '700', letterSpacing: '2px', textTransform: 'uppercase', cursor: status === 'submitting' ? 'not-allowed' : 'pointer', transition: 'all 0.3s', opacity: status === 'submitting' ? 0.7 : 1 }}>
-        {status === 'submitting' ? 'Submitting...' : 'Confirm RSVP'}
+      <button type="submit" disabled={status === 'submitting'} style={{ width: '100%', padding: '1rem', background: primary, color: '#fff', border: 'none', borderRadius: '6px', fontSize: '0.85rem', fontWeight: '700', letterSpacing: '2px', textTransform: 'uppercase', cursor: status === 'submitting' ? 'not-allowed' : 'pointer', transition: 'all 0.3s', opacity: status === 'submitting' ? 0.7 : 1, boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }} onMouseEnter={e => {if(status !== 'submitting') e.target.style.transform = 'translateY(-2px)'}} onMouseLeave={e => {if(status !== 'submitting') e.target.style.transform = 'translateY(0)'}}>
+        {status === 'submitting' ? 'Sending RSVP...' : 'Confirm Reservation'}
       </button>
     </form>
+  );
+}
+
+// ---- CALENDAR & MAP ----
+function CalendarAndMap({ event, bride, groom, venue, template, dateStr }) {
+  const handleDownloadIcs = () => {
+    const title = `Wedding of ${bride} & ${groom}`;
+    const date = new Date(event.event_date || Date.now());
+    const start = date.toISOString().replace(/-|:|\.\d+/g, '');
+    const endDate = new Date(date.getTime() + 4 * 60 * 60 * 1000);
+    const end = endDate.toISOString().replace(/-|:|\.\d+/g, '');
+    const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:${start}\nDTEND:${end}\nSUMMARY:${title}\nLOCATION:${venue || ''}\nEND:VEVENT\nEND:VCALENDAR`;
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'wedding.ics';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
+
+  const getGoogleCalendarUrl = () => {
+    const title = encodeURIComponent(`Wedding of ${bride} & ${groom}`);
+    const details = encodeURIComponent(`Join us in celebrating the wedding of ${bride} & ${groom}.`);
+    const location = encodeURIComponent(venue || '');
+    const date = new Date(event.event_date || Date.now());
+    const start = date.toISOString().replace(/-|:|\.\d+/g, '');
+    const endDate = new Date(date.getTime() + 4 * 60 * 60 * 1000);
+    const end = endDate.toISOString().replace(/-|:|\.\d+/g, '');
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&location=${location}`;
+  };
+
+  return (
+    <div style={{ marginTop: '2rem' }}>
+      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
+        <a href={getGoogleCalendarUrl()} target="_blank" rel="noopener noreferrer" style={{ padding: '0.75rem 1.5rem', background: template.primaryColor, color: '#fff', borderRadius: '4px', textDecoration: 'none', fontSize: '0.75rem', fontWeight: '700', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'opacity 0.3s' }} onMouseEnter={e=>e.target.style.opacity=0.85} onMouseLeave={e=>e.target.style.opacity=1}>
+          📅 Add to Google Calendar
+        </a>
+        <button onClick={handleDownloadIcs} style={{ padding: '0.75rem 1.5rem', background: 'transparent', border: `1px solid ${template.primaryColor}`, color: template.primaryColor, borderRadius: '4px', fontSize: '0.75rem', fontWeight: '700', letterSpacing: '1px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'background 0.3s' }} onMouseEnter={e=>{e.target.style.background=template.primaryColor; e.target.style.color='#fff'}} onMouseLeave={e=>{e.target.style.background='transparent'; e.target.style.color=template.primaryColor}}>
+          🍏 Apple / Outlook
+        </button>
+      </div>
+      
+      {venue && (
+        <div style={{ width: '100%', height: '350px', borderRadius: '8px', overflow: 'hidden', border: `2px solid ${template.secondaryColor || '#ccc'}`, boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
+          <iframe src={`https://www.google.com/maps?q=${encodeURIComponent(venue)}&output=embed`} width="100%" height="100%" style={{ border: 0 }} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -125,6 +177,7 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
           <div style={{ width: '100%', height: '1px', background: template.secondaryColor, opacity: 0.3, marginBottom: '1.5rem' }} />
           <div style={{ fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700', marginBottom: '0.5rem' }}>VENUE</div>
           <div style={{ fontFamily: template.fontTitle, fontSize: '1rem', color: template.primaryColor, fontStyle: 'italic' }}>{venue}</div>
+          <CalendarAndMap event={event} bride={bride} groom={groom} venue={venue} template={template} dateStr={dateStr} />
         </div>
       </section>
       {/* Gallery */}
@@ -193,6 +246,7 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
           <div style={{ fontSize: '0.85rem', color: template.primaryColor, opacity: 0.65, marginBottom: '1.5rem' }}>{timeStr}</div>
           <div style={{ width: '40px', height: '2px', background: template.primaryColor, opacity: 0.2, margin: '0 auto 1.5rem' }} />
           <div style={{ fontSize: '0.95rem', fontStyle: 'italic', color: template.primaryColor, opacity: 0.8 }}>📍 {venue}</div>
+          <CalendarAndMap event={event} bride={bride} groom={groom} venue={venue} template={template} dateStr={dateStr} />
         </div>
       </section>
       <section id="gallery" style={{ padding: '4rem 1.5rem', maxWidth: '900px', margin: '0 auto' }}>
@@ -268,6 +322,7 @@ function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, pho
             <div style={{ fontFamily: template.fontTitle, fontSize: '1rem', color: template.primaryColor }}>{venue}</div>
           </div>
         </div>
+        <CalendarAndMap event={event} bride={bride} groom={groom} venue={venue} template={template} dateStr={dateStr} />
       </section>
       <section id="gallery" style={{ padding: '4rem 3rem', borderTop: `1px solid ${template.accentColor}` }}>
         <span style={{ fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, display: 'block', marginBottom: '1rem' }}>Gallery</span>
@@ -330,6 +385,7 @@ function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos
           <div style={{ marginBottom: '1.5rem' }}><div style={{ fontSize: '0.55rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.secondaryColor, marginBottom: '0.4rem' }}>Date</div><div style={{ fontFamily: template.fontTitle, fontSize: '1rem', color: template.primaryColor }}>{dateStr}</div></div>
           <div style={{ marginBottom: '1.5rem' }}><div style={{ fontSize: '0.55rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.secondaryColor, marginBottom: '0.4rem' }}>Time</div><div style={{ fontFamily: template.fontTitle, fontSize: '1rem', color: template.primaryColor }}>{timeStr}</div></div>
           <div><div style={{ fontSize: '0.55rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.secondaryColor, marginBottom: '0.4rem' }}>Venue</div><div style={{ fontFamily: template.fontTitle, fontSize: '1rem', color: template.primaryColor, fontStyle: 'italic' }}>{venue}</div></div>
+          <CalendarAndMap event={event} bride={bride} groom={groom} venue={venue} template={template} dateStr={dateStr} />
         </div>
         <div style={{ fontSize: '1.8rem', color: template.secondaryColor, marginTop: '2rem' }}>❦</div>
       </section>
@@ -366,10 +422,22 @@ function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos
   );
 }
 
-// ---- IMAGE MODAL ----
-function ImageModal({ photo, onClose }) {
-  if (!photo) return null;
+// ---- IMAGE MODAL CAROUSEL ----
+function ImageModal({ photos, currentIndex, onClose, setCarouselIndex }) {
+  if (currentIndex === null || !photos || !photos[currentIndex]) return null;
   
+  const photo = photos[currentIndex];
+  
+  const handlePrev = (e) => {
+    e.stopPropagation();
+    setCarouselIndex(currentIndex === 0 ? photos.length - 1 : currentIndex - 1);
+  };
+  
+  const handleNext = (e) => {
+    e.stopPropagation();
+    setCarouselIndex(currentIndex === photos.length - 1 ? 0 : currentIndex + 1);
+  };
+
   const handleDownload = async (e) => {
     e.stopPropagation();
     try {
@@ -389,24 +457,42 @@ function ImageModal({ photo, onClose }) {
   };
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 9999, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem' }} onClick={onClose}>
-      <button onClick={onClose} style={{ position: 'absolute', top: '1.5rem', right: '2rem', background: 'transparent', border: 'none', color: '#fff', fontSize: '3rem', cursor: 'pointer', lineHeight: 1 }}>&times;</button>
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.92)', zIndex: 9999, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem' }} onClick={onClose}>
+      <button onClick={onClose} style={{ position: 'absolute', top: '1.5rem', right: '2rem', background: 'transparent', border: 'none', color: '#fff', fontSize: '3rem', cursor: 'pointer', lineHeight: 1, zIndex: 10 }}>&times;</button>
       
+      {photos.length > 1 && (
+        <button onClick={handlePrev} style={{ position: 'absolute', left: '1.5rem', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', fontSize: '1.5rem', cursor: 'pointer', width: '50px', height: '50px', borderRadius: '50%', zIndex: 10, transition: 'background 0.3s', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onMouseEnter={e=>e.target.style.background='rgba(255,255,255,0.3)'} onMouseLeave={e=>e.target.style.background='rgba(255,255,255,0.1)'}>
+          &#10094;
+        </button>
+      )}
+
       <img src={photo.file_path} alt={photo.caption || ''} style={{ maxWidth: '100%', maxHeight: '75vh', objectFit: 'contain', borderRadius: '4px', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }} onClick={e => e.stopPropagation()} />
       
       {photo.caption && <p style={{ color: '#fff', marginTop: '1.5rem', fontSize: '1.2rem', fontFamily: 'var(--font-serif)' }}>{photo.caption}</p>}
       
-      <button onClick={handleDownload} style={{ marginTop: '2rem', padding: '0.9rem 2rem', background: '#fff', color: '#000', border: 'none', borderRadius: '50px', fontSize: '0.85rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'transform 0.2s' }} onMouseEnter={e=>e.target.style.transform='scale(1.05)'} onMouseLeave={e=>e.target.style.transform='scale(1)'}>
+      {photos.length > 1 && (
+        <button onClick={handleNext} style={{ position: 'absolute', right: '1.5rem', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', fontSize: '1.5rem', cursor: 'pointer', width: '50px', height: '50px', borderRadius: '50%', zIndex: 10, transition: 'background 0.3s', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onMouseEnter={e=>e.target.style.background='rgba(255,255,255,0.3)'} onMouseLeave={e=>e.target.style.background='rgba(255,255,255,0.1)'}>
+          &#10095;
+        </button>
+      )}
+
+      <button onClick={handleDownload} style={{ marginTop: '2rem', padding: '0.9rem 2rem', background: '#fff', color: '#000', border: 'none', borderRadius: '50px', fontSize: '0.85rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'transform 0.2s', zIndex: 10 }} onMouseEnter={e=>e.target.style.transform='scale(1.05)'} onMouseLeave={e=>e.target.style.transform='scale(1)'}>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
         Download Photo
       </button>
+      
+      {photos.length > 1 && (
+        <div style={{ color: '#aaa', fontSize: '0.85rem', marginTop: '1rem', letterSpacing: '2px' }}>
+          {currentIndex + 1} / {photos.length}
+        </div>
+      )}
     </div>
   );
 }
 
 // ---- MAIN EXPORT ----
 export default function TemplateRenderer({ event, template, photos = [], previewMode = false }) {
-  const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [carouselIndex, setCarouselIndex] = useState(null);
 
   if (!event || !template) return <div style={{ padding: '4rem', textAlign: 'center', color: '#7c2230', fontFamily: 'serif' }}>Loading...</div>;
   const bride = event.bride_name || 'Alice';
@@ -418,7 +504,12 @@ export default function TemplateRenderer({ event, template, photos = [], preview
   const coverPhoto = photos.find(p => p.is_cover === 1) || (photos.length > 0 ? photos[0] : null);
   const coverImage = coverPhoto ? coverPhoto.file_path : (template.bgImage || FALLBACK_HERO);
   
-  const props = { bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick: setSelectedPhoto, coverImage };
+  const handlePhotoClick = (photo) => {
+    const idx = photos.findIndex(p => p.id === photo.id);
+    setCarouselIndex(idx);
+  };
+  
+  const props = { bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick: handlePhotoClick, coverImage };
   const cat = (template.category || template.layout || 'royal').toLowerCase();
   
   return (
@@ -428,7 +519,7 @@ export default function TemplateRenderer({ event, template, photos = [], preview
        cat === 'vintage' ? <VintageLayout {...props} /> :
        <RoyalLayout {...props} />}
        
-      {selectedPhoto && <ImageModal photo={selectedPhoto} onClose={() => setSelectedPhoto(null)} />}
+      {carouselIndex !== null && <ImageModal photos={photos} currentIndex={carouselIndex} setCarouselIndex={setCarouselIndex} onClose={() => setCarouselIndex(null)} />}
     </>
   );
 }

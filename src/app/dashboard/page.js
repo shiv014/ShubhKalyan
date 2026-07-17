@@ -15,7 +15,11 @@ const STOCK_COVERS = [
   { name: 'Beach Sunset', path: '/covers/cover_beach_1784272520709.jpg' },
   { name: 'Rustic Barn', path: '/covers/cover_rustic_1784272532607.jpg' },
   { name: 'Modern Gold', path: '/covers/cover_modern_1784272543611.jpg' },
-  { name: 'Classic Church', path: '/covers/cover_classic_1784272554643.jpg' }
+  { name: 'Classic Church', path: '/covers/cover_classic_1784272554643.jpg' },
+  { name: 'Hindu Traditional', path: '/covers/cover_hindu_traditional_1784273058888.jpg' },
+  { name: 'South Indian', path: '/covers/cover_hindu_south_1784273072834.jpg' },
+  { name: 'Hindu Modern', path: '/covers/cover_hindu_modern_1784273087256.jpg' },
+  { name: 'Haldi / Mehendi', path: '/covers/cover_hindu_haldi_1784273102331.jpg' }
 ];
 
 function DashboardPortal() {

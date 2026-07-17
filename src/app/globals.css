@@ -219,15 +219,13 @@ a:hover { color: var(--color-primary-hover); }
 
 /* ---- Navbar ---- */
 .navbar {
-  background: rgba(255,255,255,0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255,255,255,0.6);
-  padding: 0.9rem 0;
   position: sticky;
   top: 0;
-  z-index: 200;
-  box-shadow: 0 8px 32px -8px rgba(0,0,0,0.06);
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.5rem 0;
 }
 .navbar-container { display: flex; align-items: center; justify-content: space-between; }
 
@@ -303,9 +301,9 @@ a:hover { color: var(--color-primary-hover); }
     padding-top: 8rem;
     min-height: auto;
   }
-  .brand-logo { height: 50px !important; }
-  .brand-logo-footer { height: 54px !important; }
-  .brand-logo-large { height: 72px !important; }
+  .brand-logo { height: 35px !important; transform: scale(1.4); transform-origin: left center; }
+  .brand-logo-footer { height: 35px !important; transform: scale(1.4); transform-origin: left center; }
+  .brand-logo-large { height: 50px !important; transform: scale(1.5); }
   .section { padding: 3rem 0; } 
   .container { padding: 0 1rem; }
   h1 { font-size: 2.2rem; } 
@@ -332,20 +330,25 @@ a:hover { color: var(--color-primary-hover); }
 }
 
 .brand-logo {
-  height: 76px;
+  height: 48px;
   width: auto;
   object-fit: contain;
-  transition: height 0.3s ease;
+  transform: scale(1.8);
+  transform-origin: left center;
+  transition: all 0.3s ease;
 }
 
 .brand-logo-footer {
-  height: 64px;
+  height: 40px;
   width: auto;
   object-fit: contain;
+  transform: scale(1.6);
+  transform-origin: left center;
 }
 
 .brand-logo-large {
-  height: 110px;
+  height: 70px;
   width: auto;
   object-fit: contain;
+  transform: scale(1.6);
 }

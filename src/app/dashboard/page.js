@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic';
 import { ExternalLink, CheckCircle, XCircle, Edit3, Paintbrush, Image as ImageIcon, Mail, Link as LinkIcon, MapPin, UploadCloud, Star, Copy, RefreshCw } from 'lucide-react';
 import { getTemplates, getTemplateById } from '@/lib/templates';
 import TemplateRenderer from '@/components/TemplateRenderer';
+import { toPng } from 'html-to-image';
 import styles from './dashboard.module.css';
 
 const MapPicker = dynamic(() => import('@/components/MapPicker'), {
@@ -55,8 +56,10 @@ function DashboardPortal() {
   const [savingTpl, setSavingTpl] = useState(false);
   const [savingUrl, setSavingUrl] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [isDownloadingPoster, setIsDownloadingPoster] = useState(false);
   
   const [alert, setAlert] = useState(null); // { type: 'success'|'danger', message: '' }
+  const posterRef = useRef(null);
 
   // Search/Filter for 120 templates
   const [tplSearch, setTplSearch] = useState('');
@@ -380,6 +383,37 @@ function DashboardPortal() {
       }
     } catch (err) {
       showToast('danger', 'Error deleting RSVP');
+    }
+  };
+
+  const handleDownloadPoster = async () => {
+    if (!posterRef.current) return;
+    setIsDownloadingPoster(true);
+    setAlert({ type: 'success', message: 'Generating your high-resolution poster... Please wait.' });
+    
+    try {
+      // Need a small timeout to ensure the DOM is fully rendered and fonts are loaded
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const dataUrl = await toPng(posterRef.current, {
+        cacheBust: true,
+        pixelRatio: 2, // High resolution
+        style: {
+          transform: 'scale(1)',
+          transformOrigin: 'top left'
+        }
+      });
+      
+      const link = document.createElement('a');
+      link.download = `${brideName}-and-${groomName}-Wedding-Poster.png`;
+      link.href = dataUrl;
+      link.click();
+      setAlert({ type: 'success', message: 'Poster downloaded successfully!' });
+    } catch (err) {
+      console.error(err);
+      setAlert({ type: 'danger', message: 'Failed to generate poster. Please try again.' });
+    } finally {
+      setIsDownloadingPoster(false);
     }
   };
 
@@ -976,9 +1010,21 @@ function DashboardPortal() {
 
         {/* Real-time Phone Frame Live Preview */}
         <aside className={styles.previewPanel}>
-          <div className={styles.previewHeader}>
-            <h3 style={{ fontSize: '1.1rem', color: 'var(--color-primary)' }}>Live Mobile Preview</h3>
-            <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0 }}>Updates in real-time as you edit details</p>
+          <div className={styles.previewHeader} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <h3 style={{ fontSize: '1.1rem', color: 'var(--color-primary)' }}>Live Mobile Preview</h3>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0 }}>Updates in real-time as you edit details</p>
+            </div>
+            <button 
+              onClick={handleDownloadPoster} 
+              disabled={isDownloadingPoster}
+              style={{ padding: '0.5rem 1rem', background: 'var(--color-primary)', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold', cursor: isDownloadingPoster ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', transition: 'background 0.3s' }}
+              onMouseEnter={e => { if (!isDownloadingPoster) e.target.style.background = 'var(--color-secondary)' }}
+              onMouseLeave={e => { if (!isDownloadingPoster) e.target.style.background = 'var(--color-primary)' }}
+            >
+              <Download size={14} />
+              {isDownloadingPoster ? 'Generating...' : 'Download Poster'}
+            </button>
           </div>
 
           <div className={styles.deviceWrapper}>
@@ -992,6 +1038,19 @@ function DashboardPortal() {
             </div>
           </div>
         </aside>
+
+        {/* Hidden Poster Container for html-to-image */}
+        <div style={{ position: 'absolute', top: '-9999px', left: '-9999px', width: '800px', zIndex: -1000, pointerEvents: 'none' }}>
+          <div ref={posterRef} style={{ width: '800px', backgroundColor: activeTemplate?.bgColor || '#fff' }}>
+            <TemplateRenderer 
+              event={previewEvent} 
+              template={activeTemplate} 
+              photos={photos} 
+              previewMode={true}
+              isPosterMode={true}
+            />
+          </div>
+        </div>
 
       </div>
     </div>

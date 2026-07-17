@@ -75,7 +75,7 @@ function LoginForm() {
         {/* Brand Logo */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <Link href="/" style={{ display: 'inline-block' }}>
-            <img src="/logo.png" alt="ShubhKalyan Logo" style={{ height: '72px', width: 'auto', objectFit: 'contain' }} />
+            <img src="/logo.png" alt="ShubhKalyan Logo" className="brand-logo-large" />
           </Link>
           <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
             Login to create your custom wedding website

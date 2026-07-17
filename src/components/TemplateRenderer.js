@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { MapPin, Calendar, Download } from 'lucide-react';
+import { MapPin, Calendar, Download, Image as ImageIcon } from 'lucide-react';
+import * as htmlToImage from 'html-to-image';
+import { QRCodeCanvas } from 'qrcode.react';
 import dynamic from 'next/dynamic';
-import { QRCodeSVG } from 'qrcode.react';
 
 const MapViewer = dynamic(() => import('@/components/MapViewer'), {
   ssr: false,
@@ -94,57 +95,57 @@ function RsvpForm({ event, previewMode, primary, secondary }) {
 }
 
 // ---- CALENDAR & MAP ----
-function CalendarAndMap({ event, bride, groom, venue, template, dateStr, isPosterMode }) {
+function CalendarAndMap({ event, bride, groom, venue, template, dateStr }) {
   const handleDownloadIcs = () => {
     const title = `Wedding of ${bride} & ${groom}`;
     const date = new Date(event.event_date || Date.now());
     const start = date.toISOString().replace(/-|:|\.\d+/g, '');
-    const end = new Date(date.getTime() + 4 * 60 * 60 * 1000).toISOString().replace(/-|:|\.\d+/g, '');
-    const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:${start}\nDTEND:${end}\nSUMMARY:${title}\nLOCATION:${venue}\nEND:VEVENT\nEND:VCALENDAR`;
+    const endDate = new Date(date.getTime() + 4 * 60 * 60 * 1000);
+    const end = endDate.toISOString().replace(/-|:|\.\d+/g, '');
+    const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:${start}\nDTEND:${end}\nSUMMARY:${title}\nLOCATION:${venue || ''}\nEND:VEVENT\nEND:VCALENDAR`;
     const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-    const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
-    link.setAttribute('download', 'wedding-save-the-date.ics');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'wedding.ics';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
   };
 
-  const mapQuery = encodeURIComponent(venue);
-  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+  const getGoogleCalendarUrl = () => {
+    const title = encodeURIComponent(`Wedding of ${bride} & ${groom}`);
+    const details = encodeURIComponent(`Join us in celebrating the wedding of ${bride} & ${groom}.`);
+    const location = encodeURIComponent(venue || '');
+    const date = new Date(event.event_date || Date.now());
+    const start = date.toISOString().replace(/-|:|\.\d+/g, '');
+    const endDate = new Date(date.getTime() + 4 * 60 * 60 * 1000);
+    const end = endDate.toISOString().replace(/-|:|\.\d+/g, '');
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&location=${location}`;
+  };
+
+  const mapQuery = (event.venue_lat && event.venue_lng) ? `${event.venue_lat},${event.venue_lng}` : venue;
 
   return (
-    <div style={{ marginTop: '2.5rem', paddingTop: '2.5rem', borderTop: `1px solid ${template.primaryColor}33`, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem' }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ width: '48px', height: '48px', margin: '0 auto 1rem', borderRadius: '50%', background: template.accentColor, color: template.primaryColor, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Calendar size={20} />
-        </div>
-        <h4 style={{ fontFamily: template.fontTitle, fontSize: '1.2rem', marginBottom: '0.5rem', color: template.primaryColor }}>Save the Date</h4>
-        {!isPosterMode && (
-          <button onClick={handleDownloadIcs} style={{ padding: '0.5rem 1.25rem', background: 'transparent', border: `1px solid ${template.primaryColor}`, color: template.primaryColor, borderRadius: '50px', fontSize: '0.7rem', letterSpacing: '1px', textTransform: 'uppercase', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.3s' }} onMouseEnter={e => { e.target.style.background = template.primaryColor; e.target.style.color = '#fff' }} onMouseLeave={e => { e.target.style.background = 'transparent'; e.target.style.color = template.primaryColor }}>
-            Add to Calendar
-          </button>
-        )}
+    <div style={{ marginTop: '2rem' }}>
+      <div className="action-buttons-container">
+        <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery || '')}`} target="_blank" rel="noopener noreferrer" style={{ padding: '0.75rem 1.5rem', background: '#fff', border: `1px solid ${template.primaryColor}`, color: template.primaryColor, borderRadius: '50px', textDecoration: 'none', fontSize: '0.75rem', fontWeight: '700', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.3s', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }} onMouseEnter={e=>{e.target.style.background=template.primaryColor;e.target.style.color='#fff'}} onMouseLeave={e=>{e.target.style.background='#fff';e.target.style.color=template.primaryColor}}>
+          <MapPin size={16} /> Open in Maps
+        </a>
+        <a href={getGoogleCalendarUrl()} target="_blank" rel="noopener noreferrer" style={{ padding: '0.75rem 1.5rem', background: template.primaryColor, color: '#fff', borderRadius: '50px', textDecoration: 'none', fontSize: '0.75rem', fontWeight: '700', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'opacity 0.3s', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} onMouseEnter={e=>e.target.style.opacity=0.85} onMouseLeave={e=>e.target.style.opacity=1}>
+          <Calendar size={16} /> Google Calendar
+        </a>
+        <button onClick={handleDownloadIcs} style={{ padding: '0.75rem 1.5rem', background: 'transparent', border: `1px solid ${template.primaryColor}`, color: template.primaryColor, borderRadius: '50px', fontSize: '0.75rem', fontWeight: '700', letterSpacing: '1px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'background 0.3s' }} onMouseEnter={e=>{e.target.style.background=template.primaryColor; e.target.style.color='#fff'}} onMouseLeave={e=>{e.target.style.background='transparent'; e.target.style.color=template.primaryColor}}>
+          <Download size={16} /> Apple / Outlook
+        </button>
       </div>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ width: '48px', height: '48px', margin: '0 auto 1rem', borderRadius: '50%', background: template.accentColor, color: template.primaryColor, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <MapPin size={20} />
+      
+      {mapQuery && (
+        <div style={{ width: '100%', height: '350px', borderRadius: '8px', overflow: 'hidden', border: `2px solid ${template.secondaryColor || '#ccc'}`, boxShadow: '0 10px 30px rgba(0,0,0,0.1)', position: 'relative' }}>
+          <MapViewer position={(event.venue_lat && event.venue_lng) ? [parseFloat(event.venue_lat), parseFloat(event.venue_lng)] : null} />
         </div>
-        <h4 style={{ fontFamily: template.fontTitle, fontSize: '1.2rem', marginBottom: '0.5rem', color: template.primaryColor }}>Get Directions</h4>
-        <div style={{ height: '140px', width: '100%', borderRadius: '12px', overflow: 'hidden', border: `1px solid ${template.primaryColor}33`, position: 'relative' }}>
-          {isPosterMode ? (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', background: '#fff' }}>
-              <QRCodeSVG value={mapsUrl} size={90} level="M" />
-              <span style={{ fontSize: '0.6rem', color: '#666', marginTop: '4px' }}>Scan for Map</span>
-            </div>
-          ) : (
-            <>
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 10, cursor: 'pointer' }} onClick={() => window.open(mapsUrl, '_blank')} title="Open in Google Maps" />
-              <MapViewer venue={venue} position={null} staticMode={true} />
-            </>
-          )}
-        </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -255,89 +256,85 @@ function GalleryGrid({ photos, template, onPhotoClick, containerStyle, imageStyl
 }
 
 // ---- LAYOUT A: ROYAL ----
-function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick, coverImage, isPosterMode }) {
+function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick, coverImage }) {
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   const cover = coverImage;
   return (
     <div style={{ fontFamily: template.fontBody, background: template.bgColor, color: template.textColor, minHeight: '100vh', overflowX: 'hidden' }}>
-      {!isPosterMode && (
-        <nav style={{ padding: '1.5rem', position: 'absolute', top: 0, width: '100%', zIndex: 10 }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'center', gap: '2rem' }}>
-            {['home','details','gallery','rsvp'].map(id => (
-              <span key={id} onClick={() => scrollTo(id)} style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.75rem', letterSpacing: '2px', textTransform: 'uppercase', cursor: 'pointer', fontWeight: '500' }}>{id}</span>
-            ))}
-          </div>
-        </nav>
-      )}
-      <header id="home" style={{ minHeight: '90vh', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-        <div style={{ position: 'absolute', inset: 0, background: `url(${cover}) center/cover no-repeat` }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%)' }} />
-        
-        <div style={{ position: 'relative', zIndex: 1, padding: '2rem', border: '1px solid rgba(255,255,255,0.2)', margin: '2rem', backdropFilter: 'blur(4px)', background: 'rgba(0,0,0,0.2)' }}>
-          <p style={{ color: '#fff', fontSize: '0.8rem', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '1.5rem', opacity: 0.9 }}>Celebrate with us</p>
-          <h1 style={{ fontFamily: template.fontTitle, fontSize: 'clamp(2.5rem, 8vw, 4.5rem)', color: '#fff', margin: '0 0 1rem', fontWeight: '400', lineHeight: 1.2, textShadow: '0 4px 20px rgba(0,0,0,0.4)' }}>
-            {bride} <span style={{ color: template.primaryColor, fontStyle: 'italic', fontSize: '0.8em' }}>&amp;</span> {groom}
-          </h1>
-          <div style={{ width: '60px', height: '1px', background: template.primaryColor, margin: '1.5rem auto' }} />
-          <p style={{ color: '#fff', fontSize: '0.9rem', letterSpacing: '2px', textTransform: 'uppercase', opacity: 0.9 }}>{dateStr}</p>
+      {/* Nav */}
+      <nav style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', justifyContent: 'center', gap: '2.5rem', padding: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
+        {['home','details','gallery','rsvp'].map(id => (
+          <span key={id} onClick={() => scrollTo(id)} style={{ color: '#fff', fontSize: '0.65rem', fontWeight: '700', letterSpacing: '3px', textTransform: 'uppercase', cursor: 'pointer', textShadow: '0 1px 3px rgba(0,0,0,0.5)', transition: 'color 0.3s' }}
+            onMouseEnter={e=>e.target.style.color=template.secondaryColor} onMouseLeave={e=>e.target.style.color='#fff'}>{id}</span>
+        ))}
+      </nav>
+      {/* Hero */}
+      <header id="home" style={{ height: '92vh', position: 'relative', backgroundImage: `url(${cover})`, backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.25) 50%,rgba(0,0,0,0.65) 100%)' }} />
+        <div style={{ position: 'relative', zIndex: 2, border: `2px solid ${template.secondaryColor}`, outline: `4px double ${template.secondaryColor}`, outlineOffset: '7px', padding: '2.5rem 3.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', maxWidth: '440px', margin: '0 1rem' }}>
+          <span style={{ fontSize: '0.55rem', letterSpacing: '5px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700' }}>✦ Cordially Invited ✦</span>
+          <div style={{ width: '35px', height: '1px', background: template.secondaryColor, opacity: 0.7 }} />
+          <div style={{ fontFamily: template.fontNames, fontSize: 'clamp(2.2rem, 8vw, 3.2rem)', color: '#fff', lineHeight: 1.1, textShadow: '0 2px 12px rgba(0,0,0,0.5)' }}>{bride} <span style={{ fontFamily: template.fontTitle, fontSize: '1.2rem', fontWeight: '400' }}>&amp;</span> {groom}</div>
+          <div style={{ width: '35px', height: '1px', background: template.secondaryColor, opacity: 0.7 }} />
+          <span style={{ fontSize: '0.6rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.9)', fontWeight: '600' }}>{dateStr}</span>
+          <button onClick={() => scrollTo('rsvp')} style={{ marginTop: '0.5rem', padding: '0.6rem 2rem', background: 'transparent', border: `1px solid ${template.secondaryColor}`, color: template.secondaryColor, fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', transition: 'all 0.3s' }}
+            onMouseEnter={e=>{e.currentTarget.style.background=template.secondaryColor;e.currentTarget.style.color='#fff';}} onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.color=template.secondaryColor;}}>
+            RSVP Online
+          </button>
         </div>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '60px', background: template.bgColor, borderRadius: '50% 50% 0 0 / 100% 100% 0 0', zIndex: 3 }} />
       </header>
-      
-      <section id="details" className="tpl-section-standard" style={{ maxWidth: '800px', margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <span style={{ fontSize: '0.65rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.6, display: 'block', marginBottom: '0.5rem' }}>The Details</span>
-          <h2 style={{ fontFamily: template.fontTitle, fontSize: '2.5rem', color: template.primaryColor, fontWeight: '400', marginBottom: '2rem' }}>Ceremony &amp; Reception</h2>
-          
-          <div style={{ background: '#fff', padding: '3rem 2rem', borderRadius: '12px', boxShadow: '0 10px 40px rgba(0,0,0,0.05)' }}>
-            <div style={{ fontSize: '1.3rem', fontFamily: template.fontTitle, color: template.primaryColor, marginBottom: '0.5rem' }}>{dateStr}</div>
-            <div style={{ fontSize: '0.85rem', color: template.primaryColor, opacity: 0.65, marginBottom: '1.5rem' }}>{timeStr}</div>
-            <div style={{ width: '40px', height: '2px', background: template.primaryColor, opacity: 0.2, margin: '0 auto 1.5rem' }} />
-            <div style={{ fontSize: '0.95rem', fontStyle: 'italic', color: template.primaryColor, opacity: 0.8 }}>📍 {venue}</div>
-            <CalendarAndMap event={event} bride={bride} groom={groom} venue={venue} template={template} dateStr={dateStr} isPosterMode={isPosterMode} />
+      {/* Details */}
+      <section id="details" className="tpl-section-standard" style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto' }}>
+        <span style={{ fontSize: '0.65rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700', display: 'block', marginBottom: '0.5rem' }}>Save the Date</span>
+        <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '1rem' }}>Ceremony &amp; Celebration</h2>
+        <p style={{ opacity: 0.7, maxWidth: '500px', margin: '0 auto 2.5rem', fontSize: '0.95rem' }}>Join us as we celebrate our union surrounded by those we cherish most.</p>
+        <div style={{ background: template.accentColor, border: `1px solid ${template.secondaryColor}`, borderLeft: `4px solid ${template.secondaryColor}`, borderRadius: '8px', padding: '2.5rem 2rem', display: 'inline-block', minWidth: '300px', textAlign: 'left' }}>
+          <div style={{ fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700', marginBottom: '0.5rem' }}>DATE &amp; TIME</div>
+          <div style={{ fontFamily: template.fontTitle, fontSize: '1.2rem', color: template.primaryColor, marginBottom: '0.25rem' }}>{dateStr}</div>
+          <div style={{ fontSize: '0.9rem', color: template.primaryColor, opacity: 0.7, marginBottom: '1.5rem' }}>at {timeStr}</div>
+          <div style={{ width: '100%', height: '1px', background: template.secondaryColor, opacity: 0.3, marginBottom: '1.5rem' }} />
+          <div style={{ fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700', marginBottom: '0.5rem' }}>VENUE</div>
+          <div style={{ fontFamily: template.fontTitle, fontSize: '1rem', color: template.primaryColor, fontStyle: 'italic' }}>{venue}</div>
+          <CalendarAndMap event={event} bride={bride} groom={groom} venue={venue} template={template} dateStr={dateStr} />
+        </div>
+      </section>
+      {/* Gallery */}
+      <section id="gallery" className="tpl-section-standard" style={{ maxWidth: '900px', margin: '0 auto', borderTop: `1px solid ${template.accentColor}` }}>
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <span style={{ fontSize: '0.65rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700', display: 'block', marginBottom: '0.5rem' }}>Moments</span>
+          <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400' }}>Our Gallery</h2>
+        </div>
+        <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ aspectRatio: '4/3', borderRadius: '4px', border: `2px solid ${template.secondaryColor}` }} />
+      </section>
+      {/* RSVP */}
+      <section id="rsvp" className="tpl-section-standard" style={{ background: template.accentColor }}>
+        <div style={{ maxWidth: '520px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+            <span style={{ fontSize: '0.65rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700', display: 'block', marginBottom: '0.5rem' }}>Reservation</span>
+            <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '0.5rem' }}>Will You Attend?</h2>
+            <p style={{ opacity: 0.65, fontSize: '0.85rem' }}>Please respond by September 15, 2026</p>
+          </div>
+          <div style={{ background: '#fff', borderRadius: '8px', padding: '2rem 2.5rem', boxShadow: '0 8px 30px rgba(0,0,0,0.06)', border: `1px solid ${template.secondaryColor}` }}>
+            <RsvpForm event={event} previewMode={previewMode} primary={template.primaryColor} secondary={template.secondaryColor} />
           </div>
         </div>
       </section>
-
-      {!isPosterMode && (
-        <>
-          <section id="gallery" className="tpl-section-standard" style={{ maxWidth: '900px', margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-              <span style={{ fontSize: '0.65rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.55, display: 'block', marginBottom: '0.5rem' }}>Our Story</span>
-              <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400' }}>Photo Gallery</h2>
-            </div>
-            <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ aspectRatio: '4/3', borderRadius: '20px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }} />
-          </section>
-          
-          <section id="rsvp" className="tpl-section-standard" style={{ background: `linear-gradient(135deg,${template.accentColor},${template.bgColor})` }}>
-            <div style={{ maxWidth: '520px', margin: '0 auto' }}>
-              <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-                <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '0.5rem' }}>RSVP</h2>
-                <p style={{ opacity: 0.65, fontSize: '0.85rem' }}>We hope to see you there! Kindly respond by September 15th.</p>
-              </div>
-              <div style={{ background: '#fff', borderRadius: '24px', padding: '2rem 2.5rem', boxShadow: '0 8px 40px rgba(0,0,0,0.07)' }}>
-                <RsvpForm event={event} previewMode={previewMode} primary={template.primaryColor} secondary={template.secondaryColor} />
-              </div>
-            </div>
-          </section>
-        </>
-      )}
     </div>
   );
 }
 
 // ---- LAYOUT B: FLORAL ----
-function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick, coverImage, isPosterMode }) {
+function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick, coverImage }) {
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   const cover = coverImage;
   return (
     <div style={{ fontFamily: template.fontBody, background: template.bgColor, color: template.textColor, minHeight: '100vh', overflowX: 'hidden' }}>
-      {!isPosterMode && (
-        <nav style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', justifyContent: 'center', gap: '2.5rem', padding: '1.25rem' }}>
-          {['home','details','gallery','rsvp'].map(id => (
-            <span key={id} onClick={() => scrollTo(id)} style={{ color: 'rgba(255,255,255,0.92)', fontSize: '0.65rem', fontWeight: '600', letterSpacing: '2.5px', textTransform: 'uppercase', cursor: 'pointer' }}>{id}</span>
-          ))}
-        </nav>
-      )}
+      <nav style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', justifyContent: 'center', gap: '2.5rem', padding: '1.25rem' }}>
+        {['home','details','gallery','rsvp'].map(id => (
+          <span key={id} onClick={() => scrollTo(id)} style={{ color: 'rgba(255,255,255,0.92)', fontSize: '0.65rem', fontWeight: '600', letterSpacing: '2.5px', textTransform: 'uppercase', cursor: 'pointer' }}>{id}</span>
+        ))}
+      </nav>
       <header id="home" style={{ height: '85vh', position: 'relative', backgroundImage: `url(${cover})`, backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', borderRadius: '0 0 50% 50% / 0 0 80px 80px' }}>
         <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to bottom,rgba(0,0,0,0.4),rgba(0,0,0,0.5))` }} />
         <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', padding: '2rem' }}>
@@ -345,9 +342,7 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
           <div style={{ fontFamily: template.fontNames, fontSize: 'clamp(2.5rem, 9vw, 3.5rem)', color: '#fff', textShadow: '0 3px 15px rgba(0,0,0,0.4)', lineHeight: 1.15, margin: '0.5rem 0' }}>{bride} <span style={{ fontFamily: template.fontTitle, fontSize: 'clamp(1.2rem, 4vw, 1.6rem)' }}>&amp;</span> {groom}</div>
           <div style={{ width: '50px', height: '2px', background: template.secondaryColor, margin: '1rem auto', borderRadius: '2px', opacity: 0.85 }} />
           <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.75rem', letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: '600' }}>{dateStr}</p>
-          {!isPosterMode && (
-            <button onClick={() => scrollTo('rsvp')} style={{ marginTop: '1.5rem', padding: '0.7rem 2rem', background: template.primaryColor, border: 'none', borderRadius: '50px', color: '#fff', fontSize: '0.7rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer' }}>RSVP Now</button>
-          )}
+          <button onClick={() => scrollTo('rsvp')} style={{ marginTop: '1.5rem', padding: '0.7rem 2rem', background: template.primaryColor, border: 'none', borderRadius: '50px', color: '#fff', fontSize: '0.7rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer' }}>RSVP Now</button>
         </div>
       </header>
       <section id="details" className="tpl-section-standard" style={{ textAlign: 'center', maxWidth: '650px', margin: '0 auto' }}>
@@ -358,51 +353,45 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
           <div style={{ fontSize: '0.85rem', color: template.primaryColor, opacity: 0.65, marginBottom: '1.5rem' }}>{timeStr}</div>
           <div style={{ width: '40px', height: '2px', background: template.primaryColor, opacity: 0.2, margin: '0 auto 1.5rem' }} />
           <div style={{ fontSize: '0.95rem', fontStyle: 'italic', color: template.primaryColor, opacity: 0.8 }}>📍 {venue}</div>
-          <CalendarAndMap event={event} bride={bride} groom={groom} venue={venue} template={template} dateStr={dateStr} isPosterMode={isPosterMode} />
+          <CalendarAndMap event={event} bride={bride} groom={groom} venue={venue} template={template} dateStr={dateStr} />
         </div>
       </section>
-      {!isPosterMode && (
-        <>
-          <section id="gallery" className="tpl-section-standard" style={{ maxWidth: '900px', margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-              <span style={{ fontSize: '0.65rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.55, display: 'block', marginBottom: '0.5rem' }}>Our Story</span>
-              <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400' }}>Photo Gallery</h2>
-            </div>
-            <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ aspectRatio: '4/3', borderRadius: '20px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }} />
-          </section>
-          <section id="rsvp" className="tpl-section-standard" style={{ background: `linear-gradient(135deg,${template.accentColor},${template.bgColor})` }}>
-            <div style={{ maxWidth: '520px', margin: '0 auto' }}>
-              <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-                <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '0.5rem' }}>RSVP</h2>
-                <p style={{ opacity: 0.65, fontSize: '0.85rem' }}>We hope to see you there! Kindly respond by September 15th.</p>
-              </div>
-              <div style={{ background: '#fff', borderRadius: '24px', padding: '2rem 2.5rem', boxShadow: '0 8px 40px rgba(0,0,0,0.07)' }}>
-                <RsvpForm event={event} previewMode={previewMode} primary={template.primaryColor} secondary={template.secondaryColor} />
-              </div>
-            </div>
-          </section>
-        </>
-      )}
+      <section id="gallery" className="tpl-section-standard" style={{ maxWidth: '900px', margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <span style={{ fontSize: '0.65rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.55, display: 'block', marginBottom: '0.5rem' }}>Our Story</span>
+          <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400' }}>Photo Gallery</h2>
+        </div>
+        <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ aspectRatio: '4/3', borderRadius: '20px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }} />
+      </section>
+      <section id="rsvp" className="tpl-section-standard" style={{ background: `linear-gradient(135deg,${template.accentColor},${template.bgColor})` }}>
+        <div style={{ maxWidth: '520px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+            <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '0.5rem' }}>RSVP</h2>
+            <p style={{ opacity: 0.65, fontSize: '0.85rem' }}>We hope to see you there! Kindly respond by September 15th.</p>
+          </div>
+          <div style={{ background: '#fff', borderRadius: '24px', padding: '2rem 2.5rem', boxShadow: '0 8px 40px rgba(0,0,0,0.07)' }}>
+            <RsvpForm event={event} previewMode={previewMode} primary={template.primaryColor} secondary={template.secondaryColor} />
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
 
 // ---- LAYOUT C: MINIMALIST ----
-function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick, coverImage, isPosterMode }) {
+function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick, coverImage }) {
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   const cover = coverImage;
   return (
     <div style={{ fontFamily: template.fontBody, background: '#fff', color: template.textColor, minHeight: '100vh', overflowX: 'hidden' }}>
-      {!isPosterMode && (
-        <nav style={{ borderBottom: `1px solid ${template.accentColor}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', position: 'sticky', top: 0, background: '#fff', zIndex: 100 }}>
-          <span style={{ fontFamily: template.fontTitle, fontSize: '0.85rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.primaryColor }}>{bride} &amp; {groom}</span>
-          <div style={{ display: 'flex', gap: '2rem' }}>
-            {['details','gallery','rsvp'].map(id => (
-              <span key={id} onClick={() => scrollTo(id)} style={{ fontSize: '0.65rem', letterSpacing: '2.5px', textTransform: 'uppercase', cursor: 'pointer', color: template.textColor, fontWeight: '500' }}>{id}</span>
-            ))}
-          </div>
-        </nav>
-      )}
+      <nav style={{ borderBottom: `1px solid ${template.accentColor}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', position: 'sticky', top: 0, background: '#fff', zIndex: 100 }}>
+        <span style={{ fontFamily: template.fontTitle, fontSize: '0.85rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.primaryColor }}>{bride} &amp; {groom}</span>
+        <div style={{ display: 'flex', gap: '2rem' }}>
+          {['details','gallery','rsvp'].map(id => (
+            <span key={id} onClick={() => scrollTo(id)} style={{ fontSize: '0.65rem', letterSpacing: '2.5px', textTransform: 'uppercase', cursor: 'pointer', color: template.textColor, fontWeight: '500' }}>{id}</span>
+          ))}
+        </div>
+      </nav>
       <header id="home" className="tr-hero-grid" style={{ minHeight: '82vh' }}>
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '4rem 3rem' }}>
           <span style={{ fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, display: 'block', marginBottom: '1.5rem' }}>Save the Date</span>
@@ -410,9 +399,7 @@ function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, pho
           <div style={{ width: '40px', height: '2px', background: template.primaryColor, marginBottom: '1.5rem' }} />
           <p style={{ fontSize: '0.75rem', letterSpacing: '2px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.55, marginBottom: '0.5rem', lineHeight: 1.9 }}>{dateStr}</p>
           <p style={{ fontSize: '0.75rem', color: template.primaryColor, opacity: 0.45, lineHeight: 1.9 }}>{venue}</p>
-          {!isPosterMode && (
-            <button onClick={() => scrollTo('rsvp')} style={{ marginTop: '2rem', padding: '0.8rem 2rem', background: template.primaryColor, color: '#fff', border: 'none', fontSize: '0.65rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', alignSelf: 'flex-start' }}>RSVP</button>
-          )}
+          <button onClick={() => scrollTo('rsvp')} style={{ marginTop: '2rem', padding: '0.8rem 2rem', background: template.primaryColor, color: '#fff', border: 'none', fontSize: '0.65rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', alignSelf: 'flex-start' }}>RSVP</button>
         </div>
         <div style={{ overflow: 'hidden' }}>
           <img src={cover} alt="Wedding" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
@@ -432,42 +419,36 @@ function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, pho
             <div style={{ fontFamily: template.fontTitle, fontSize: '1rem', color: template.primaryColor }}>{venue}</div>
           </div>
         </div>
-        <CalendarAndMap event={event} bride={bride} groom={groom} venue={venue} template={template} dateStr={dateStr} isPosterMode={isPosterMode} />
+        <CalendarAndMap event={event} bride={bride} groom={groom} venue={venue} template={template} dateStr={dateStr} />
       </section>
-      {!isPosterMode && (
-        <>
-          <section id="gallery" className="tpl-section-minimal" style={{ borderTop: `1px solid ${template.accentColor}` }}>
-            <span style={{ fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, display: 'block', marginBottom: '1rem' }}>Gallery</span>
-            <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '2rem' }}>Our Story</h2>
-            <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ aspectRatio: '1' }} />
-          </section>
-          <section id="rsvp" className="tpl-section-minimal" style={{ background: template.accentColor }}>
-            <div style={{ maxWidth: '460px', margin: '0 auto' }}>
-              <span style={{ fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, display: 'block', marginBottom: '1rem' }}>Response</span>
-              <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '0.5rem' }}>Will You Attend?</h2>
-              <p style={{ fontSize: '0.85rem', opacity: 0.55, marginBottom: '2rem' }}>Please respond by September 15, 2026.</p>
-              <RsvpForm event={event} previewMode={previewMode} primary={template.primaryColor} secondary={template.secondaryColor} />
-            </div>
-          </section>
-        </>
-      )}
+      <section id="gallery" className="tpl-section-minimal" style={{ borderTop: `1px solid ${template.accentColor}` }}>
+        <span style={{ fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, display: 'block', marginBottom: '1rem' }}>Gallery</span>
+        <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '2rem' }}>Our Story</h2>
+        <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ aspectRatio: '1' }} />
+      </section>
+      <section id="rsvp" className="tpl-section-minimal" style={{ background: template.accentColor }}>
+        <div style={{ maxWidth: '460px', margin: '0 auto' }}>
+          <span style={{ fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, display: 'block', marginBottom: '1rem' }}>Response</span>
+          <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '0.5rem' }}>Will You Attend?</h2>
+          <p style={{ fontSize: '0.85rem', opacity: 0.55, marginBottom: '2rem' }}>Please respond by September 15, 2026.</p>
+          <RsvpForm event={event} previewMode={previewMode} primary={template.primaryColor} secondary={template.secondaryColor} />
+        </div>
+      </section>
     </div>
   );
 }
 
 // ---- LAYOUT D: VINTAGE ----
-function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick, coverImage, isPosterMode }) {
+function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick, coverImage }) {
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   const cover = coverImage;
   return (
     <div style={{ fontFamily: template.fontBody, background: '#faf7ef', color: template.textColor, minHeight: '100vh', overflowX: 'hidden' }}>
-      {!isPosterMode && (
-        <nav style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', justifyContent: 'center', gap: '2.5rem', padding: '1.25rem', background: 'rgba(0,0,0,0.25)', backdropFilter: 'blur(3px)' }}>
-          {['home','details','gallery','rsvp'].map(id => (
-            <span key={id} onClick={() => scrollTo(id)} style={{ color: 'rgba(255,245,220,0.9)', fontSize: '0.6rem', fontWeight: '700', letterSpacing: '3.5px', textTransform: 'uppercase', cursor: 'pointer', fontFamily: template.fontTitle }}>{id}</span>
-          ))}
-        </nav>
-      )}
+      <nav style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', justifyContent: 'center', gap: '2.5rem', padding: '1.25rem', background: 'rgba(0,0,0,0.25)', backdropFilter: 'blur(3px)' }}>
+        {['home','details','gallery','rsvp'].map(id => (
+          <span key={id} onClick={() => scrollTo(id)} style={{ color: 'rgba(255,245,220,0.9)', fontSize: '0.6rem', fontWeight: '700', letterSpacing: '3.5px', textTransform: 'uppercase', cursor: 'pointer', fontFamily: template.fontTitle }}>{id}</span>
+        ))}
+      </nav>
       <header id="home" style={{ height: '92vh', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <img src={cover} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'sepia(0.45) brightness(0.6)', zIndex: 0 }} />
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(50,25,0,0.45)', zIndex: 1 }} />
@@ -481,9 +462,7 @@ function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos
             <div style={{ width: '60px', height: '1px', background: '#dca658', margin: '1rem auto', opacity: 0.6 }} />
             <span style={{ fontSize: '0.6rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,245,220,0.8)' }}>{dateStr}</span>
           </div>
-          {!isPosterMode && (
-            <button onClick={() => scrollTo('rsvp')} style={{ marginTop: '1.25rem', padding: '0.65rem 2rem', background: 'transparent', border: '1px solid #dca658', color: '#dca658', fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', fontFamily: template.fontTitle }}>Kindly Reply</button>
-          )}
+          <button onClick={() => scrollTo('rsvp')} style={{ marginTop: '1.25rem', padding: '0.65rem 2rem', background: 'transparent', border: '1px solid #dca658', color: '#dca658', fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', fontFamily: template.fontTitle }}>Kindly Reply</button>
         </div>
       </header>
       <section id="details" className="tpl-section-standard" style={{ textAlign: 'center', maxWidth: '650px', margin: '0 auto' }}>
@@ -493,33 +472,29 @@ function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos
           <div style={{ marginBottom: '1.5rem' }}><div style={{ fontSize: '0.55rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.secondaryColor, marginBottom: '0.4rem' }}>Date</div><div style={{ fontFamily: template.fontTitle, fontSize: '1rem', color: template.primaryColor }}>{dateStr}</div></div>
           <div style={{ marginBottom: '1.5rem' }}><div style={{ fontSize: '0.55rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.secondaryColor, marginBottom: '0.4rem' }}>Time</div><div style={{ fontFamily: template.fontTitle, fontSize: '1rem', color: template.primaryColor }}>{timeStr}</div></div>
           <div><div style={{ fontSize: '0.55rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.secondaryColor, marginBottom: '0.4rem' }}>Venue</div><div style={{ fontFamily: template.fontTitle, fontSize: '1rem', color: template.primaryColor, fontStyle: 'italic' }}>{venue}</div></div>
-          <CalendarAndMap event={event} bride={bride} groom={groom} venue={venue} template={template} dateStr={dateStr} isPosterMode={isPosterMode} />
+          <CalendarAndMap event={event} bride={bride} groom={groom} venue={venue} template={template} dateStr={dateStr} />
         </div>
         <div style={{ fontSize: '1.8rem', color: template.secondaryColor, marginTop: '2rem' }}>❦</div>
       </section>
-      {!isPosterMode && (
-        <>
-          <section id="gallery" className="tpl-section-standard" style={{ maxWidth: '900px', margin: '0 auto', borderTop: `1px solid ${template.accentColor}` }}>
-            <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-              <div style={{ fontSize: '1.8rem', color: template.secondaryColor, marginBottom: '0.5rem' }}>❧</div>
-              <h2 style={{ fontFamily: template.fontTitle, fontSize: '1.8rem', color: template.primaryColor, letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '400' }}>Our Memories</h2>
-            </div>
-            <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ border: `3px solid ${template.primaryColor}`, aspectRatio: '4/3', boxShadow: `4px 4px 0 ${template.secondaryColor}` }} imageStyle={{ filter: 'sepia(0.2)' }} />
-          </section>
-          <section id="rsvp" className="tpl-section-standard" style={{ background: '#fffdf4', borderTop: `1px solid ${template.accentColor}` }}>
-            <div style={{ maxWidth: '520px', margin: '0 auto' }}>
-              <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-                <div style={{ fontSize: '1.8rem', color: template.secondaryColor, marginBottom: '0.5rem' }}>❧</div>
-                <h2 style={{ fontFamily: template.fontTitle, fontSize: '1.8rem', color: template.primaryColor, letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '400', marginBottom: '0.5rem' }}>Kindly Reply</h2>
-                <p style={{ opacity: 0.6, fontSize: '0.85rem' }}>Please respond by September 15, 2026</p>
-              </div>
-              <div style={{ background: '#fff', border: `2px solid ${template.primaryColor}`, boxShadow: `5px 5px 0 ${template.secondaryColor}`, padding: '2rem 2.5rem' }}>
-                <RsvpForm event={event} previewMode={previewMode} primary={template.primaryColor} secondary={template.secondaryColor} />
-              </div>
-            </div>
-          </section>
-        </>
-      )}
+      <section id="gallery" className="tpl-section-standard" style={{ maxWidth: '900px', margin: '0 auto', borderTop: `1px solid ${template.accentColor}` }}>
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <div style={{ fontSize: '1.8rem', color: template.secondaryColor, marginBottom: '0.5rem' }}>❧</div>
+          <h2 style={{ fontFamily: template.fontTitle, fontSize: '1.8rem', color: template.primaryColor, letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '400' }}>Our Memories</h2>
+        </div>
+        <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ border: `3px solid ${template.primaryColor}`, aspectRatio: '4/3', boxShadow: `4px 4px 0 ${template.secondaryColor}` }} imageStyle={{ filter: 'sepia(0.2)' }} />
+      </section>
+      <section id="rsvp" className="tpl-section-standard" style={{ background: '#fffdf4', borderTop: `1px solid ${template.accentColor}` }}>
+        <div style={{ maxWidth: '520px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+            <div style={{ fontSize: '1.8rem', color: template.secondaryColor, marginBottom: '0.5rem' }}>❧</div>
+            <h2 style={{ fontFamily: template.fontTitle, fontSize: '1.8rem', color: template.primaryColor, letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '400', marginBottom: '0.5rem' }}>Kindly Reply</h2>
+            <p style={{ opacity: 0.6, fontSize: '0.85rem' }}>Please respond by September 15, 2026</p>
+          </div>
+          <div style={{ background: '#fff', border: `2px solid ${template.primaryColor}`, boxShadow: `5px 5px 0 ${template.secondaryColor}`, padding: '2rem 2.5rem' }}>
+            <RsvpForm event={event} previewMode={previewMode} primary={template.primaryColor} secondary={template.secondaryColor} />
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
@@ -593,8 +568,10 @@ function ImageModal({ photos, currentIndex, onClose, setCarouselIndex }) {
 }
 
 // ---- MAIN EXPORT ----
-export default function TemplateRenderer({ event, template, photos = [], previewMode = false, isPosterMode = false }) {
+export default function TemplateRenderer({ event, template, photos = [], previewMode = false }) {
   const [carouselIndex, setCarouselIndex] = useState(null);
+  const posterRef = useRef(null);
+  const [isGeneratingPoster, setIsGeneratingPoster] = useState(false);
 
   if (!event || !template) return <div style={{ padding: '4rem', textAlign: 'center', color: '#7c2230', fontFamily: 'serif' }}>Loading...</div>;
   const bride = event.bride_name || 'Alice';
@@ -611,7 +588,30 @@ export default function TemplateRenderer({ event, template, photos = [], preview
     setCarouselIndex(idx);
   };
   
-  const props = { bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick: handlePhotoClick, coverImage, isPosterMode };
+  const handleDownloadPoster = async () => {
+    if (!posterRef.current) return;
+    setIsGeneratingPoster(true);
+    try {
+      // Brief delay to ensure fonts/images are ready
+      await new Promise(r => setTimeout(r, 150)); 
+      const dataUrl = await htmlToImage.toJpeg(posterRef.current, {
+        quality: 0.95,
+        pixelRatio: 2,
+        backgroundColor: template.bgColor || '#ffffff'
+      });
+      const link = document.createElement('a');
+      link.download = `Wedding-Poster-${bride}-${groom}.jpg`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('Failed to generate poster', err);
+      alert('Failed to generate poster. Please try again.');
+    } finally {
+      setIsGeneratingPoster(false);
+    }
+  };
+
+  const props = { bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick: handlePhotoClick, coverImage };
   const cat = (template.category || template.layout || 'royal').toLowerCase();
   
   return (
@@ -621,7 +621,75 @@ export default function TemplateRenderer({ event, template, photos = [], preview
        cat === 'vintage' ? <VintageLayout {...props} /> :
        <RoyalLayout {...props} />}
        
-      {!isPosterMode && carouselIndex !== null && <ImageModal photos={photos} currentIndex={carouselIndex} setCarouselIndex={setCarouselIndex} onClose={() => setCarouselIndex(null)} />}
+      {carouselIndex !== null && <ImageModal photos={photos} currentIndex={carouselIndex} setCarouselIndex={setCarouselIndex} onClose={() => setCarouselIndex(null)} />}
+
+      {/* Floating Action Button for Download Poster */}
+      {!previewMode && (
+        <button 
+          onClick={handleDownloadPoster}
+          disabled={isGeneratingPoster}
+          style={{
+            position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 9998,
+            background: template.primaryColor || '#000', color: '#fff', border: 'none',
+            borderRadius: '50px', padding: '0.9rem 1.5rem', fontSize: '0.85rem',
+            fontWeight: '700', letterSpacing: '1px', textTransform: 'uppercase',
+            display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: isGeneratingPoster ? 'wait' : 'pointer',
+            boxShadow: '0 10px 25px rgba(0,0,0,0.25)', transition: 'all 0.3s',
+            opacity: isGeneratingPoster ? 0.7 : 1
+          }}
+          onMouseEnter={e => {if(!isGeneratingPoster) e.currentTarget.style.transform = 'translateY(-4px)';}}
+          onMouseLeave={e => {if(!isGeneratingPoster) e.currentTarget.style.transform = 'translateY(0)';}}
+        >
+          <ImageIcon size={18} /> {isGeneratingPoster ? 'Generating...' : 'Download Poster'}
+        </button>
+      )}
+
+      {/* Off-screen Poster Generation Node */}
+      <div style={{ position: 'fixed', left: '-9999px', top: '-9999px', zIndex: -9999 }}>
+        <div ref={posterRef} style={{ 
+          width: '800px', height: '1131px', // A4 aspect ratio (approx)
+          background: template.bgColor || '#fff', color: template.textColor || '#000',
+          fontFamily: template.fontBody || 'sans-serif', position: 'relative',
+          display: 'flex', flexDirection: 'column'
+        }}>
+          {/* Poster Hero Half */}
+          <div style={{ height: '55%', backgroundImage: `url(${coverImage})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
+             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%)' }} />
+             <div style={{ position: 'absolute', bottom: '2.5rem', left: 0, right: 0, textAlign: 'center', color: '#fff' }}>
+                <div style={{ fontFamily: template.fontNames || 'serif', fontSize: '5rem', textShadow: '0 4px 15px rgba(0,0,0,0.6)', lineHeight: 1.1 }}>{bride} <span style={{fontSize:'3rem', fontFamily: template.fontTitle || 'serif'}}>&amp;</span> {groom}</div>
+                <div style={{ fontSize: '1.2rem', letterSpacing: '6px', textTransform: 'uppercase', marginTop: '1.2rem', textShadow: '0 2px 5px rgba(0,0,0,0.8)', fontWeight: '600' }}>Are Getting Married</div>
+             </div>
+          </div>
+          {/* Poster Details Half */}
+          <div style={{ flex: 1, padding: '2rem', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', border: `8px solid ${template.secondaryColor || '#ccc'}`, background: template.accentColor || '#fff', padding: '2rem' }}>
+              <div style={{ fontFamily: template.fontTitle || 'serif', fontSize: '2.5rem', color: template.primaryColor || '#000', marginBottom: '2.5rem' }}>Join Us for the Celebration</div>
+              
+              <div style={{ display: 'flex', gap: '3rem', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ flex: 1, textAlign: 'right' }}>
+                  <div style={{ fontSize: '0.9rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.secondaryColor || '#666', fontWeight: '800', marginBottom: '0.5rem' }}>DATE &amp; TIME</div>
+                  <div style={{ fontFamily: template.fontTitle || 'serif', fontSize: '1.6rem', color: template.primaryColor || '#000' }}>{dateStr}</div>
+                  <div style={{ fontSize: '1.2rem', color: template.primaryColor || '#000', opacity: 0.8, marginTop: '0.25rem' }}>at {timeStr}</div>
+                  
+                  <div style={{ width: '100%', height: '1px', background: template.secondaryColor || '#ccc', opacity: 0.5, margin: '1.5rem 0' }} />
+                  
+                  <div style={{ fontSize: '0.9rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.secondaryColor || '#666', fontWeight: '800', marginBottom: '0.5rem' }}>VENUE</div>
+                  <div style={{ fontFamily: template.fontTitle || 'serif', fontSize: '1.4rem', color: template.primaryColor || '#000', fontStyle: 'italic', lineHeight: 1.4 }}>{venue}</div>
+                </div>
+                
+                <div style={{ width: '2px', height: '180px', background: template.secondaryColor || '#ccc', opacity: 0.4 }} />
+                
+                <div style={{ flex: 1, textAlign: 'left', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                   <div style={{ fontSize: '0.85rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.primaryColor || '#000', fontWeight: '800', marginBottom: '1.25rem' }}>Scan for Maps</div>
+                   <div style={{ background: '#fff', padding: '12px', borderRadius: '12px', boxShadow: '0 8px 25px rgba(0,0,0,0.1)' }}>
+                     <QRCodeCanvas value={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((event.venue_lat && event.venue_lng) ? `${event.venue_lat},${event.venue_lng}` : venue)}`} size={140} level="H" />
+                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

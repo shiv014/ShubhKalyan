@@ -378,10 +378,9 @@ export default function LandingPage() {
               </button>
             </div>
 
-            {/* Template Mockup Preview */}
-            <div style={{ padding: '2rem', display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
-              {/* Mini card */}
-              <div style={{ width: '160px', height: '220px', flexShrink: 0, borderRadius: '10px', overflow: 'hidden', backgroundImage: `url(${selectedPreviewTpl.bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative', boxShadow: 'var(--shadow-md)' }}>
+            {/* Modal Body */}
+            <div className="modal-responsive">
+              <div style={{ flexShrink: 0, width: '120px', height: '180px', borderRadius: '12px', overflow: 'hidden', backgroundImage: `url(${selectedPreviewTpl.bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
                 <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)' }} />
                 <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.75rem' }}>
                   <div style={{ border: `1.5px solid ${selectedPreviewTpl.secondaryColor}`, padding: '0.75rem', textAlign: 'center', width: '100%' }}>

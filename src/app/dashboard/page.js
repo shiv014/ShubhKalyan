@@ -530,7 +530,7 @@ function DashboardPortal() {
               <p>Enter details of your special day. Updates reflect instantly on your live preview on the right.</p>
 
               <form onSubmit={saveDetails} className="card" style={{ marginTop: '1.5rem' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                <div className="grid-2-col">
                   <div className="form-group">
                     <label className="form-label" htmlFor="bride">Bride's Full Name</label>
                     <input 

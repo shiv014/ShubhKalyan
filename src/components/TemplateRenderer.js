@@ -127,7 +127,7 @@ function CalendarAndMap({ event, bride, groom, venue, template, dateStr }) {
 
   return (
     <div style={{ marginTop: '2rem' }}>
-      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
+      <div className="action-buttons-container">
         <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery || '')}`} target="_blank" rel="noopener noreferrer" style={{ padding: '0.75rem 1.5rem', background: '#fff', border: `1px solid ${template.primaryColor}`, color: template.primaryColor, borderRadius: '50px', textDecoration: 'none', fontSize: '0.75rem', fontWeight: '700', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.3s', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }} onMouseEnter={e=>{e.target.style.background=template.primaryColor;e.target.style.color='#fff'}} onMouseLeave={e=>{e.target.style.background='#fff';e.target.style.color=template.primaryColor}}>
           <MapPin size={16} /> Open in Maps
         </a>
@@ -272,7 +272,7 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
         <div style={{ position: 'relative', zIndex: 2, border: `2px solid ${template.secondaryColor}`, outline: `4px double ${template.secondaryColor}`, outlineOffset: '7px', padding: '2.5rem 3.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', maxWidth: '440px', margin: '0 1rem' }}>
           <span style={{ fontSize: '0.55rem', letterSpacing: '5px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700' }}>✦ Cordially Invited ✦</span>
           <div style={{ width: '35px', height: '1px', background: template.secondaryColor, opacity: 0.7 }} />
-          <div style={{ fontFamily: template.fontNames, fontSize: '3.2rem', color: '#fff', lineHeight: 1.1, textShadow: '0 2px 12px rgba(0,0,0,0.5)' }}>{bride} <span style={{ fontFamily: template.fontTitle, fontSize: '1.2rem', fontWeight: '400' }}>&amp;</span> {groom}</div>
+          <div style={{ fontFamily: template.fontNames, fontSize: 'clamp(2.2rem, 8vw, 3.2rem)', color: '#fff', lineHeight: 1.1, textShadow: '0 2px 12px rgba(0,0,0,0.5)' }}>{bride} <span style={{ fontFamily: template.fontTitle, fontSize: '1.2rem', fontWeight: '400' }}>&amp;</span> {groom}</div>
           <div style={{ width: '35px', height: '1px', background: template.secondaryColor, opacity: 0.7 }} />
           <span style={{ fontSize: '0.6rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.9)', fontWeight: '600' }}>{dateStr}</span>
           <button onClick={() => scrollTo('rsvp')} style={{ marginTop: '0.5rem', padding: '0.6rem 2rem', background: 'transparent', border: `1px solid ${template.secondaryColor}`, color: template.secondaryColor, fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', transition: 'all 0.3s' }}
@@ -337,7 +337,7 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
         <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to bottom,rgba(0,0,0,0.4),rgba(0,0,0,0.5))` }} />
         <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', padding: '2rem' }}>
           <span style={{ display: 'block', fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700', marginBottom: '1rem', textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>❀ We Are Getting Married ❀</span>
-          <div style={{ fontFamily: template.fontNames, fontSize: '3.5rem', color: '#fff', textShadow: '0 3px 15px rgba(0,0,0,0.4)', lineHeight: 1.15, margin: '0.5rem 0' }}>{bride} <span style={{ fontFamily: template.fontTitle, fontSize: '1.6rem' }}>&amp;</span> {groom}</div>
+          <div style={{ fontFamily: template.fontNames, fontSize: 'clamp(2.5rem, 9vw, 3.5rem)', color: '#fff', textShadow: '0 3px 15px rgba(0,0,0,0.4)', lineHeight: 1.15, margin: '0.5rem 0' }}>{bride} <span style={{ fontFamily: template.fontTitle, fontSize: 'clamp(1.2rem, 4vw, 1.6rem)' }}>&amp;</span> {groom}</div>
           <div style={{ width: '50px', height: '2px', background: template.secondaryColor, margin: '1rem auto', borderRadius: '2px', opacity: 0.85 }} />
           <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.75rem', letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: '600' }}>{dateStr}</p>
           <button onClick={() => scrollTo('rsvp')} style={{ marginTop: '1.5rem', padding: '0.7rem 2rem', background: template.primaryColor, border: 'none', borderRadius: '50px', color: '#fff', fontSize: '0.7rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer' }}>RSVP Now</button>
@@ -390,10 +390,10 @@ function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, pho
           ))}
         </div>
       </nav>
-      <header id="home" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '82vh' }}>
+      <header id="home" className="tr-hero-grid" style={{ minHeight: '82vh' }}>
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '4rem 3rem' }}>
           <span style={{ fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, display: 'block', marginBottom: '1.5rem' }}>Save the Date</span>
-          <div style={{ fontFamily: template.fontNames, fontSize: '2.8rem', color: template.primaryColor, lineHeight: 1.1, marginBottom: '1.5rem' }}>{bride}<br /><span style={{ fontSize: '1.4rem' }}>&amp;</span><br />{groom}</div>
+          <div style={{ fontFamily: template.fontNames, fontSize: 'clamp(2.2rem, 7vw, 2.8rem)', color: template.primaryColor, lineHeight: 1.1, marginBottom: '1.5rem' }}>{bride}<br /><span style={{ fontSize: 'clamp(1rem, 3.5vw, 1.4rem)' }}>&amp;</span><br />{groom}</div>
           <div style={{ width: '40px', height: '2px', background: template.primaryColor, marginBottom: '1.5rem' }} />
           <p style={{ fontSize: '0.75rem', letterSpacing: '2px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.55, marginBottom: '0.5rem', lineHeight: 1.9 }}>{dateStr}</p>
           <p style={{ fontSize: '0.75rem', color: template.primaryColor, opacity: 0.45, lineHeight: 1.9 }}>{venue}</p>
@@ -406,7 +406,7 @@ function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, pho
       <section id="details" style={{ padding: '5rem 3rem', maxWidth: '700px' }}>
         <span style={{ fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, display: 'block', marginBottom: '1rem' }}>Details</span>
         <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '2rem' }}>Ceremony &amp; Reception</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+        <div className="tr-details-grid">
           <div style={{ borderTop: `2px solid ${template.primaryColor}`, paddingTop: '1.5rem' }}>
             <div style={{ fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, marginBottom: '0.5rem' }}>When</div>
             <div style={{ fontFamily: template.fontTitle, fontSize: '1rem', color: template.primaryColor, marginBottom: '0.25rem' }}>{dateStr}</div>
@@ -454,9 +454,9 @@ function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos
           <div style={{ border: '3px double rgba(220,180,100,0.75)', padding: '2rem', borderRadius: '2px' }}>
             <span style={{ display: 'block', fontSize: '0.5rem', letterSpacing: '5px', textTransform: 'uppercase', color: '#dca658', marginBottom: '1rem' }}>— Est. 2026 —</span>
             <div style={{ fontFamily: template.fontTitle, fontSize: '0.9rem', letterSpacing: '5px', textTransform: 'uppercase', color: 'rgba(255,245,220,0.8)', marginBottom: '0.75rem' }}>The Wedding of</div>
-            <div style={{ fontFamily: template.fontNames, fontSize: '2.8rem', color: '#fff', textShadow: '0 2px 8px rgba(0,0,0,0.6)', lineHeight: 1.1, marginBottom: '0.25rem' }}>{bride}</div>
+            <div style={{ fontFamily: template.fontNames, fontSize: 'clamp(2.2rem, 8vw, 2.8rem)', color: '#fff', textShadow: '0 2px 8px rgba(0,0,0,0.6)', lineHeight: 1.1, marginBottom: '0.25rem' }}>{bride}</div>
             <div style={{ color: '#dca658', fontSize: '0.85rem', fontFamily: template.fontTitle, letterSpacing: '3px', margin: '0.25rem 0' }}>AND</div>
-            <div style={{ fontFamily: template.fontNames, fontSize: '2.8rem', color: '#fff', textShadow: '0 2px 8px rgba(0,0,0,0.6)', lineHeight: 1.1, marginTop: '0.25rem' }}>{groom}</div>
+            <div style={{ fontFamily: template.fontNames, fontSize: 'clamp(2.2rem, 8vw, 2.8rem)', color: '#fff', textShadow: '0 2px 8px rgba(0,0,0,0.6)', lineHeight: 1.1, marginTop: '0.25rem' }}>{groom}</div>
             <div style={{ width: '60px', height: '1px', background: '#dca658', margin: '1rem auto', opacity: 0.6 }} />
             <span style={{ fontSize: '0.6rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,245,220,0.8)' }}>{dateStr}</span>
           </div>

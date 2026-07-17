@@ -558,6 +558,23 @@ function DashboardPortal() {
                     placeholder="e.g. Grand Imperial Ballroom, Mumbai"
                     required
                   />
+                  {venue && (
+                    <div style={{ marginTop: '1rem', width: '100%', height: '250px', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border-color)', position: 'relative' }}>
+                      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '0.4rem 0.8rem', background: 'rgba(255,255,255,0.9)', fontSize: '0.75rem', fontWeight: 'bold', borderBottom: '1px solid var(--border-color)', zIndex: 10, display: 'flex', justifyContent: 'space-between', backdropFilter: 'blur(4px)' }}>
+                        <span>📍 Live Map Preview</span>
+                        <span style={{ color: 'var(--text-muted)', fontWeight: 'normal' }}>Updates automatically</span>
+                      </div>
+                      <iframe 
+                        src={`https://www.google.com/maps?q=${encodeURIComponent(venue)}&output=embed`} 
+                        width="100%" 
+                        height="100%" 
+                        style={{ border: 0, paddingTop: '30px', boxSizing: 'content-box' }} 
+                        allowFullScreen="" 
+                        loading="lazy" 
+                        referrerPolicy="no-referrer-when-downgrade"
+                      ></iframe>
+                    </div>
+                  )}
                 </div>
 
                 <button 

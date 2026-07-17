@@ -1,6 +1,12 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
+
+const MapViewer = dynamic(() => import('@/components/MapViewer'), {
+  ssr: false,
+  loading: () => <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f5f5', color: '#666' }}>Loading Map...</div>
+});
 
 const FALLBACK_HERO = 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80';
 
@@ -133,8 +139,8 @@ function CalendarAndMap({ event, bride, groom, venue, template, dateStr }) {
       </div>
       
       {mapQuery && (
-        <div style={{ width: '100%', height: '350px', borderRadius: '8px', overflow: 'hidden', border: `2px solid ${template.secondaryColor || '#ccc'}`, boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
-          <iframe src={`https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed`} width="100%" height="100%" style={{ border: 0 }} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+        <div style={{ width: '100%', height: '350px', borderRadius: '8px', overflow: 'hidden', border: `2px solid ${template.secondaryColor || '#ccc'}`, boxShadow: '0 10px 30px rgba(0,0,0,0.1)', position: 'relative' }}>
+          <MapViewer position={(event.venue_lat && event.venue_lng) ? [parseFloat(event.venue_lat), parseFloat(event.venue_lng)] : null} />
         </div>
       )}
     </div>

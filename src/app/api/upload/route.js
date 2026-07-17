@@ -21,11 +21,6 @@ async function uploadToCloudinary(buffer, mimeType, folder = 'shubhkalyan') {
   return result;
 }
 
-// Tell Next.js not to parse the body — we handle it via formData()
-export const config = {
-  api: { bodyParser: false },
-};
-
 // Handle photo upload
 export async function POST(req) {
   try {

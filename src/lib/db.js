@@ -54,9 +54,17 @@ async function ensureTables(sql) {
       file_path TEXT NOT NULL,
       public_id TEXT,
       caption TEXT,
+      is_cover INTEGER DEFAULT 0,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `;
+
+  try {
+    // Add column if it doesn't exist for existing deployments
+    await sql`ALTER TABLE photos ADD COLUMN IF NOT EXISTS is_cover INTEGER DEFAULT 0`;
+  } catch (e) {
+    // Ignore error if already exists or syntax not supported
+  }
 
   await sql`
     CREATE TABLE IF NOT EXISTS rsvps (

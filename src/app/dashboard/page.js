@@ -237,6 +237,25 @@ function DashboardPortal() {
     }
   };
 
+  // 4b. Set Cover Photo
+  const handleSetCover = async (photoId) => {
+    try {
+      const res = await fetch(`/api/upload/cover`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ photoId })
+      });
+      if (res.ok) {
+        setPhotos(photos.map(p => ({ ...p, is_cover: p.id === photoId ? 1 : 0 })));
+        showToast('success', 'Cover photo updated!');
+      } else {
+        showToast('danger', 'Failed to update cover photo');
+      }
+    } catch (err) {
+      showToast('danger', 'Error updating cover photo');
+    }
+  };
+
   // 5. Claim/Update URL
   const handleSaveUrl = async (e) => {
     e.preventDefault();
@@ -681,6 +700,13 @@ function DashboardPortal() {
                     <img src={photo.file_path} alt={photo.caption} className={styles.photoThumb} />
                     <button className={styles.photoDeleteBtn} onClick={() => handlePhotoDelete(photo.id)} title="Delete Photo">
                       ×
+                    </button>
+                    <button 
+                      onClick={() => handleSetCover(photo.id)} 
+                      style={{ position: 'absolute', top: '8px', left: '8px', background: photo.is_cover ? 'var(--color-primary)' : 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '4px', padding: '0.3rem 0.6rem', fontSize: '0.75rem', cursor: 'pointer', zIndex: 10, fontWeight: 'bold' }}
+                      title="Set as Main Cover Photo"
+                    >
+                      {photo.is_cover ? '★ Cover' : 'Set Cover'}
                     </button>
                     {photo.caption && <div className={styles.photoCaption}>{photo.caption}</div>}
                   </div>

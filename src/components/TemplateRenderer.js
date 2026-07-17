@@ -85,9 +85,9 @@ function RsvpForm({ event, previewMode, primary, secondary }) {
 }
 
 // ---- LAYOUT A: ROYAL ----
-function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick }) {
+function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick, coverImage }) {
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-  const cover = photos.length > 0 ? photos[0].file_path : (template.bgImage || FALLBACK_HERO);
+  const cover = coverImage;
   return (
     <div style={{ fontFamily: template.fontBody, background: template.bgColor, color: template.textColor, minHeight: '100vh', overflowX: 'hidden' }}>
       {/* Nav */}
@@ -165,9 +165,9 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
 }
 
 // ---- LAYOUT B: FLORAL ----
-function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick }) {
+function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick, coverImage }) {
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-  const cover = photos.length > 0 ? photos[0].file_path : (template.bgImage || FALLBACK_HERO);
+  const cover = coverImage;
   return (
     <div style={{ fontFamily: template.fontBody, background: template.bgColor, color: template.textColor, minHeight: '100vh', overflowX: 'hidden' }}>
       <nav style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', justifyContent: 'center', gap: '2.5rem', padding: '1.25rem' }}>
@@ -228,9 +228,9 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
 }
 
 // ---- LAYOUT C: MINIMALIST ----
-function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick }) {
+function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick, coverImage }) {
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-  const cover = photos.length > 0 ? photos[0].file_path : (template.bgImage || FALLBACK_HERO);
+  const cover = coverImage;
   return (
     <div style={{ fontFamily: template.fontBody, background: '#fff', color: template.textColor, minHeight: '100vh', overflowX: 'hidden' }}>
       <nav style={{ borderBottom: `1px solid ${template.accentColor}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', position: 'sticky', top: 0, background: '#fff', zIndex: 100 }}>
@@ -297,9 +297,9 @@ function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, pho
 }
 
 // ---- LAYOUT D: VINTAGE ----
-function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick }) {
+function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick, coverImage }) {
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-  const cover = photos.length > 0 ? photos[0].file_path : (template.bgImage || FALLBACK_HERO);
+  const cover = coverImage;
   return (
     <div style={{ fontFamily: template.fontBody, background: '#faf7ef', color: template.textColor, minHeight: '100vh', overflowX: 'hidden' }}>
       <nav style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', justifyContent: 'center', gap: '2.5rem', padding: '1.25rem', background: 'rgba(0,0,0,0.25)', backdropFilter: 'blur(3px)' }}>
@@ -414,7 +414,11 @@ export default function TemplateRenderer({ event, template, photos = [], preview
   const dateStr = formatDate(event.event_date);
   const timeStr = formatTime(event.event_date);
   const venue = event.venue || 'Grand Palace Ballroom, Mumbai';
-  const props = { bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick: setSelectedPhoto };
+  
+  const coverPhoto = photos.find(p => p.is_cover === 1) || (photos.length > 0 ? photos[0] : null);
+  const coverImage = coverPhoto ? coverPhoto.file_path : (template.bgImage || FALLBACK_HERO);
+  
+  const props = { bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick: setSelectedPhoto, coverImage };
   const cat = (template.category || template.layout || 'royal').toLowerCase();
   
   return (

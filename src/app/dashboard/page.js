@@ -425,8 +425,8 @@ function DashboardPortal() {
       <nav className="navbar">
         <div className="container navbar-container">
           <Link href="/" className="logo" style={{ display: 'flex', alignItems: 'center', whiteSpace: 'nowrap', textDecoration: 'none' }}>
-            <img src="/logo.jpg" alt="ShubhKalyan Logo" style={{ height: '40px', width: 'auto', borderRadius: '4px' }} />
-            <span className="hide-on-mobile" style={{ fontSize: '0.5em', opacity: 0.6, marginLeft: '0.75rem', color: 'var(--color-primary)', fontWeight: '500', fontFamily: 'var(--font-sans)', letterSpacing: '1px' }}>| HOST PORTAL</span>
+            <img src="/logo.png" alt="ShubhKalyan Logo" style={{ height: '48px', width: 'auto', objectFit: 'contain' }} />
+            <span className="hide-on-mobile" style={{ fontSize: '0.55em', opacity: 0.6, marginLeft: '0.75rem', color: 'var(--color-primary)', fontWeight: '500', fontFamily: 'var(--font-sans)', letterSpacing: '1px' }}>| HOST PORTAL</span>
           </Link>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>

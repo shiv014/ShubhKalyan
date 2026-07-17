@@ -282,7 +282,7 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
       {/* Hero */}
       <header id="home" style={{ height: '92vh', position: 'relative', backgroundImage: `url(${cover})`, backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.25) 50%,rgba(0,0,0,0.65) 100%)' }} />
-        <div style={{ position: 'relative', zIndex: 2, border: `2px solid ${template.secondaryColor}`, outline: `4px double ${template.secondaryColor}`, outlineOffset: '7px', padding: '2.5rem 3.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', maxWidth: '440px', margin: '0 1rem' }}>
+        <div style={{ position: 'relative', zIndex: 2, padding: '2.5rem 3.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', maxWidth: '440px', margin: '0 1rem' }}>
           <span style={{ fontSize: '0.55rem', letterSpacing: '5px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700' }}>✦ Cordially Invited ✦</span>
           <div style={{ width: '35px', height: '1px', background: template.secondaryColor, opacity: 0.7 }} />
           <div style={{ fontFamily: template.fontNames, fontSize: 'clamp(2.2rem, 8vw, 3.2rem)', color: '#fff', lineHeight: 1.1, textShadow: '0 2px 12px rgba(0,0,0,0.5)' }}>{bride} <span style={{ fontFamily: template.fontTitle, fontSize: '1.2rem', fontWeight: '400' }}>&amp;</span> {groom}</div>
@@ -579,7 +579,7 @@ export default function TemplateRenderer({ event, template, photos = [], preview
         />
       )}
 
-      <AudioPlayer />
+      <AudioPlayer src={event?.audio_path || "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=piano-moment-9835.mp3"} />
 
       {/* Floating Action Button for Download Poster */}
       {!previewMode && (

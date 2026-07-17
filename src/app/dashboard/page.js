@@ -4,7 +4,8 @@ import { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { ExternalLink, CheckCircle, XCircle, Edit3, Paintbrush, Image as ImageIcon, Mail, Link as LinkIcon, MapPin, UploadCloud, Star, Copy, RefreshCw, ChevronDown } from 'lucide-react';
+import confetti from 'canvas-confetti';
+import { ExternalLink, CheckCircle, XCircle, Edit3, Paintbrush, Image as ImageIcon, Mail, Link as LinkIcon, MapPin, UploadCloud, Star, Copy, RefreshCw, ChevronDown, MailOpen, ImageOff } from 'lucide-react';
 import { getTemplates, getTemplateById } from '@/lib/templates';
 import TemplateRenderer from '@/components/TemplateRenderer';
 import styles from './dashboard.module.css';
@@ -48,6 +49,7 @@ function DashboardPortal() {
   const [venue, setVenue] = useState('');
   const [venueLat, setVenueLat] = useState(null);
   const [venueLng, setVenueLng] = useState(null);
+  const [audioPath, setAudioPath] = useState(null);
   const [templateId, setTemplateId] = useState('tpl-1');
   const [slug, setSlug] = useState('');
 
@@ -56,6 +58,7 @@ function DashboardPortal() {
   const [savingTpl, setSavingTpl] = useState(false);
   const [savingUrl, setSavingUrl] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [uploadingAudio, setUploadingAudio] = useState(false);
   
   const [alert, setAlert] = useState(null); // { type: 'success'|'danger', message: '' }
 
@@ -97,6 +100,7 @@ function DashboardPortal() {
           setVenue(data.event.venue || '');
           setVenueLat(data.event.venue_lat ? parseFloat(data.event.venue_lat) : null);
           setVenueLng(data.event.venue_lng ? parseFloat(data.event.venue_lng) : null);
+          setAudioPath(data.event.audio_path || null);
           setSlug(data.event.slug || '');
 
           // Read template param from ref (captured once at mount, never causes re-runs)
@@ -113,7 +117,8 @@ function DashboardPortal() {
                 eventDate: data.event.event_date || '',
                 venue: data.event.venue || '',
                 venueLat: data.event.venue_lat || null,
-                venueLng: data.event.venue_lng || null
+                venueLng: data.event.venue_lng || null,
+                audioPath: data.event.audio_path || null
               })
             });
           } else {
@@ -171,7 +176,8 @@ function DashboardPortal() {
           eventDate,
           venue,
           venueLat,
-          venueLng
+          venueLng,
+          audioPath
         })
       });
       const data = await res.json();
@@ -202,7 +208,10 @@ function DashboardPortal() {
           brideName,
           groomName,
           eventDate,
-          venue
+          venue,
+          venueLat,
+          venueLng,
+          audioPath
         })
       });
       const data = await res.json();
@@ -250,6 +259,34 @@ function DashboardPortal() {
       showToast('danger', 'Upload failed');
     } finally {
       setUploadingPhoto(false);
+    }
+  };
+
+  // 3b. Upload Audio
+  const handleAudioUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploadingAudio(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload/audio', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setAudioPath(data.fileUrl);
+        showToast('success', 'Background music uploaded successfully! Save to apply.');
+      } else {
+        showToast('danger', data.error || 'Failed to upload audio');
+      }
+    } catch (err) {
+      showToast('danger', 'Upload failed');
+    } finally {
+      setUploadingAudio(false);
     }
   };
 
@@ -333,6 +370,12 @@ function DashboardPortal() {
         setEvent({ ...event, slug: data.slug, status: data.status });
         setSlug(data.slug || '');
         showToast('success', data.message);
+        confetti({
+          particleCount: 150,
+          spread: 80,
+          origin: { y: 0.6 },
+          colors: ['#cfa830', '#7c2230', '#ffffff']
+        });
       } else {
         showToast('danger', data.error || 'Failed to claim URL');
       }
@@ -533,7 +576,7 @@ function DashboardPortal() {
 
             <div style={{ marginTop: 'auto', padding: '1rem 0.5rem', borderTop: '1px solid var(--border-color)', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
               Status: {event?.status === 'published' ? (
-                <span style={{ color: 'var(--color-success)', fontWeight: 'bold' }}>● Published (Live)</span>
+                <span style={{ color: 'var(--color-success)', fontWeight: 'bold' }}><span className={styles.liveDot}></span>Published (Live)</span>
               ) : (
                 <span style={{ color: 'var(--text-muted)' }}>● Draft (Offline)</span>
               )}
@@ -591,6 +634,24 @@ function DashboardPortal() {
                     onChange={(e) => setEventDate(e.target.value)}
                     required
                   />
+                </div>
+
+                <div className="form-group" style={{ marginTop: '0.5rem' }}>
+                  <label className="form-label">Background Music (Optional)</label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <label className="btn btn-secondary" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#f5f5f5', border: '1px solid #ddd', padding: '0.6rem 1rem', borderRadius: '4px' }}>
+                      <Music size={16} /> {uploadingAudio ? 'Uploading...' : 'Upload MP3 / WAV'}
+                      <input type="file" accept="audio/*" onChange={handleAudioUpload} style={{ display: 'none' }} disabled={uploadingAudio} />
+                    </label>
+                    {audioPath ? (
+                      <span style={{ fontSize: '0.85rem', color: 'var(--color-success)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <Check size={14} /> Custom music loaded
+                        <button type="button" onClick={() => setAudioPath(null)} style={{ background: 'none', border: 'none', color: '#dc3545', cursor: 'pointer', marginLeft: '0.5rem', textDecoration: 'underline' }}>Remove</button>
+                      </span>
+                    ) : (
+                      <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Theme default will play if no music is uploaded</span>
+                    )}
+                  </div>
                 </div>
 
                 <div className="form-group" style={{ marginTop: '0.5rem' }}>
@@ -853,8 +914,12 @@ function DashboardPortal() {
                   </div>
                 ))}
                 {photos.length === 0 && (
-                  <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '3rem', border: '1px dashed var(--border-color)', borderRadius: '8px', color: 'var(--text-muted)' }}>
-                    No photos uploaded yet. Select images above to populate your gallery.
+                  <div style={{ gridColumn: '1/-1' }} className={styles.emptyState}>
+                    <ImageOff size={48} className={styles.emptyStateIcon} />
+                    <h4 className={styles.emptyStateTitle}>Your Gallery is Empty</h4>
+                    <p className={styles.emptyStateText}>
+                      Start uploading beautiful moments of your journey to share with your loved ones. They will be beautifully arranged on your live website.
+                    </p>
                   </div>
                 )}
               </div>
@@ -931,8 +996,14 @@ function DashboardPortal() {
                     ))}
                     {rsvps.length === 0 && (
                       <tr>
-                        <td colSpan="6" style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
-                          No RSVPs received yet. Once guests fill the RSVP on your live wedding page, they will show here.
+                        <td colSpan="6" style={{ padding: 0 }}>
+                          <div className={styles.emptyState} style={{ border: 'none', margin: '2rem 0' }}>
+                            <MailOpen size={48} className={styles.emptyStateIcon} />
+                            <h4 className={styles.emptyStateTitle}>No Responses Yet</h4>
+                            <p className={styles.emptyStateText}>
+                              Once you share your live wedding URL, guests will be able to RSVP directly. Their responses and warm wishes will magically appear right here.
+                            </p>
+                          </div>
                         </td>
                       </tr>
                     )}

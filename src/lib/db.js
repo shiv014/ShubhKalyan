@@ -44,6 +44,7 @@ async function ensureTables(sql) {
       venue TEXT,
       venue_lat TEXT,
       venue_lng TEXT,
+      audio_path TEXT,
       status TEXT DEFAULT 'draft',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
@@ -52,6 +53,7 @@ async function ensureTables(sql) {
   // Fallback for existing databases
   try { await sql`ALTER TABLE events ADD COLUMN venue_lat TEXT`; } catch (e) {}
   try { await sql`ALTER TABLE events ADD COLUMN venue_lng TEXT`; } catch (e) {}
+  try { await sql`ALTER TABLE events ADD COLUMN audio_path TEXT`; } catch (e) {}
 
   await sql`
     CREATE TABLE IF NOT EXISTS photos (

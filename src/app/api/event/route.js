@@ -47,7 +47,7 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { templateId, brideName, groomName, eventDate, venue, venueLat, venueLng } = await req.json();
+    const { templateId, brideName, groomName, eventDate, venue, venueLat, venueLng, audioPath } = await req.json();
 
     const db = await getDb();
 
@@ -59,8 +59,8 @@ export async function POST(req) {
 
     // Update details
     await db.run(
-      'UPDATE events SET template_id = ?, bride_name = ?, groom_name = ?, event_date = ?, venue = ?, venue_lat = ?, venue_lng = ? WHERE user_id = ?',
-      [templateId, brideName, groomName, eventDate, venue, venueLat, venueLng, user.id]
+      'UPDATE events SET template_id = ?, bride_name = ?, groom_name = ?, event_date = ?, venue = ?, venue_lat = ?, venue_lng = ?, audio_path = ? WHERE user_id = ?',
+      [templateId, brideName, groomName, eventDate, venue, venueLat, venueLng, audioPath, user.id]
     );
 
     const updatedEvent = await db.get('SELECT * FROM events WHERE user_id = ?', [user.id]);

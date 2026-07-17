@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const FALLBACK_HERO = 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80';
 
@@ -139,6 +139,24 @@ function CalendarAndMap({ event, bride, groom, venue, template, dateStr }) {
 // ---- GALLERY GRID ----
 function GalleryGrid({ photos, template, onPhotoClick, containerStyle, imageStyle }) {
   const [showAll, setShowAll] = useState(false);
+  const scrollRef = useRef(null);
+  
+  useEffect(() => {
+    if (showAll || !photos || photos.length <= 1) return;
+    const interval = setInterval(() => {
+      if (scrollRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+        // If reached the end, scroll back to start
+        if (scrollLeft + clientWidth >= scrollWidth - 10) {
+          scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          // Scroll by one item's width roughly
+          scrollRef.current.scrollBy({ left: clientWidth > 768 ? clientWidth / 3 : clientWidth, behavior: 'smooth' });
+        }
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [showAll, photos]);
   
   if (!photos || photos.length === 0) {
     return (
@@ -148,7 +166,10 @@ function GalleryGrid({ photos, template, onPhotoClick, containerStyle, imageStyl
     );
   }
 
-  const displayPhotos = showAll ? photos : photos.slice(0, 3);
+  // Display all photos if showAll is true, otherwise display all photos but we'll only see the scrolled ones. 
+  // Wait, if it's a carousel, we shouldn't slice to 3! If we slice to 3, it only ever loops over 3 items. 
+  // We want all photos in the carousel, but we only show a "row" at a time.
+  const displayPhotos = showAll ? photos : photos;
 
   return (
     <>
@@ -160,6 +181,7 @@ function GalleryGrid({ photos, template, onPhotoClick, containerStyle, imageStyl
           padding-bottom: 1.5rem;
           scroll-snap-type: x mandatory;
           -webkit-overflow-scrolling: touch;
+          scroll-behavior: smooth;
         }
         .gallery-item {
           flex: 0 0 calc(33.333% - 0.85rem);
@@ -176,20 +198,17 @@ function GalleryGrid({ photos, template, onPhotoClick, containerStyle, imageStyl
         }
         @media (max-width: 768px) {
           .gallery-row {
-            flex-direction: column;
-            overflow-x: hidden;
-            gap: 1.5rem;
+            gap: 1rem;
           }
           .gallery-item {
-            flex: 0 0 auto;
-            width: 100%;
+            flex: 0 0 100%;
           }
         }
         .gallery-row::-webkit-scrollbar { height: 6px; }
         .gallery-row::-webkit-scrollbar-thumb { background-color: ${template.primaryColor}50; border-radius: 10px; }
       `}</style>
       
-      <div className={showAll ? "gallery-grid-full" : "gallery-row"}>
+      <div ref={scrollRef} className={showAll ? "gallery-grid-full" : "gallery-row"}>
         {displayPhotos.map(p => (
           <div key={p.id} className="gallery-item" onClick={() => onPhotoClick(p)} style={{ cursor: 'pointer', overflow: 'hidden', ...containerStyle }}>
             <img src={p.file_path} alt={p.caption||''} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s', ...imageStyle }} onMouseEnter={e=>{e.target.style.transform='scale(1.05)'; if(imageStyle?.filter) e.target.style.filter=imageStyle.filter;}} onMouseLeave={e=>{e.target.style.transform='scale(1)'; if(imageStyle?.filter) e.target.style.filter=imageStyle.filter;}} />
@@ -200,7 +219,7 @@ function GalleryGrid({ photos, template, onPhotoClick, containerStyle, imageStyl
       {photos.length > 3 && (
         <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
           <button onClick={() => setShowAll(!showAll)} style={{ padding: '0.8rem 2.5rem', background: 'transparent', border: `1px solid ${template.primaryColor}`, color: template.primaryColor, borderRadius: '50px', fontSize: '0.75rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', transition: 'all 0.3s' }} onMouseEnter={e=>{e.target.style.background=template.primaryColor;e.target.style.color='#fff'}} onMouseLeave={e=>{e.target.style.background='transparent';e.target.style.color=template.primaryColor}}>
-            {showAll ? 'Show Less' : `View All ${photos.length} Photos`}
+            {showAll ? 'Collapse Gallery' : `View Full Grid (${photos.length} Photos)`}
           </button>
         </div>
       )}

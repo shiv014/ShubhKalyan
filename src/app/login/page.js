@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
@@ -14,6 +14,19 @@ function LoginForm() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState(null); // 'google' | 'facebook'
+  const [showOauthModal, setShowOauthModal] = useState(null); // 'google' | 'facebook' | null
+
+  // Session Persistence Check
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then(res => res.json())
+      .then(data => {
+        if (data.authenticated) {
+          router.push(templateParam ? `/dashboard?template=${templateParam}` : '/dashboard');
+        }
+      })
+      .catch(console.error);
+  }, [router, templateParam]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -166,24 +179,13 @@ function LoginForm() {
             onClick={() => handleOAuthLogin('facebook')} 
             className="btn btn-secondary" 
             style={{ 
-              width: '100%', 
-              backgroundColor: '#1877f2', 
-              color: '#ffffff', 
-              borderColor: '#1877f2',
-              display: 'flex',
-              gap: '0.5rem',
-              alignItems: 'center'
-            }}
-            disabled={oauthLoading !== null}
+            type="button"
+            onClick={() => setShowOauthModal('facebook')}
+            className="btn btn-outline" 
+            style={{ width: '100%', padding: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontSize: '0.9rem', color: '#333' }}
           >
-            {oauthLoading === 'facebook' ? 'Connecting...' : (
-              <>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="#ffffff">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                </svg>
-                Sign in with Facebook
-              </>
-            )}
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            Continue with Facebook
           </button>
         </div>
 
@@ -196,6 +198,58 @@ function LoginForm() {
         </p>
 
       </div>
+
+      {/* Simulated OAuth Modal */}
+      {showOauthModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000, padding: '1rem' }}>
+          <div style={{ background: '#fff', borderRadius: '12px', width: '100%', maxWidth: '400px', padding: '2rem', boxShadow: '0 20px 40px rgba(0,0,0,0.2)', position: 'relative' }}>
+            <button 
+              onClick={() => setShowOauthModal(null)} 
+              style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'transparent', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#666' }}
+            >
+              &times;
+            </button>
+            
+            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+              <div style={{ fontSize: '1.25rem', fontWeight: '500', color: '#202124', marginBottom: '0.5rem' }}>
+                Sign in with {showOauthModal === 'google' ? 'Google' : 'Facebook'}
+              </div>
+              <div style={{ fontSize: '0.9rem', color: '#5f6368' }}>Choose an account to continue to <b>ShubhKalyan</b></div>
+            </div>
+
+            <div 
+              style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', border: '1px solid #dadce0', borderRadius: '8px', cursor: 'pointer', transition: 'background 0.2s' }}
+              onMouseEnter={e => e.currentTarget.style.background = '#f8f9fa'}
+              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+              onClick={() => {
+                const provider = showOauthModal;
+                setShowOauthModal(null);
+                handleOAuthLogin(provider);
+              }}
+            >
+              <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: showOauthModal === 'google' ? '#4285F4' : '#1877F2', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', fontWeight: 'bold' }}>
+                T
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: '0.95rem', fontWeight: '500', color: '#3c4043' }}>Test {showOauthModal === 'google' ? 'Google' : 'Facebook'} User</div>
+                <div style={{ fontSize: '0.8rem', color: '#5f6368' }}>oauth_test@{showOauthModal}.com</div>
+              </div>
+            </div>
+            
+            <div 
+              style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', borderTop: '1px solid #eee', marginTop: '0.5rem', cursor: 'pointer', color: '#5f6368' }}
+              onMouseEnter={e => e.currentTarget.style.background = '#f8f9fa'}
+              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+            >
+              <div style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <div style={{ fontSize: '0.9rem', fontWeight: '500' }}>Use another account</div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

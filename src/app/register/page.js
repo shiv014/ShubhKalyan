@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
@@ -15,6 +15,18 @@ function RegisterForm() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState(null);
+
+  // Session Persistence Check
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then(res => res.json())
+      .then(data => {
+        if (data.authenticated) {
+          router.push(templateParam ? `/dashboard?template=${templateParam}` : '/dashboard');
+        }
+      })
+      .catch(console.error);
+  }, [router, templateParam]);
 
   const handleRegister = async (e) => {
     e.preventDefault();

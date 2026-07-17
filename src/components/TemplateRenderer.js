@@ -631,16 +631,15 @@ export default function TemplateRenderer({ event, template, photos = [], preview
           style={{
             position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 9998,
             background: template.primaryColor || '#000', color: '#fff', border: 'none',
-            borderRadius: '50px', padding: '0.9rem 1.5rem', fontSize: '0.85rem',
-            fontWeight: '700', letterSpacing: '1px', textTransform: 'uppercase',
-            display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: isGeneratingPoster ? 'wait' : 'pointer',
+            borderRadius: '50%', padding: '1.25rem',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: isGeneratingPoster ? 'wait' : 'pointer',
             boxShadow: '0 10px 25px rgba(0,0,0,0.25)', transition: 'all 0.3s',
             opacity: isGeneratingPoster ? 0.7 : 1
           }}
-          onMouseEnter={e => {if(!isGeneratingPoster) e.currentTarget.style.transform = 'translateY(-4px)';}}
-          onMouseLeave={e => {if(!isGeneratingPoster) e.currentTarget.style.transform = 'translateY(0)';}}
+          onMouseEnter={e => {if(!isGeneratingPoster) e.currentTarget.style.transform = 'translateY(-4px) scale(1.05)';}}
+          onMouseLeave={e => {if(!isGeneratingPoster) e.currentTarget.style.transform = 'translateY(0) scale(1)';}}
         >
-          <ImageIcon size={18} /> {isGeneratingPoster ? 'Generating...' : 'Download Poster'}
+          <ImageIcon size={22} />
         </button>
       )}
 

@@ -179,6 +179,19 @@ a:hover { color: var(--color-primary-hover); }
   margin: 0 auto;
 }
 
+.hero-features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  margin-top: 3rem;
+}
+@media (max-width: 768px) {
+  .hero-features-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
 .template-grid-responsive {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));

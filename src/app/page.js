@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Search, Crown, Flower2, Sparkles, ScrollText, Paintbrush, Edit3, Link as LinkIcon, Check, ArrowRight, ArrowDown, X } from 'lucide-react';
+import { Search, Crown, Flower2, Sparkles, ScrollText, Paintbrush, Edit3, Link as LinkIcon, Check, ArrowRight, ArrowDown, X, Menu } from 'lucide-react';
 import { getTemplates } from '@/lib/templates';
 
 const CATEGORY_COLORS = {
@@ -22,6 +22,7 @@ const CATEGORY_LABEL = {
 export default function LandingPage() {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedPreviewTpl, setSelectedPreviewTpl] = useState(null);
   const [hoveredId, setHoveredId] = useState(null);
 
@@ -46,10 +47,24 @@ export default function LandingPage() {
           <div className="nav-links">
             <a href="#browse" className="nav-link">Templates</a>
             <a href="#how-it-works" className="nav-link">How It Works</a>
-            <Link href="/login" className="btn btn-ghost" style={{ padding: '0.45rem 1.2rem', fontSize: '0.85rem' }}>Log In</Link>
-            <Link href="/register" className="btn btn-gold" style={{ padding: '0.45rem 1.2rem', fontSize: '0.85rem' }}>Get Started Free</Link>
+            <Link href="/login" className="nav-link">Log In</Link>
+            <Link href="/register" className="btn btn-primary" style={{ padding: '0.6rem 1.5rem' }}>Get Started Free</Link>
           </div>
+          
+          <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ display: 'none', background: 'transparent', border: 'none', color: 'var(--color-primary)', cursor: 'pointer' }}>
+            {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
         </div>
+        
+        {/* Mobile Dropdown Menu */}
+        {isMobileMenuOpen && (
+          <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#fff', borderBottom: '1px solid var(--border-color)', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', boxShadow: '0 10px 20px rgba(0,0,0,0.05)', zIndex: 99 }}>
+            <a href="#browse" className="nav-link" onClick={() => setIsMobileMenuOpen(false)} style={{ fontSize: '1.1rem' }}>Templates</a>
+            <a href="#how-it-works" className="nav-link" onClick={() => setIsMobileMenuOpen(false)} style={{ fontSize: '1.1rem' }}>How It Works</a>
+            <Link href="/login" className="nav-link" onClick={() => setIsMobileMenuOpen(false)} style={{ fontSize: '1.1rem' }}>Log In</Link>
+            <Link href="/register" className="btn btn-primary" onClick={() => setIsMobileMenuOpen(false)} style={{ padding: '0.8rem 1.5rem', textAlign: 'center' }}>Get Started Free</Link>
+          </div>
+        )}
       </nav>
 
       {/* ---- HERO ---- */}
@@ -84,7 +99,7 @@ export default function LandingPage() {
               </Link>
             </div>
             {/* Trust markers */}
-            <div style={{ display: 'flex', gap: '2rem', marginTop: '3rem', flexWrap: 'wrap' }}>
+            <div className="hero-features-grid">
               {[['120+', 'Designer Templates'], ['Free', 'To Publish'], ['Custom', 'Wedding URL'], ['RSVP', 'Management']].map(([val, lbl]) => (
                 <div key={lbl}>
                   <div style={{ fontSize: '1.4rem', fontFamily: 'var(--font-serif)', color: '#cfa830', fontWeight: '700' }}>{val}</div>

@@ -51,7 +51,7 @@ export default function LandingPage() {
             <Link href="/register" className="btn btn-primary" style={{ padding: '0.6rem 1.5rem' }}>Get Started Free</Link>
           </div>
           
-          <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ display: 'none', background: 'transparent', border: 'none', color: 'var(--color-primary)', cursor: 'pointer' }}>
+          <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ background: 'transparent', border: 'none', color: 'var(--color-primary)', cursor: 'pointer' }}>
             {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>

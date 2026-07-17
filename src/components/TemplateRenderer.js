@@ -85,7 +85,7 @@ function RsvpForm({ event, previewMode, primary, secondary }) {
 }
 
 // ---- LAYOUT A: ROYAL ----
-function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode }) {
+function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick }) {
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   const cover = photos.length > 0 ? photos[0].file_path : (template.bgImage || FALLBACK_HERO);
   return (
@@ -140,7 +140,7 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(210px,1fr))', gap: '1rem' }}>
             {photos.map(p => (
-              <div key={p.id} style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden', borderRadius: '4px', border: `2px solid ${template.secondaryColor}` }}>
+              <div key={p.id} onClick={() => onPhotoClick(p)} style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden', borderRadius: '4px', border: `2px solid ${template.secondaryColor}`, cursor: 'pointer' }}>
                 <img src={p.file_path} alt={p.caption||''} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }} onMouseEnter={e=>e.target.style.transform='scale(1.05)'} onMouseLeave={e=>e.target.style.transform='scale(1)'} />
               </div>
             ))}
@@ -165,7 +165,7 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
 }
 
 // ---- LAYOUT B: FLORAL ----
-function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode }) {
+function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick }) {
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   const cover = photos.length > 0 ? photos[0].file_path : (template.bgImage || FALLBACK_HERO);
   return (
@@ -205,8 +205,8 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: '1.25rem' }}>
             {photos.map(p => (
-              <div key={p.id} style={{ borderRadius: '20px', overflow: 'hidden', aspectRatio: '4/3', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
-                <img src={p.file_path} alt={p.caption||''} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <div key={p.id} onClick={() => onPhotoClick(p)} style={{ borderRadius: '20px', overflow: 'hidden', aspectRatio: '4/3', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', cursor: 'pointer' }}>
+                <img src={p.file_path} alt={p.caption||''} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }} onMouseEnter={e=>e.target.style.transform='scale(1.05)'} onMouseLeave={e=>e.target.style.transform='scale(1)'} />
               </div>
             ))}
           </div>
@@ -228,7 +228,7 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
 }
 
 // ---- LAYOUT C: MINIMALIST ----
-function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode }) {
+function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick }) {
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   const cover = photos.length > 0 ? photos[0].file_path : (template.bgImage || FALLBACK_HERO);
   return (
@@ -277,8 +277,8 @@ function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, pho
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '2px' }}>
             {photos.map(p => (
-              <div key={p.id} style={{ aspectRatio: '1', overflow: 'hidden' }}>
-                <img src={p.file_path} alt={p.caption||''} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <div key={p.id} onClick={() => onPhotoClick(p)} style={{ aspectRatio: '1', overflow: 'hidden', cursor: 'pointer' }}>
+                <img src={p.file_path} alt={p.caption||''} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }} onMouseEnter={e=>e.target.style.transform='scale(1.05)'} onMouseLeave={e=>e.target.style.transform='scale(1)'} />
               </div>
             ))}
           </div>
@@ -297,7 +297,7 @@ function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, pho
 }
 
 // ---- LAYOUT D: VINTAGE ----
-function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode }) {
+function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick }) {
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   const cover = photos.length > 0 ? photos[0].file_path : (template.bgImage || FALLBACK_HERO);
   return (
@@ -343,8 +343,8 @@ function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(210px,1fr))', gap: '1.25rem' }}>
             {photos.map(p => (
-              <div key={p.id} style={{ border: `3px solid ${template.primaryColor}`, overflow: 'hidden', aspectRatio: '4/3', boxShadow: `4px 4px 0 ${template.secondaryColor}` }}>
-                <img src={p.file_path} alt={p.caption||''} style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'sepia(0.2)' }} />
+              <div key={p.id} onClick={() => onPhotoClick(p)} style={{ border: `3px solid ${template.primaryColor}`, overflow: 'hidden', aspectRatio: '4/3', boxShadow: `4px 4px 0 ${template.secondaryColor}`, cursor: 'pointer' }}>
+                <img src={p.file_path} alt={p.caption||''} style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'sepia(0.2)', transition: 'transform 0.4s' }} onMouseEnter={e=>e.target.style.transform='scale(1.05) sepia(0.2)'} onMouseLeave={e=>e.target.style.transform='scale(1) sepia(0.2)'} />
               </div>
             ))}
           </div>
@@ -366,18 +366,65 @@ function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos
   );
 }
 
+// ---- IMAGE MODAL ----
+function ImageModal({ photo, onClose }) {
+  if (!photo) return null;
+  
+  const handleDownload = async (e) => {
+    e.stopPropagation();
+    try {
+      const response = await fetch(photo.file_path);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = `wedding-photo-${photo.id}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      window.open(photo.file_path, '_blank');
+    }
+  };
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 9999, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem' }} onClick={onClose}>
+      <button onClick={onClose} style={{ position: 'absolute', top: '1.5rem', right: '2rem', background: 'transparent', border: 'none', color: '#fff', fontSize: '3rem', cursor: 'pointer', lineHeight: 1 }}>&times;</button>
+      
+      <img src={photo.file_path} alt={photo.caption || ''} style={{ maxWidth: '100%', maxHeight: '75vh', objectFit: 'contain', borderRadius: '4px', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }} onClick={e => e.stopPropagation()} />
+      
+      {photo.caption && <p style={{ color: '#fff', marginTop: '1.5rem', fontSize: '1.2rem', fontFamily: 'var(--font-serif)' }}>{photo.caption}</p>}
+      
+      <button onClick={handleDownload} style={{ marginTop: '2rem', padding: '0.9rem 2rem', background: '#fff', color: '#000', border: 'none', borderRadius: '50px', fontSize: '0.85rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'transform 0.2s' }} onMouseEnter={e=>e.target.style.transform='scale(1.05)'} onMouseLeave={e=>e.target.style.transform='scale(1)'}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Download Photo
+      </button>
+    </div>
+  );
+}
+
 // ---- MAIN EXPORT ----
 export default function TemplateRenderer({ event, template, photos = [], previewMode = false }) {
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
+
   if (!event || !template) return <div style={{ padding: '4rem', textAlign: 'center', color: '#7c2230', fontFamily: 'serif' }}>Loading...</div>;
   const bride = event.bride_name || 'Alice';
   const groom = event.groom_name || 'Bob';
   const dateStr = formatDate(event.event_date);
   const timeStr = formatTime(event.event_date);
   const venue = event.venue || 'Grand Palace Ballroom, Mumbai';
-  const props = { bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode };
+  const props = { bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick: setSelectedPhoto };
   const cat = (template.category || template.layout || 'royal').toLowerCase();
-  if (cat === 'floral') return <FloralLayout {...props} />;
-  if (cat === 'minimalist') return <MinimalistLayout {...props} />;
-  if (cat === 'vintage') return <VintageLayout {...props} />;
-  return <RoyalLayout {...props} />;
+  
+  return (
+    <>
+      {cat === 'floral' ? <FloralLayout {...props} /> :
+       cat === 'minimalist' ? <MinimalistLayout {...props} /> :
+       cat === 'vintage' ? <VintageLayout {...props} /> :
+       <RoyalLayout {...props} />}
+       
+      {selectedPhoto && <ImageModal photo={selectedPhoto} onClose={() => setSelectedPhoto(null)} />}
+    </>
+  );
 }

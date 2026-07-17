@@ -140,22 +140,36 @@ function CalendarAndMap({ event, bride, groom, venue, template, dateStr }) {
 function GalleryGrid({ photos, template, onPhotoClick, containerStyle, imageStyle }) {
   const [showAll, setShowAll] = useState(false);
   const scrollRef = useRef(null);
+  const reqRef = useRef(null);
   
   useEffect(() => {
-    if (showAll || !photos || photos.length <= 1) return;
-    const interval = setInterval(() => {
+    if (showAll || !photos || photos.length === 0) {
+      if (reqRef.current) cancelAnimationFrame(reqRef.current);
+      return;
+    }
+    
+    let scrollPos = scrollRef.current ? scrollRef.current.scrollLeft : 0;
+    
+    const animate = () => {
       if (scrollRef.current) {
-        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-        // If reached the end, scroll back to start
-        if (scrollLeft + clientWidth >= scrollWidth - 10) {
-          scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
-        } else {
-          // Scroll by one item's width roughly
-          scrollRef.current.scrollBy({ left: clientWidth > 768 ? clientWidth / 3 : clientWidth, behavior: 'smooth' });
+        scrollPos += 0.6; // pixels per frame (speed)
+        
+        // We rendered 4 identical sets of photos.
+        // Once we scroll past exactly half the total width (2 sets),
+        // we instantly snap back to 0. Because set 3 matches set 1 perfectly,
+        // it creates a seamless infinite loop.
+        const halfWidth = scrollRef.current.scrollWidth / 2;
+        if (scrollPos >= halfWidth) {
+          scrollPos -= halfWidth; 
         }
+        scrollRef.current.scrollLeft = scrollPos;
       }
-    }, 3000);
-    return () => clearInterval(interval);
+      reqRef.current = requestAnimationFrame(animate);
+    };
+    
+    reqRef.current = requestAnimationFrame(animate);
+    
+    return () => cancelAnimationFrame(reqRef.current);
   }, [showAll, photos]);
   
   if (!photos || photos.length === 0) {
@@ -166,10 +180,16 @@ function GalleryGrid({ photos, template, onPhotoClick, containerStyle, imageStyl
     );
   }
 
-  // Display all photos if showAll is true, otherwise display all photos but we'll only see the scrolled ones. 
-  // Wait, if it's a carousel, we shouldn't slice to 3! If we slice to 3, it only ever loops over 3 items. 
-  // We want all photos in the carousel, but we only show a "row" at a time.
-  const displayPhotos = showAll ? photos : photos;
+  // To ensure the continuous marquee fills the screen and loops seamlessly, 
+  // we duplicate the array 4 times when not showing the full grid.
+  let displayPhotos = [];
+  if (showAll) {
+    displayPhotos = photos;
+  } else {
+    for (let i = 0; i < 4; i++) {
+      displayPhotos = displayPhotos.concat(photos.map(p => ({ ...p, _uniqueKey: `${p.id}-${i}` })));
+    }
+  }
 
   return (
     <>
@@ -177,15 +197,11 @@ function GalleryGrid({ photos, template, onPhotoClick, containerStyle, imageStyl
         .gallery-row {
           display: flex;
           gap: 1.25rem;
-          overflow-x: auto;
+          overflow-x: hidden; /* Hide scrollbar for continuous marquee */
           padding-bottom: 1.5rem;
-          scroll-snap-type: x mandatory;
-          -webkit-overflow-scrolling: touch;
-          scroll-behavior: smooth;
         }
         .gallery-item {
           flex: 0 0 calc(33.333% - 0.85rem);
-          scroll-snap-align: start;
         }
         .gallery-grid-full {
           display: grid;
@@ -201,16 +217,14 @@ function GalleryGrid({ photos, template, onPhotoClick, containerStyle, imageStyl
             gap: 1rem;
           }
           .gallery-item {
-            flex: 0 0 100%;
+            flex: 0 0 80%; /* Show 80% of one image so the next one peeks in */
           }
         }
-        .gallery-row::-webkit-scrollbar { height: 6px; }
-        .gallery-row::-webkit-scrollbar-thumb { background-color: ${template.primaryColor}50; border-radius: 10px; }
       `}</style>
       
       <div ref={scrollRef} className={showAll ? "gallery-grid-full" : "gallery-row"}>
         {displayPhotos.map(p => (
-          <div key={p.id} className="gallery-item" onClick={() => onPhotoClick(p)} style={{ cursor: 'pointer', overflow: 'hidden', ...containerStyle }}>
+          <div key={p._uniqueKey || p.id} className="gallery-item" onClick={() => onPhotoClick(p)} style={{ cursor: 'pointer', overflow: 'hidden', ...containerStyle }}>
             <img src={p.file_path} alt={p.caption||''} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s', ...imageStyle }} onMouseEnter={e=>{e.target.style.transform='scale(1.05)'; if(imageStyle?.filter) e.target.style.filter=imageStyle.filter;}} onMouseLeave={e=>{e.target.style.transform='scale(1)'; if(imageStyle?.filter) e.target.style.filter=imageStyle.filter;}} />
           </div>
         ))}

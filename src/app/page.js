@@ -39,7 +39,7 @@ export default function LandingPage() {
 
       {/* ---- NAVBAR ---- */}
       <nav className="navbar">
-        <div className="container navbar-container">
+        <div className="container navbar-container landing-navbar">
           <Link href="/" className="logo" style={{ display: 'flex', alignItems: 'center' }}>
             <img src="/logo.png" alt="ShubhKalyan Logo" className="brand-logo" />
           </Link>

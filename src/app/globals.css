@@ -225,7 +225,7 @@ a:hover { color: var(--color-primary-hover); }
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border-color);
-  padding: 0.5rem 0;
+  padding: 0.75rem 0;
 }
 .navbar-container { display: flex; align-items: center; justify-content: space-between; }
 
@@ -298,12 +298,13 @@ a:hover { color: var(--color-primary-hover); }
 @media (max-width: 768px) { 
   .hero-section-wrapper {
     align-items: flex-start;
-    padding-top: 8rem;
+    padding-top: 3.5rem;
     min-height: auto;
   }
-  .brand-logo { height: 35px !important; transform: scale(1.4); transform-origin: left center; }
-  .brand-logo-footer { height: 35px !important; transform: scale(1.4); transform-origin: left center; }
-  .brand-logo-large { height: 50px !important; transform: scale(1.5); }
+  .brand-logo { height: 48px !important; margin: -8px 0; }
+  .brand-logo-footer { height: 44px !important; margin: -6px 0; }
+  .brand-logo-large { height: 64px !important; margin: -10px 0; }
+  .landing-navbar { justify-content: center; }
   .section { padding: 3rem 0; } 
   .container { padding: 0 1rem; }
   h1 { font-size: 2.2rem; } 
@@ -330,25 +331,23 @@ a:hover { color: var(--color-primary-hover); }
 }
 
 .brand-logo {
-  height: 48px;
+  height: 64px;
   width: auto;
   object-fit: contain;
-  transform: scale(1.8);
-  transform-origin: left center;
+  margin: -12px 0;
   transition: all 0.3s ease;
 }
 
 .brand-logo-footer {
-  height: 40px;
+  height: 52px;
   width: auto;
   object-fit: contain;
-  transform: scale(1.6);
-  transform-origin: left center;
+  margin: -8px 0;
 }
 
 .brand-logo-large {
-  height: 70px;
+  height: 90px;
   width: auto;
   object-fit: contain;
-  transform: scale(1.6);
+  margin: -16px 0;
 }

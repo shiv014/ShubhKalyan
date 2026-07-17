@@ -44,6 +44,8 @@ function DashboardPortal() {
   const [groomName, setGroomName] = useState('');
   const [eventDate, setEventDate] = useState('');
   const [venue, setVenue] = useState('');
+  const [venueLat, setVenueLat] = useState(null);
+  const [venueLng, setVenueLng] = useState(null);
   const [templateId, setTemplateId] = useState('tpl-1');
   const [slug, setSlug] = useState('');
 
@@ -91,6 +93,8 @@ function DashboardPortal() {
           setGroomName(data.event.groom_name || '');
           setEventDate(data.event.event_date || '');
           setVenue(data.event.venue || '');
+          setVenueLat(data.event.venue_lat ? parseFloat(data.event.venue_lat) : null);
+          setVenueLng(data.event.venue_lng ? parseFloat(data.event.venue_lng) : null);
           setSlug(data.event.slug || '');
 
           // Read template param from ref (captured once at mount, never causes re-runs)
@@ -105,7 +109,9 @@ function DashboardPortal() {
                 brideName: data.event.bride_name || '',
                 groomName: data.event.groom_name || '',
                 eventDate: data.event.event_date || '',
-                venue: data.event.venue || ''
+                venue: data.event.venue || '',
+                venueLat: data.event.venue_lat || null,
+                venueLng: data.event.venue_lng || null
               })
             });
           } else {
@@ -161,7 +167,9 @@ function DashboardPortal() {
           brideName,
           groomName,
           eventDate,
-          venue
+          venue,
+          venueLat,
+          venueLng
         })
       });
       const data = await res.json();
@@ -571,7 +579,20 @@ function DashboardPortal() {
                       <span style={{ color: 'var(--text-muted)', fontWeight: 'normal' }}>Updates address automatically</span>
                     </div>
                     <div style={{ width: '100%', height: '100%', paddingTop: '30px', boxSizing: 'border-box' }}>
-                      <MapPicker venue={venue} setVenue={setVenue} />
+                      <MapPicker 
+                        venue={venue} 
+                        setVenue={setVenue} 
+                        position={(venueLat !== null && venueLng !== null) ? [venueLat, venueLng] : null}
+                        setPosition={(pos) => {
+                          if (pos) {
+                            setVenueLat(pos[0]);
+                            setVenueLng(pos[1]);
+                          } else {
+                            setVenueLat(null);
+                            setVenueLng(null);
+                          }
+                        }}
+                      />
                     </div>
                   </div>
                 </div>

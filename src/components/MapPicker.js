@@ -44,8 +44,7 @@ function MapCenterer({ position }) {
   return null;
 }
 
-export default function MapPicker({ venue, setVenue }) {
-  const [position, setPosition] = useState(null); // [lat, lng]
+export default function MapPicker({ venue, setVenue, position, setPosition }) {
   const [debouncedVenue, setDebouncedVenue] = useState(venue);
 
   // Debounce typed venue to avoid spamming Nominatim API

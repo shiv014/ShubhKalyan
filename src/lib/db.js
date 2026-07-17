@@ -42,10 +42,16 @@ async function ensureTables(sql) {
       groom_name TEXT,
       event_date TEXT,
       venue TEXT,
+      venue_lat TEXT,
+      venue_lng TEXT,
       status TEXT DEFAULT 'draft',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `;
+
+  // Fallback for existing databases
+  try { await sql`ALTER TABLE events ADD COLUMN venue_lat TEXT`; } catch (e) {}
+  try { await sql`ALTER TABLE events ADD COLUMN venue_lng TEXT`; } catch (e) {}
 
   await sql`
     CREATE TABLE IF NOT EXISTS photos (

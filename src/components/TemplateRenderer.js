@@ -116,20 +116,25 @@ function CalendarAndMap({ event, bride, groom, venue, template, dateStr }) {
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&location=${location}`;
   };
 
+  const mapQuery = (event.venue_lat && event.venue_lng) ? `${event.venue_lat},${event.venue_lng}` : venue;
+
   return (
     <div style={{ marginTop: '2rem' }}>
       <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
-        <a href={getGoogleCalendarUrl()} target="_blank" rel="noopener noreferrer" style={{ padding: '0.75rem 1.5rem', background: template.primaryColor, color: '#fff', borderRadius: '4px', textDecoration: 'none', fontSize: '0.75rem', fontWeight: '700', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'opacity 0.3s' }} onMouseEnter={e=>e.target.style.opacity=0.85} onMouseLeave={e=>e.target.style.opacity=1}>
-          📅 Add to Google Calendar
+        <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery || '')}`} target="_blank" rel="noopener noreferrer" style={{ padding: '0.75rem 1.5rem', background: '#fff', border: `1px solid ${template.primaryColor}`, color: template.primaryColor, borderRadius: '50px', textDecoration: 'none', fontSize: '0.75rem', fontWeight: '700', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.3s', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }} onMouseEnter={e=>{e.target.style.background=template.primaryColor;e.target.style.color='#fff'}} onMouseLeave={e=>{e.target.style.background='#fff';e.target.style.color=template.primaryColor}}>
+          📍 Open in Maps
         </a>
-        <button onClick={handleDownloadIcs} style={{ padding: '0.75rem 1.5rem', background: 'transparent', border: `1px solid ${template.primaryColor}`, color: template.primaryColor, borderRadius: '4px', fontSize: '0.75rem', fontWeight: '700', letterSpacing: '1px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'background 0.3s' }} onMouseEnter={e=>{e.target.style.background=template.primaryColor; e.target.style.color='#fff'}} onMouseLeave={e=>{e.target.style.background='transparent'; e.target.style.color=template.primaryColor}}>
+        <a href={getGoogleCalendarUrl()} target="_blank" rel="noopener noreferrer" style={{ padding: '0.75rem 1.5rem', background: template.primaryColor, color: '#fff', borderRadius: '50px', textDecoration: 'none', fontSize: '0.75rem', fontWeight: '700', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'opacity 0.3s', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} onMouseEnter={e=>e.target.style.opacity=0.85} onMouseLeave={e=>e.target.style.opacity=1}>
+          📅 Google Calendar
+        </a>
+        <button onClick={handleDownloadIcs} style={{ padding: '0.75rem 1.5rem', background: 'transparent', border: `1px solid ${template.primaryColor}`, color: template.primaryColor, borderRadius: '50px', fontSize: '0.75rem', fontWeight: '700', letterSpacing: '1px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'background 0.3s' }} onMouseEnter={e=>{e.target.style.background=template.primaryColor; e.target.style.color='#fff'}} onMouseLeave={e=>{e.target.style.background='transparent'; e.target.style.color=template.primaryColor}}>
           🍏 Apple / Outlook
         </button>
       </div>
       
-      {venue && (
+      {mapQuery && (
         <div style={{ width: '100%', height: '350px', borderRadius: '8px', overflow: 'hidden', border: `2px solid ${template.secondaryColor || '#ccc'}`, boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
-          <iframe src={`https://www.google.com/maps?q=${encodeURIComponent(venue)}&output=embed`} width="100%" height="100%" style={{ border: 0 }} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+          <iframe src={`https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed`} width="100%" height="100%" style={{ border: 0 }} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
         </div>
       )}
     </div>

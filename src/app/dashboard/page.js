@@ -424,23 +424,23 @@ function DashboardPortal() {
       {/* Dashboard Top Navbar */}
       <nav className="navbar">
         <div className="container navbar-container">
-          <div className="logo">
-            Shubh<span>Kalyan</span> <span style={{ fontSize: '0.6em', opacity: 0.6 }}>| Host Portal</span>
+          <div className="logo" style={{ whiteSpace: 'nowrap' }}>
+            Shubh<span>Kalyan</span> <span className="hide-on-mobile" style={{ fontSize: '0.6em', opacity: 0.6 }}>| Host Portal</span>
           </div>
           
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             {event?.status === 'published' && event?.slug && (
               <a 
                 href={`/${event.slug}`} 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="btn btn-outline-gold" 
-                style={{ padding: '0.4rem 1rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+                style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem', whiteSpace: 'nowrap' }}
               >
-                <ExternalLink size={14} /> View Live Site
+                <ExternalLink size={14} /> <span className="hide-on-mobile">View Live Site</span>
               </a>
             )}
-            <button onClick={handleLogout} className="btn btn-secondary" style={{ padding: '0.4rem 1rem', fontSize: '0.85rem' }}>
+            <button onClick={handleLogout} className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem', whiteSpace: 'nowrap' }}>
               Log Out
             </button>
           </div>

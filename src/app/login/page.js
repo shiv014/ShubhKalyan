@@ -179,8 +179,77 @@ function LoginForm() {
 
       </div>
 
-      {/* Simulated OAuth Modal */}
-      {showOauthModal && (
+      {/* Simulated OAuth Modal (Google style) */}
+      {showOauthModal === 'google' && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000, padding: '1rem' }}>
+          <div style={{ background: '#fff', borderRadius: '8px', width: '100%', maxWidth: '448px', padding: '36px 0', boxShadow: '0 2px 10px rgba(0,0,0,0.2)', position: 'relative', fontFamily: '"Google Sans", Roboto, Arial, sans-serif' }}>
+            
+            <div style={{ textAlign: 'center', padding: '0 36px', marginBottom: '24px' }}>
+              <svg width="74" height="24" viewBox="0 0 74 24" style={{ marginBottom: '16px' }}>
+                <path fill="#4285F4" d="M9.52 18.7c-4.93 0-8.98-3.92-8.98-8.85S4.59 1 9.52 1c2.62 0 4.8.96 6.44 2.53l-2.48 2.43c-1.07-1-2.58-1.84-3.96-1.84-3.3 0-6.04 2.72-6.04 6.06s2.74 6.06 6.04 6.06c3.84 0 5.27-2.76 5.48-4.2H9.52v-3.41h8.92c.1.53.15 1.13.15 1.76 0 5.42-3.66 9.32-9.07 9.32z"/>
+                <path fill="#EA4335" d="M30.43 12.87c0 3.42-2.75 6.02-6.17 6.02-3.4 0-6.15-2.6-6.15-6.02 0-3.45 2.75-6.04 6.15-6.04 3.42 0 6.17 2.59 6.17 6.04zm-3.45 0c0-2.09-1.46-3.61-2.72-3.61-1.25 0-2.7 1.52-2.7 3.61 0 2.07 1.45 3.59 2.7 3.59 1.26 0 2.72-1.52 2.72-3.59z"/>
+                <path fill="#FBBC05" d="M43.6 12.87c0 3.42-2.75 6.02-6.17 6.02-3.4 0-6.15-2.6-6.15-6.02 0-3.45 2.75-6.04 6.15-6.04 3.42 0 6.17 2.59 6.17 6.04zm-3.45 0c0-2.09-1.46-3.61-2.72-3.61-1.25 0-2.7 1.52-2.7 3.61 0 2.07 1.45 3.59 2.7 3.59 1.26 0 2.72-1.52 2.72-3.59z"/>
+                <path fill="#4285F4" d="M55.8 2.37v16.14c0 6.64-3.38 9.37-6.04 9.37-3.08 0-4.9-2.06-5.61-3.76l3.02-1.26c.44 1.05 1.53 2.62 2.59 2.62 1.8 0 3.52-1.12 3.52-3.87v-1.43h-.11c-.69.84-2 1.63-3.49 1.63-3.32 0-5.99-2.73-5.99-6.02 0-3.33 2.67-6.04 5.99-6.04 1.49 0 2.8.79 3.49 1.61h.11V2.37h3.52zm-3.32 10.5c0-2.09-1.42-3.61-2.66-3.61-1.27 0-2.72 1.52-2.72 3.61 0 2.07 1.45 3.59 2.72 3.59 1.24 0 2.66-1.52 2.66-3.59z"/>
+                <path fill="#34A853" d="M60.6 1.34h3.45v17.38H60.6z"/>
+                <path fill="#EA4335" d="M72.04 15.02l2.8-1.87c-.9-1.34-3.03-4.28-6.17-4.28-3.4 0-6.13 2.65-6.13 6.04 0 3.39 2.68 6.02 5.86 6.02 3.28 0 5.17-2.01 5.75-3.18l-2.76-1.84c-.58.86-1.46 1.61-2.99 1.61-1.51 0-2.43-.68-3.03-2.04l8.67-3.59-.2-.55zm-6.11-2.31c0-2.14 1.76-3.23 2.95-3.23.94 0 1.74.48 2.01 1.15l-4.96 2.08z"/>
+              </svg>
+              <div style={{ fontSize: '1.5rem', fontWeight: '400', color: '#202124' }}>Choose an account</div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div 
+                style={{ display: 'flex', alignItems: 'center', padding: '12px 36px', cursor: 'pointer', transition: 'background 0.1s', borderTop: '1px solid #dadce0', position: 'relative' }}
+                onMouseEnter={e => e.currentTarget.style.background = '#f8f9fa'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                onClick={() => {
+                  const provider = showOauthModal;
+                  setShowOauthModal(null);
+                  handleOAuthLogin(provider);
+                }}
+              >
+                <img src="https://ui-avatars.com/api/?name=Test+User&background=4285F4&color=fff&rounded=true" alt="User" style={{ width: '32px', height: '32px', borderRadius: '50%', marginRight: '14px' }} />
+                <div style={{ flex: 1, overflow: 'hidden' }}>
+                  <div style={{ fontSize: '0.95rem', fontWeight: '500', color: '#3c4043', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Test Google User</div>
+                  <div style={{ fontSize: '0.85rem', color: '#5f6368', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>oauth_test@google.com</div>
+                </div>
+                <div style={{ fontSize: '0.85rem', color: '#5f6368' }}>Signed out</div>
+              </div>
+
+              <div 
+                style={{ display: 'flex', alignItems: 'center', padding: '12px 36px', cursor: 'pointer', transition: 'background 0.1s', borderTop: '1px solid #dadce0' }}
+                onMouseEnter={e => e.currentTarget.style.background = '#f8f9fa'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+              >
+                <div style={{ width: '32px', height: '32px', marginRight: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5f6368" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <div style={{ fontSize: '0.95rem', fontWeight: '500', color: '#3c4043' }}>Use another account</div>
+              </div>
+
+              <div 
+                style={{ display: 'flex', alignItems: 'center', padding: '12px 36px', cursor: 'pointer', transition: 'background 0.1s', borderTop: '1px solid #dadce0', borderBottom: '1px solid #dadce0' }}
+                onMouseEnter={e => e.currentTarget.style.background = '#f8f9fa'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+              >
+                <div style={{ width: '32px', height: '32px', marginRight: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5f6368" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="8"/></svg>
+                </div>
+                <div style={{ fontSize: '0.95rem', fontWeight: '500', color: '#3c4043' }}>Remove an account</div>
+              </div>
+            </div>
+            
+            <button 
+              onClick={() => setShowOauthModal(null)} 
+              style={{ position: 'absolute', top: '16px', right: '16px', background: 'transparent', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#5f6368' }}
+            >
+              &times;
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Fallback for Facebook Modal */}
+      {showOauthModal === 'facebook' && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000, padding: '1rem' }}>
           <div style={{ background: '#fff', borderRadius: '12px', width: '100%', maxWidth: '400px', padding: '2rem', boxShadow: '0 20px 40px rgba(0,0,0,0.2)', position: 'relative' }}>
             <button 
@@ -189,42 +258,19 @@ function LoginForm() {
             >
               &times;
             </button>
-            
             <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-              <div style={{ fontSize: '1.25rem', fontWeight: '500', color: '#202124', marginBottom: '0.5rem' }}>
-                Sign in with {showOauthModal === 'google' ? 'Google' : 'Facebook'}
-              </div>
-              <div style={{ fontSize: '0.9rem', color: '#5f6368' }}>Choose an account to continue to <b>ShubhKalyan</b></div>
+              <div style={{ fontSize: '1.25rem', fontWeight: '500', color: '#202124', marginBottom: '0.5rem' }}>Sign in with Facebook</div>
+              <div style={{ fontSize: '0.9rem', color: '#5f6368' }}>Choose an account to continue</div>
             </div>
-
             <div 
-              style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', border: '1px solid #dadce0', borderRadius: '8px', cursor: 'pointer', transition: 'background 0.2s' }}
-              onMouseEnter={e => e.currentTarget.style.background = '#f8f9fa'}
-              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-              onClick={() => {
-                const provider = showOauthModal;
-                setShowOauthModal(null);
-                handleOAuthLogin(provider);
-              }}
+              style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', border: '1px solid #dadce0', borderRadius: '8px', cursor: 'pointer' }}
+              onClick={() => { const provider = showOauthModal; setShowOauthModal(null); handleOAuthLogin(provider); }}
             >
-              <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: showOauthModal === 'google' ? '#4285F4' : '#1877F2', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', fontWeight: 'bold' }}>
-                T
-              </div>
+              <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#1877F2', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', fontWeight: 'bold' }}>T</div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: '0.95rem', fontWeight: '500', color: '#3c4043' }}>Test {showOauthModal === 'google' ? 'Google' : 'Facebook'} User</div>
-                <div style={{ fontSize: '0.8rem', color: '#5f6368' }}>oauth_test@{showOauthModal}.com</div>
+                <div style={{ fontSize: '0.95rem', fontWeight: '500' }}>Test Facebook User</div>
+                <div style={{ fontSize: '0.8rem', color: '#5f6368' }}>oauth_test@facebook.com</div>
               </div>
-            </div>
-            
-            <div 
-              style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', borderTop: '1px solid #eee', marginTop: '0.5rem', cursor: 'pointer', color: '#5f6368' }}
-              onMouseEnter={e => e.currentTarget.style.background = '#f8f9fa'}
-              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-            >
-              <div style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              </div>
-              <div style={{ fontSize: '0.9rem', fontWeight: '500' }}>Use another account</div>
             </div>
           </div>
         </div>

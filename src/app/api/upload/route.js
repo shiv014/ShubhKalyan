@@ -10,19 +10,21 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Upload a Buffer to Cloudinary, returns { secure_url, public_id }
-function uploadToCloudinary(buffer, folder = 'shubhkalyan') {
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder, resource_type: 'image' },
-      (error, result) => {
-        if (error) reject(error);
-        else resolve(result);
-      }
-    );
-    stream.end(buffer);
+// Upload a Buffer to Cloudinary using base64 (works reliably on Vercel serverless)
+async function uploadToCloudinary(buffer, mimeType, folder = 'shubhkalyan') {
+  const base64 = buffer.toString('base64');
+  const dataUri = `data:${mimeType};base64,${base64}`;
+  const result = await cloudinary.uploader.upload(dataUri, {
+    folder,
+    resource_type: 'image',
   });
+  return result;
 }
+
+// Tell Next.js not to parse the body — we handle it via formData()
+export const config = {
+  api: { bodyParser: false },
+};
 
 // Handle photo upload
 export async function POST(req) {
@@ -50,10 +52,10 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Uploaded file is not an image' }, { status: 400 });
     }
 
-    // Upload to Cloudinary
+    // Convert to Buffer then upload via base64 to Cloudinary
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    const uploadResult = await uploadToCloudinary(buffer, 'shubhkalyan');
+    const uploadResult = await uploadToCloudinary(buffer, file.type, 'shubhkalyan');
 
     const fileUrl = uploadResult.secure_url;
     const publicId = uploadResult.public_id;
@@ -74,7 +76,7 @@ export async function POST(req) {
     });
   } catch (error) {
     console.error('Upload error:', error);
-    return NextResponse.json({ error: 'Failed to upload photo' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Failed to upload photo' }, { status: 500 });
   }
 }
 
@@ -107,10 +109,10 @@ export async function DELETE(req) {
       return NextResponse.json({ error: 'Photo not found' }, { status: 404 });
     }
 
-    // Delete from database
+    // Delete from database first
     await db.run('DELETE FROM photos WHERE id = ?', [photoId]);
 
-    // Delete from Cloudinary if public_id is stored
+    // Delete from Cloudinary using stored public_id
     if (photo.public_id) {
       try {
         await cloudinary.uploader.destroy(photo.public_id);

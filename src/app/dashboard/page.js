@@ -4,10 +4,9 @@ import { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { ExternalLink, CheckCircle, XCircle, Edit3, Paintbrush, Image as ImageIcon, Mail, Link as LinkIcon, MapPin, UploadCloud, Star, Copy, RefreshCw, Download } from 'lucide-react';
+import { ExternalLink, CheckCircle, XCircle, Edit3, Paintbrush, Image as ImageIcon, Mail, Link as LinkIcon, MapPin, UploadCloud, Star, Copy, RefreshCw, ChevronDown } from 'lucide-react';
 import { getTemplates, getTemplateById } from '@/lib/templates';
 import TemplateRenderer from '@/components/TemplateRenderer';
-import { toPng } from 'html-to-image';
 import styles from './dashboard.module.css';
 
 const MapPicker = dynamic(() => import('@/components/MapPicker'), {
@@ -34,6 +33,7 @@ function DashboardPortal() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('details'); // 'details', 'templates', 'photos', 'rsvp', 'url'
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   
   // Database state
   const [event, setEvent] = useState(null);
@@ -56,10 +56,8 @@ function DashboardPortal() {
   const [savingTpl, setSavingTpl] = useState(false);
   const [savingUrl, setSavingUrl] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
-  const [isDownloadingPoster, setIsDownloadingPoster] = useState(false);
   
   const [alert, setAlert] = useState(null); // { type: 'success'|'danger', message: '' }
-  const posterRef = useRef(null);
 
   // Search/Filter for 120 templates
   const [tplSearch, setTplSearch] = useState('');
@@ -386,37 +384,6 @@ function DashboardPortal() {
     }
   };
 
-  const handleDownloadPoster = async () => {
-    if (!posterRef.current) return;
-    setIsDownloadingPoster(true);
-    setAlert({ type: 'success', message: 'Generating your high-resolution poster... Please wait.' });
-    
-    try {
-      // Need a small timeout to ensure the DOM is fully rendered and fonts are loaded
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      const dataUrl = await toPng(posterRef.current, {
-        cacheBust: true,
-        pixelRatio: 2, // High resolution
-        style: {
-          transform: 'scale(1)',
-          transformOrigin: 'top left'
-        }
-      });
-      
-      const link = document.createElement('a');
-      link.download = `${brideName}-and-${groomName}-Wedding-Poster.png`;
-      link.href = dataUrl;
-      link.click();
-      setAlert({ type: 'success', message: 'Poster downloaded successfully!' });
-    } catch (err) {
-      console.error(err);
-      setAlert({ type: 'danger', message: 'Failed to generate poster. Please try again.' });
-    } finally {
-      setIsDownloadingPoster(false);
-    }
-  };
-
   if (loading) {
     return (
       <div className="flex-center" style={{ height: '100vh', flexDirection: 'column', gap: '1rem' }}>
@@ -507,49 +474,67 @@ function DashboardPortal() {
         
         {/* Sidebar Navigation */}
         <aside className={styles.sidebar}>
+          
+          {/* Mobile Toggle Button */}
           <button 
-            onClick={() => setActiveTab('details')} 
-            className={`${styles.tabBtn} ${activeTab === 'details' ? styles.activeTabBtn : ''}`}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            className={styles.mobileSidebarToggle}
+            onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
           >
-            <Edit3 size={16} /> Event Details
-          </button>
-          <button 
-            onClick={() => setActiveTab('templates')} 
-            className={`${styles.tabBtn} ${activeTab === 'templates' ? styles.activeTabBtn : ''}`}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-          >
-            <Paintbrush size={16} /> Choose Template
-          </button>
-          <button 
-            onClick={() => setActiveTab('photos')} 
-            className={`${styles.tabBtn} ${activeTab === 'photos' ? styles.activeTabBtn : ''}`}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-          >
-            <ImageIcon size={16} /> Photo Gallery
-          </button>
-          <button 
-            onClick={() => setActiveTab('rsvp')} 
-            className={`${styles.tabBtn} ${activeTab === 'rsvp' ? styles.activeTabBtn : ''}`}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-          >
-            <Mail size={16} /> RSVPs ({rsvps.length})
-          </button>
-          <button 
-            onClick={() => setActiveTab('url')} 
-            className={`${styles.tabBtn} ${activeTab === 'url' ? styles.activeTabBtn : ''}`}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-          >
-            <LinkIcon size={16} /> Website Link
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              {activeTab === 'details' && <><Edit3 size={18} /> Event Details</>}
+              {activeTab === 'templates' && <><Paintbrush size={18} /> Choose Template</>}
+              {activeTab === 'photos' && <><ImageIcon size={18} /> Photo Gallery</>}
+              {activeTab === 'rsvp' && <><Mail size={18} /> RSVPs</>}
+              {activeTab === 'url' && <><LinkIcon size={18} /> Website Link</>}
+            </span>
+            <ChevronDown size={20} style={{ transform: isMobileSidebarOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
           </button>
 
-          <div style={{ marginTop: 'auto', padding: '1rem 0.5rem', borderTop: '1px solid var(--border-color)', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-            Status: {event?.status === 'published' ? (
-              <span style={{ color: 'var(--color-success)', fontWeight: 'bold' }}>● Published (Live)</span>
-            ) : (
-              <span style={{ color: 'var(--text-muted)' }}>● Draft (Offline)</span>
-            )}
-            {event?.slug && <div style={{ marginTop: '0.25rem', overflow: 'hidden', textOverflow: 'ellipsis' }}>/{event.slug}</div>}
+          <div className={`${styles.sidebarMenu} ${isMobileSidebarOpen ? styles.sidebarMenuOpen : ''}`}>
+            <button 
+              onClick={() => { setActiveTab('details'); setIsMobileSidebarOpen(false); }} 
+              className={`${styles.tabBtn} ${activeTab === 'details' ? styles.activeTabBtn : ''}`}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            >
+              <Edit3 size={16} /> Event Details
+            </button>
+            <button 
+              onClick={() => { setActiveTab('templates'); setIsMobileSidebarOpen(false); }} 
+              className={`${styles.tabBtn} ${activeTab === 'templates' ? styles.activeTabBtn : ''}`}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            >
+              <Paintbrush size={16} /> Choose Template
+            </button>
+            <button 
+              onClick={() => { setActiveTab('photos'); setIsMobileSidebarOpen(false); }} 
+              className={`${styles.tabBtn} ${activeTab === 'photos' ? styles.activeTabBtn : ''}`}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            >
+              <ImageIcon size={16} /> Photo Gallery
+            </button>
+            <button 
+              onClick={() => { setActiveTab('rsvp'); setIsMobileSidebarOpen(false); }} 
+              className={`${styles.tabBtn} ${activeTab === 'rsvp' ? styles.activeTabBtn : ''}`}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            >
+              <Mail size={16} /> RSVPs ({rsvps.length})
+            </button>
+            <button 
+              onClick={() => { setActiveTab('url'); setIsMobileSidebarOpen(false); }} 
+              className={`${styles.tabBtn} ${activeTab === 'url' ? styles.activeTabBtn : ''}`}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            >
+              <LinkIcon size={16} /> Website Link
+            </button>
+
+            <div style={{ marginTop: 'auto', padding: '1rem 0.5rem', borderTop: '1px solid var(--border-color)', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+              Status: {event?.status === 'published' ? (
+                <span style={{ color: 'var(--color-success)', fontWeight: 'bold' }}>● Published (Live)</span>
+              ) : (
+                <span style={{ color: 'var(--text-muted)' }}>● Draft (Offline)</span>
+              )}
+              {event?.slug && <div style={{ marginTop: '0.25rem', overflow: 'hidden', textOverflow: 'ellipsis' }}>/{event.slug}</div>}
+            </div>
           </div>
         </aside>
 
@@ -1010,21 +995,9 @@ function DashboardPortal() {
 
         {/* Real-time Phone Frame Live Preview */}
         <aside className={styles.previewPanel}>
-          <div className={styles.previewHeader} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <h3 style={{ fontSize: '1.1rem', color: 'var(--color-primary)' }}>Live Mobile Preview</h3>
-              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0 }}>Updates in real-time as you edit details</p>
-            </div>
-            <button 
-              onClick={handleDownloadPoster} 
-              disabled={isDownloadingPoster}
-              style={{ padding: '0.5rem 1rem', background: 'var(--color-primary)', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold', cursor: isDownloadingPoster ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', transition: 'background 0.3s' }}
-              onMouseEnter={e => { if (!isDownloadingPoster) e.target.style.background = 'var(--color-secondary)' }}
-              onMouseLeave={e => { if (!isDownloadingPoster) e.target.style.background = 'var(--color-primary)' }}
-            >
-              <Download size={14} />
-              {isDownloadingPoster ? 'Generating...' : 'Download Poster'}
-            </button>
+          <div className={styles.previewHeader}>
+            <h3 style={{ fontSize: '1.1rem', color: 'var(--color-primary)' }}>Live Mobile Preview</h3>
+            <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0 }}>Updates in real-time as you edit details</p>
           </div>
 
           <div className={styles.deviceWrapper}>
@@ -1038,19 +1011,6 @@ function DashboardPortal() {
             </div>
           </div>
         </aside>
-
-        {/* Hidden Poster Container for html-to-image */}
-        <div style={{ position: 'absolute', top: '-9999px', left: '-9999px', width: '800px', zIndex: -1000, pointerEvents: 'none' }}>
-          <div ref={posterRef} style={{ width: '800px', backgroundColor: activeTemplate?.bgColor || '#fff' }}>
-            <TemplateRenderer 
-              event={previewEvent} 
-              template={activeTemplate} 
-              photos={photos} 
-              previewMode={true}
-              isPosterMode={true}
-            />
-          </div>
-        </div>
 
       </div>
     </div>

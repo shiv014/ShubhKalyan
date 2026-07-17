@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { MapPin, Calendar, Download } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
 const MapViewer = dynamic(() => import('@/components/MapViewer'), {
@@ -128,13 +129,13 @@ function CalendarAndMap({ event, bride, groom, venue, template, dateStr }) {
     <div style={{ marginTop: '2rem' }}>
       <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
         <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery || '')}`} target="_blank" rel="noopener noreferrer" style={{ padding: '0.75rem 1.5rem', background: '#fff', border: `1px solid ${template.primaryColor}`, color: template.primaryColor, borderRadius: '50px', textDecoration: 'none', fontSize: '0.75rem', fontWeight: '700', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.3s', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }} onMouseEnter={e=>{e.target.style.background=template.primaryColor;e.target.style.color='#fff'}} onMouseLeave={e=>{e.target.style.background='#fff';e.target.style.color=template.primaryColor}}>
-          📍 Open in Maps
+          <MapPin size={16} /> Open in Maps
         </a>
         <a href={getGoogleCalendarUrl()} target="_blank" rel="noopener noreferrer" style={{ padding: '0.75rem 1.5rem', background: template.primaryColor, color: '#fff', borderRadius: '50px', textDecoration: 'none', fontSize: '0.75rem', fontWeight: '700', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'opacity 0.3s', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} onMouseEnter={e=>e.target.style.opacity=0.85} onMouseLeave={e=>e.target.style.opacity=1}>
-          📅 Google Calendar
+          <Calendar size={16} /> Google Calendar
         </a>
         <button onClick={handleDownloadIcs} style={{ padding: '0.75rem 1.5rem', background: 'transparent', border: `1px solid ${template.primaryColor}`, color: template.primaryColor, borderRadius: '50px', fontSize: '0.75rem', fontWeight: '700', letterSpacing: '1px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'background 0.3s' }} onMouseEnter={e=>{e.target.style.background=template.primaryColor; e.target.style.color='#fff'}} onMouseLeave={e=>{e.target.style.background='transparent'; e.target.style.color=template.primaryColor}}>
-          🍏 Apple / Outlook
+          <Download size={16} /> Apple / Outlook
         </button>
       </div>
       

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import { ExternalLink, CheckCircle, XCircle, Edit3, Paintbrush, Image as ImageIcon, Mail, Link as LinkIcon, MapPin, UploadCloud, Star, Copy, RefreshCw } from 'lucide-react';
 import { getTemplates, getTemplateById } from '@/lib/templates';
 import TemplateRenderer from '@/components/TemplateRenderer';
 import styles from './dashboard.module.css';
@@ -434,9 +435,9 @@ function DashboardPortal() {
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="btn btn-outline-gold" 
-                style={{ padding: '0.4rem 1rem', fontSize: '0.85rem' }}
+                style={{ padding: '0.4rem 1rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
               >
-                🗲 View Live Site
+                <ExternalLink size={14} /> View Live Site
               </a>
             )}
             <button onClick={handleLogout} className="btn btn-secondary" style={{ padding: '0.4rem 1rem', fontSize: '0.85rem' }}>
@@ -456,11 +457,13 @@ function DashboardPortal() {
             right: '20px', 
             zIndex: 1000, 
             boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-            minWidth: '280px',
-            animation: 'fadeInUp 0.3s ease'
+            animation: 'fadeInUp 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
           }}
         >
-          {alert.type === 'success' ? '✓' : '✗'} {alert.message}
+          {alert.type === 'success' ? <CheckCircle size={16} /> : <XCircle size={16} />} {alert.message}
         </div>
       )}
 
@@ -472,32 +475,37 @@ function DashboardPortal() {
           <button 
             onClick={() => setActiveTab('details')} 
             className={`${styles.tabBtn} ${activeTab === 'details' ? styles.activeTabBtn : ''}`}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
           >
-            ✏ Event Details
+            <Edit3 size={16} /> Event Details
           </button>
           <button 
             onClick={() => setActiveTab('templates')} 
             className={`${styles.tabBtn} ${activeTab === 'templates' ? styles.activeTabBtn : ''}`}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
           >
-            🎨 Choose Template
+            <Paintbrush size={16} /> Choose Template
           </button>
           <button 
             onClick={() => setActiveTab('photos')} 
             className={`${styles.tabBtn} ${activeTab === 'photos' ? styles.activeTabBtn : ''}`}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
           >
-            📷 Photo Gallery
+            <ImageIcon size={16} /> Photo Gallery
           </button>
           <button 
             onClick={() => setActiveTab('rsvp')} 
             className={`${styles.tabBtn} ${activeTab === 'rsvp' ? styles.activeTabBtn : ''}`}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
           >
-            ✉ RSVPs ({rsvps.length})
+            <Mail size={16} /> RSVPs ({rsvps.length})
           </button>
           <button 
             onClick={() => setActiveTab('url')} 
             className={`${styles.tabBtn} ${activeTab === 'url' ? styles.activeTabBtn : ''}`}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
           >
-            🔗 Website Link
+            <LinkIcon size={16} /> Website Link
           </button>
 
           <div style={{ marginTop: 'auto', padding: '1rem 0.5rem', borderTop: '1px solid var(--border-color)', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
@@ -574,8 +582,8 @@ function DashboardPortal() {
                   />
                   
                   <div style={{ marginTop: '1rem', width: '100%', height: '300px', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border-color)', position: 'relative' }}>
-                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '0.4rem 0.8rem', background: 'rgba(255,255,255,0.9)', fontSize: '0.75rem', fontWeight: 'bold', borderBottom: '1px solid var(--border-color)', zIndex: 1000, display: 'flex', justifyContent: 'space-between', backdropFilter: 'blur(4px)' }}>
-                      <span>📍 Interactive Map (Drag to pin)</span>
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '0.4rem 0.8rem', background: 'rgba(255,255,255,0.9)', fontSize: '0.75rem', fontWeight: 'bold', borderBottom: '1px solid var(--border-color)', zIndex: 1000, display: 'flex', justifyContent: 'space-between', alignItems: 'center', backdropFilter: 'blur(4px)' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><MapPin size={14} /> Interactive Map (Drag to pin)</span>
                       <span style={{ color: 'var(--text-muted)', fontWeight: 'normal' }}>Updates address automatically</span>
                     </div>
                     <div style={{ width: '100%', height: '100%', paddingTop: '30px', boxSizing: 'border-box' }}>
@@ -755,7 +763,7 @@ function DashboardPortal() {
                 </div>
 
                 <div className={styles.uploadBox} onClick={() => fileInputRef.current?.click()}>
-                  <div className={styles.uploadIcon}>☁</div>
+                  <div className={styles.uploadIcon} style={{ marginBottom: '0.5rem', color: 'var(--color-primary)' }}><UploadCloud size={48} /></div>
                   <p style={{ fontWeight: '600', marginBottom: '0.25rem' }}>
                     {uploadingPhoto ? 'Uploading photo...' : 'Click to choose image'}
                   </p>
@@ -779,9 +787,9 @@ function DashboardPortal() {
                     <img src={stock.path} alt={stock.name} className={styles.photoThumb} />
                     <button 
                       onClick={() => handleSetStockCover(stock.path)} 
-                      style={{ position: 'absolute', top: '8px', left: '8px', background: photos.find(p=>p.file_path===stock.path && p.is_cover) ? 'var(--color-primary)' : 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '4px', padding: '0.3rem 0.6rem', fontSize: '0.75rem', cursor: 'pointer', zIndex: 10, fontWeight: 'bold' }}
+                      style={{ position: 'absolute', top: '8px', left: '8px', background: photos.find(p=>p.file_path===stock.path && p.is_cover) ? 'var(--color-primary)' : 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '4px', padding: '0.3rem 0.6rem', fontSize: '0.75rem', cursor: 'pointer', zIndex: 10, fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
                     >
-                      {photos.find(p=>p.file_path===stock.path && p.is_cover) ? '★ Cover' : 'Set Cover'}
+                      {photos.find(p=>p.file_path===stock.path && p.is_cover) ? <><Star size={12} fill="currentColor" /> Cover</> : 'Set Cover'}
                     </button>
                     <div className={styles.photoCaption}>{stock.name}</div>
                   </div>
@@ -799,10 +807,10 @@ function DashboardPortal() {
                     </button>
                     <button 
                       onClick={() => handleSetCover(photo.id)} 
-                      style={{ position: 'absolute', top: '8px', left: '8px', background: photo.is_cover ? 'var(--color-primary)' : 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '4px', padding: '0.3rem 0.6rem', fontSize: '0.75rem', cursor: 'pointer', zIndex: 10, fontWeight: 'bold' }}
+                      style={{ position: 'absolute', top: '8px', left: '8px', background: photo.is_cover ? 'var(--color-primary)' : 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '4px', padding: '0.3rem 0.6rem', fontSize: '0.75rem', cursor: 'pointer', zIndex: 10, fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
                       title="Set as Main Cover Photo"
                     >
-                      {photo.is_cover ? '★ Cover' : 'Set Cover'}
+                      {photo.is_cover ? <><Star size={12} fill="currentColor" /> Cover</> : 'Set Cover'}
                     </button>
                     {photo.caption && <div className={styles.photoCaption}>{photo.caption}</div>}
                   </div>

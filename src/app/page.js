@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { Search, Crown, Flower2, Sparkles, ScrollText, Paintbrush, Edit3, Link as LinkIcon, Check, ArrowRight, ArrowDown, X } from 'lucide-react';
 import { getTemplates } from '@/lib/templates';
 
 const CATEGORY_COLORS = {
@@ -12,10 +13,10 @@ const CATEGORY_COLORS = {
 };
 
 const CATEGORY_LABEL = {
-  Royal: '👑 Royal',
-  Floral: '🌸 Floral',
-  Minimalist: '⬜ Minimalist',
-  Vintage: '📜 Vintage',
+  Royal: <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Crown size={14} /> Royal</span>,
+  Floral: <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Flower2 size={14} /> Floral</span>,
+  Minimalist: <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Sparkles size={14} /> Minimalist</span>,
+  Vintage: <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><ScrollText size={14} /> Vintage</span>,
 };
 
 export default function LandingPage() {
@@ -80,8 +81,8 @@ export default function LandingPage() {
               Browse 120+ designer templates, fill in your details, and publish your personalized wedding invitation page at your own custom URL — all for free.
             </p>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <a href="#browse" className="btn btn-gold" style={{ padding: '1rem 2rem', fontSize: '0.95rem' }}>
-                Browse 120+ Templates ↓
+              <a href="#browse" className="btn btn-gold" style={{ padding: '1rem 2rem', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                Browse 120+ Templates <ArrowDown size={18} />
               </a>
               <Link href="/register" className="btn" style={{ padding: '1rem 2rem', fontSize: '0.95rem', background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)' }}>
                 Create Free Account
@@ -143,9 +144,9 @@ export default function LandingPage() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2.5rem' }}>
             {[
-              { step: '01', icon: '🎨', title: 'Pick a Template', desc: 'Browse 120+ beautifully crafted templates across Royal, Floral, Minimalist, and Vintage styles. No account needed to browse.' },
-              { step: '02', icon: '✍️', title: 'Add Your Details', desc: 'Fill in bride & groom names, wedding date, venue, and upload your favourite photos for the gallery.' },
-              { step: '03', icon: '🔗', title: 'Publish & Share', desc: 'Claim your custom URL like shubhkalyan.in/alicewedsbob and share it with family and friends.' },
+              { step: '01', icon: <Paintbrush size={28} color="#fff" />, title: 'Pick a Template', desc: 'Browse 120+ beautifully crafted templates across Royal, Floral, Minimalist, and Vintage styles. No account needed to browse.' },
+              { step: '02', icon: <Edit3 size={28} color="#fff" />, title: 'Add Your Details', desc: 'Fill in bride & groom names, wedding date, venue, and upload your favourite photos for the gallery.' },
+              { step: '03', icon: <LinkIcon size={28} color="#fff" />, title: 'Publish & Share', desc: 'Claim your custom URL like shubhkalyan.in/alicewedsbob and share it with family and friends.' },
             ].map(({ step, icon, title, desc }) => (
               <div key={step} style={{ textAlign: 'center', padding: '2rem 1.5rem' }}>
                 <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary-hover))', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem', boxShadow: '0 8px 24px rgba(124,34,48,0.2)', fontSize: '1.75rem' }}>
@@ -190,7 +191,7 @@ export default function LandingPage() {
                     : { background: '#fff', borderColor: 'var(--border-color)', color: 'var(--text-secondary)' })
                 }}
               >
-                {cat === 'All' ? '🔮 All Styles' : CATEGORY_LABEL[cat]}
+                {cat === 'All' ? <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Sparkles size={14} /> All Styles</span> : CATEGORY_LABEL[cat]}
               </button>
             ))}
           </div>
@@ -198,7 +199,7 @@ export default function LandingPage() {
           {/* Search */}
           <div style={{ maxWidth: '480px', margin: '0 auto 2.5rem' }}>
             <div style={{ position: 'relative' }}>
-              <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', fontSize: '1rem' }}>🔍</span>
+              <Search size={16} style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
               <input
                 type="text"
                 className="form-input"
@@ -304,7 +305,7 @@ export default function LandingPage() {
 
           {filteredTemplates.length === 0 && (
             <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔍</div>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem', opacity: 0.5 }}><Search size={48} /></div>
               <p>No templates found for "{search}".</p>
             </div>
           )}
@@ -372,7 +373,9 @@ export default function LandingPage() {
                 <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem', fontWeight: '600', color: 'var(--color-primary)', marginBottom: '0.1rem' }}>{selectedPreviewTpl.name}</h3>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Category: {selectedPreviewTpl.category}</span>
               </div>
-              <button onClick={() => setSelectedPreviewTpl(null)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: 'var(--text-muted)', lineHeight: 1 }}>×</button>
+              <button onClick={() => setSelectedPreviewTpl(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'color 0.2s' }} onMouseEnter={e=>e.target.style.color='#111'} onMouseLeave={e=>e.target.style.color='var(--text-muted)'}>
+                <X size={24} />
+              </button>
             </div>
 
             {/* Template Mockup Preview */}
@@ -407,8 +410,8 @@ export default function LandingPage() {
                   <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '1.5px', color: 'var(--text-muted)', marginBottom: '0.35rem' }}>Includes</div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                     {['Full-screen cover hero', 'Ceremony details', 'Photo gallery', 'RSVP form'].map(f => (
-                      <div key={f} style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'flex', gap: '0.4rem' }}>
-                        <span style={{ color: 'var(--color-success)' }}>✓</span> {f}
+                      <div key={f} style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        <Check size={14} color="var(--color-success)" /> {f}
                       </div>
                     ))}
                   </div>
@@ -419,8 +422,8 @@ export default function LandingPage() {
             {/* Modal Footer */}
             <div style={{ padding: '1.25rem 1.75rem', borderTop: '1px solid var(--border-color)', display: 'flex', gap: '0.75rem' }}>
               <button onClick={() => setSelectedPreviewTpl(null)} className="btn btn-ghost" style={{ flex: 1, fontSize: '0.85rem' }}>Close</button>
-              <Link href={`/register?template=${selectedPreviewTpl.id}`} className="btn btn-gold" style={{ flex: 2, textAlign: 'center', fontSize: '0.85rem' }}>
-                Use This Template →
+              <Link href={`/register?template=${selectedPreviewTpl.id}`} className="btn btn-gold" style={{ flex: 2, textAlign: 'center', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                Use This Template <ArrowRight size={16} />
               </Link>
             </div>
           </div>

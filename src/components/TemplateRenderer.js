@@ -575,7 +575,7 @@ export default function TemplateRenderer({ event, template, photos = [], preview
         />
       )}
 
-      <AudioPlayer src={event?.audio_path || "https://cdn.pixabay.com/download/audio/2022/11/22/audio_03d987a02c.mp3?filename=indian-background-music-126273.mp3"} />
+      <AudioPlayer src={event?.audio_path || "/api/audio/default"} />
 
       {/* Floating Action Button for Download Poster */}
       {!previewMode && (

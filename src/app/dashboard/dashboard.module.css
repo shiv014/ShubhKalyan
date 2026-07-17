@@ -14,6 +14,7 @@
 @media (max-width: 768px) {
   .dashboardContainer { grid-template-columns: 1fr; }
   .sidebar { padding: 1rem; border-right: none; border-bottom: 1px solid var(--border-color); gap: 0; }
+  .filterControls { grid-template-columns: 1fr !important; }
   
   .mobileSidebarToggle {
     display: flex;
@@ -96,6 +97,13 @@
 .pageHeader { margin-bottom: 0.5rem; }
 .pageTitle { font-size: 1.7rem; color: var(--color-primary); font-weight: 700; }
 .pageSubtitle { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+
+.filterControls {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
 
 /* ---- Stats Cards ---- */
 .statsGrid {

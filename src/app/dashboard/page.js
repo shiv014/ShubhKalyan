@@ -659,7 +659,7 @@ function DashboardPortal() {
               <p>Explore 120 unique style combinations. Select one to apply it to your website instantly.</p>
 
               {/* Filtering Controls */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', margin: '1.5rem 0' }}>
+              <div className={styles.filterControls}>
                 <input 
                   type="text" 
                   className="form-input" 

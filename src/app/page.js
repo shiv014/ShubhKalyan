@@ -65,7 +65,7 @@ export default function LandingPage() {
           <div style={{ position: 'absolute', bottom: '-80px', left: '-80px', width: '400px', height: '400px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(124,34,48,0.25), transparent 70%)' }} />
         </div>
 
-        <div className="container" style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem', alignItems: 'center', width: '100%' }}>
+        <div className="container hero-grid" style={{ position: 'relative', zIndex: 1 }}>
           {/* Left: Text */}
           <div className="animate-fade-in-up">
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(207,168,48,0.12)', border: '1px solid rgba(207,168,48,0.3)', borderRadius: '999px', padding: '0.35rem 1rem', marginBottom: '1.5rem' }}>
@@ -212,7 +212,7 @@ export default function LandingPage() {
           </div>
 
           {/* Template Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.75rem' }}>
+          <div className="template-grid-responsive">
             {filteredTemplates.slice(0, 24).map(tpl => (
               <div
                 key={tpl.id}

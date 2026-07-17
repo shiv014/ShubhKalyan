@@ -66,8 +66,8 @@ function RsvpForm({ event, previewMode, primary, secondary }) {
         <label style={labelStyle}>Email Address</label>
         <input type="email" required value={rsvpEmail} onChange={e => setRsvpEmail(e.target.value)} placeholder="your.email@example.com" style={inputStyle} onFocus={e => {e.target.style.borderColor=primary; e.target.style.boxShadow=`0 0 0 3px rgba(0,0,0,0.05)`}} onBlur={e => {e.target.style.borderColor=secondary; e.target.style.boxShadow='none'}} />
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
-        <div>
+      <div className="grid-2-col" style={{ marginBottom: '1.25rem' }}>
+        <div style={{ textAlign: 'left' }}>
           <label style={labelStyle}>Attending?</label>
           <select value={rsvpAttending} onChange={e => setRsvpAttending(e.target.value)} style={inputStyle} onFocus={e => {e.target.style.borderColor=primary}} onBlur={e => {e.target.style.borderColor=secondary}}>
             <option value="1">Joyfully Accept ✓</option>
@@ -283,7 +283,7 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '60px', background: template.bgColor, borderRadius: '50% 50% 0 0 / 100% 100% 0 0', zIndex: 3 }} />
       </header>
       {/* Details */}
-      <section id="details" style={{ padding: '5rem 1.5rem', textAlign: 'center', maxWidth: '720px', margin: '0 auto' }}>
+      <section id="details" className="tpl-section-standard" style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto' }}>
         <span style={{ fontSize: '0.65rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700', display: 'block', marginBottom: '0.5rem' }}>Save the Date</span>
         <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '1rem' }}>Ceremony &amp; Celebration</h2>
         <p style={{ opacity: 0.7, maxWidth: '500px', margin: '0 auto 2.5rem', fontSize: '0.95rem' }}>Join us as we celebrate our union surrounded by those we cherish most.</p>
@@ -298,7 +298,7 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
         </div>
       </section>
       {/* Gallery */}
-      <section id="gallery" style={{ padding: '4rem 1.5rem', maxWidth: '900px', margin: '0 auto', borderTop: `1px solid ${template.accentColor}` }}>
+      <section id="gallery" className="tpl-section-standard" style={{ maxWidth: '900px', margin: '0 auto', borderTop: `1px solid ${template.accentColor}` }}>
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <span style={{ fontSize: '0.65rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700', display: 'block', marginBottom: '0.5rem' }}>Moments</span>
           <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400' }}>Our Gallery</h2>
@@ -306,7 +306,7 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
         <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ aspectRatio: '4/3', borderRadius: '4px', border: `2px solid ${template.secondaryColor}` }} />
       </section>
       {/* RSVP */}
-      <section id="rsvp" style={{ padding: '5rem 1.5rem', background: template.accentColor }}>
+      <section id="rsvp" className="tpl-section-standard" style={{ background: template.accentColor }}>
         <div style={{ maxWidth: '520px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
             <span style={{ fontSize: '0.65rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700', display: 'block', marginBottom: '0.5rem' }}>Reservation</span>
@@ -343,7 +343,7 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
           <button onClick={() => scrollTo('rsvp')} style={{ marginTop: '1.5rem', padding: '0.7rem 2rem', background: template.primaryColor, border: 'none', borderRadius: '50px', color: '#fff', fontSize: '0.7rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer' }}>RSVP Now</button>
         </div>
       </header>
-      <section id="details" style={{ padding: '5rem 1.5rem', textAlign: 'center', maxWidth: '650px', margin: '0 auto' }}>
+      <section id="details" className="tpl-section-standard" style={{ textAlign: 'center', maxWidth: '650px', margin: '0 auto' }}>
         <span style={{ fontSize: '0.65rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.55, display: 'block', marginBottom: '0.5rem' }}>Join Us</span>
         <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '1.5rem' }}>The Celebration</h2>
         <div style={{ background: template.accentColor, borderRadius: '32px', padding: '2.5rem 2rem', marginTop: '1.5rem' }}>
@@ -354,14 +354,14 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
           <CalendarAndMap event={event} bride={bride} groom={groom} venue={venue} template={template} dateStr={dateStr} />
         </div>
       </section>
-      <section id="gallery" style={{ padding: '4rem 1.5rem', maxWidth: '900px', margin: '0 auto' }}>
+      <section id="gallery" className="tpl-section-standard" style={{ maxWidth: '900px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <span style={{ fontSize: '0.65rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.55, display: 'block', marginBottom: '0.5rem' }}>Our Story</span>
           <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400' }}>Photo Gallery</h2>
         </div>
         <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ aspectRatio: '4/3', borderRadius: '20px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }} />
       </section>
-      <section id="rsvp" style={{ padding: '5rem 1.5rem', background: `linear-gradient(135deg,${template.accentColor},${template.bgColor})` }}>
+      <section id="rsvp" className="tpl-section-standard" style={{ background: `linear-gradient(135deg,${template.accentColor},${template.bgColor})` }}>
         <div style={{ maxWidth: '520px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
             <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '0.5rem' }}>RSVP</h2>
@@ -403,7 +403,7 @@ function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, pho
           <img src={cover} alt="Wedding" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
         </div>
       </header>
-      <section id="details" style={{ padding: '5rem 3rem', maxWidth: '700px' }}>
+      <section id="details" className="tpl-section-minimal" style={{ maxWidth: '700px', margin: '0 auto' }}>
         <span style={{ fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, display: 'block', marginBottom: '1rem' }}>Details</span>
         <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '2rem' }}>Ceremony &amp; Reception</h2>
         <div className="tr-details-grid">
@@ -419,13 +419,13 @@ function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, pho
         </div>
         <CalendarAndMap event={event} bride={bride} groom={groom} venue={venue} template={template} dateStr={dateStr} />
       </section>
-      <section id="gallery" style={{ padding: '4rem 3rem', borderTop: `1px solid ${template.accentColor}` }}>
+      <section id="gallery" className="tpl-section-minimal" style={{ borderTop: `1px solid ${template.accentColor}` }}>
         <span style={{ fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, display: 'block', marginBottom: '1rem' }}>Gallery</span>
         <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '2rem' }}>Our Story</h2>
         <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ aspectRatio: '1' }} />
       </section>
-      <section id="rsvp" style={{ padding: '5rem 3rem', background: template.accentColor }}>
-        <div style={{ maxWidth: '460px' }}>
+      <section id="rsvp" className="tpl-section-minimal" style={{ background: template.accentColor }}>
+        <div style={{ maxWidth: '460px', margin: '0 auto' }}>
           <span style={{ fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, display: 'block', marginBottom: '1rem' }}>Response</span>
           <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '0.5rem' }}>Will You Attend?</h2>
           <p style={{ fontSize: '0.85rem', opacity: 0.55, marginBottom: '2rem' }}>Please respond by September 15, 2026.</p>
@@ -463,7 +463,7 @@ function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos
           <button onClick={() => scrollTo('rsvp')} style={{ marginTop: '1.25rem', padding: '0.65rem 2rem', background: 'transparent', border: '1px solid #dca658', color: '#dca658', fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', fontFamily: template.fontTitle }}>Kindly Reply</button>
         </div>
       </header>
-      <section id="details" style={{ padding: '5rem 1.5rem', textAlign: 'center', maxWidth: '650px', margin: '0 auto' }}>
+      <section id="details" className="tpl-section-standard" style={{ textAlign: 'center', maxWidth: '650px', margin: '0 auto' }}>
         <div style={{ fontSize: '1.8rem', color: template.secondaryColor, marginBottom: '0.5rem' }}>❧</div>
         <h2 style={{ fontFamily: template.fontTitle, fontSize: '1.8rem', color: template.primaryColor, letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '400', marginBottom: '2rem' }}>Ceremony Details</h2>
         <div style={{ border: `2px solid ${template.primaryColor}`, boxShadow: `5px 5px 0 ${template.secondaryColor}`, padding: '2.5rem', display: 'inline-block', textAlign: 'left', minWidth: '300px', background: '#fffdf4' }}>
@@ -474,14 +474,14 @@ function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos
         </div>
         <div style={{ fontSize: '1.8rem', color: template.secondaryColor, marginTop: '2rem' }}>❦</div>
       </section>
-      <section id="gallery" style={{ padding: '4rem 1.5rem', maxWidth: '900px', margin: '0 auto', borderTop: `1px solid ${template.accentColor}` }}>
+      <section id="gallery" className="tpl-section-standard" style={{ maxWidth: '900px', margin: '0 auto', borderTop: `1px solid ${template.accentColor}` }}>
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <div style={{ fontSize: '1.8rem', color: template.secondaryColor, marginBottom: '0.5rem' }}>❧</div>
           <h2 style={{ fontFamily: template.fontTitle, fontSize: '1.8rem', color: template.primaryColor, letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '400' }}>Our Memories</h2>
         </div>
         <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ border: `3px solid ${template.primaryColor}`, aspectRatio: '4/3', boxShadow: `4px 4px 0 ${template.secondaryColor}` }} imageStyle={{ filter: 'sepia(0.2)' }} />
       </section>
-      <section id="rsvp" style={{ padding: '5rem 1.5rem', background: '#fffdf4', borderTop: `1px solid ${template.accentColor}` }}>
+      <section id="rsvp" className="tpl-section-standard" style={{ background: '#fffdf4', borderTop: `1px solid ${template.accentColor}` }}>
         <div style={{ maxWidth: '520px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
             <div style={{ fontSize: '1.8rem', color: template.secondaryColor, marginBottom: '0.5rem' }}>❧</div>

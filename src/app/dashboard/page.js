@@ -178,6 +178,7 @@ function DashboardPortal() {
       if (res.ok) {
         setEvent(data.event);
         showToast('success', 'Wedding details updated!');
+        setActiveTab('templates');
       } else {
         showToast('danger', data.error || 'Failed to update details');
       }
@@ -625,14 +626,23 @@ function DashboardPortal() {
                   </div>
                 </div>
 
-                <button 
-                  type="submit" 
-                  className="btn btn-primary" 
-                  style={{ width: '100%', marginTop: '1rem' }}
-                  disabled={savingDetails}
-                >
-                  {savingDetails ? 'Saving changes...' : 'Save Details'}
-                </button>
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
+                  <button 
+                    type="submit" 
+                    className="btn btn-primary" 
+                    style={{ flex: 1 }}
+                    disabled={savingDetails}
+                  >
+                    {savingDetails ? 'Saving...' : 'Save & Continue'}
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={() => { setActiveTab('templates'); window.scrollTo(0, 0); }}
+                    className="btn btn-secondary" 
+                  >
+                    Skip &rarr;
+                  </button>
+                </div>
               </form>
             </div>
           )}
@@ -755,6 +765,10 @@ function DashboardPortal() {
                   </div>
                 )}
               </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '2rem' }}>
+                <button type="button" onClick={() => { setActiveTab('photos'); window.scrollTo(0, 0); }} className="btn btn-secondary">Skip &rarr;</button>
+                <button type="button" onClick={() => { setActiveTab('photos'); window.scrollTo(0, 0); }} className="btn btn-primary">Continue to Photos &rarr;</button>
+              </div>
             </div>
           )}
 
@@ -841,6 +855,10 @@ function DashboardPortal() {
                   </div>
                 )}
               </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '2rem' }}>
+                <button type="button" onClick={() => { setActiveTab('rsvp'); window.scrollTo(0, 0); }} className="btn btn-secondary">Skip &rarr;</button>
+                <button type="button" onClick={() => { setActiveTab('rsvp'); window.scrollTo(0, 0); }} className="btn btn-primary">Continue to RSVPs &rarr;</button>
+              </div>
             </div>
           )}
 
@@ -917,6 +935,9 @@ function DashboardPortal() {
                     )}
                   </tbody>
                 </table>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '2rem' }}>
+                <button type="button" onClick={() => { setActiveTab('url'); window.scrollTo(0, 0); }} className="btn btn-primary">Continue to Website Link &rarr;</button>
               </div>
             </div>
           )}

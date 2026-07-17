@@ -570,12 +570,14 @@ export default function TemplateRenderer({ event, template, photos = [], preview
        cat === 'vintage' ? <VintageLayout {...props} /> :
        <RoyalLayout {...props} />}
        
-      <PhotoLightbox 
-        photos={photos} 
-        currentIndex={carouselIndex} 
-        onNavigate={setCarouselIndex} 
-        onClose={() => setCarouselIndex(null)} 
-      />
+      {carouselIndex !== null && (
+        <PhotoLightbox 
+          photos={photos} 
+          currentIndex={carouselIndex} 
+          onNavigate={setCarouselIndex} 
+          onClose={() => setCarouselIndex(null)} 
+        />
+      )}
 
       <AudioPlayer />
 

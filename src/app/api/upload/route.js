@@ -1,8 +1,28 @@
 import { NextResponse } from 'next/server';
+import { v2 as cloudinary } from 'cloudinary';
 import { getDb } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
-import { writeFile, mkdir, unlink } from 'fs/promises';
-import path from 'path';
+
+// Configure Cloudinary from environment variables
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Upload a Buffer to Cloudinary, returns { secure_url, public_id }
+function uploadToCloudinary(buffer, folder = 'shubhkalyan') {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder, resource_type: 'image' },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      }
+    );
+    stream.end(buffer);
+  });
+}
 
 // Handle photo upload
 export async function POST(req) {
@@ -26,40 +46,29 @@ export async function POST(req) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
-    // Verify it is a basic image format
     if (!file.type.startsWith('image/')) {
       return NextResponse.json({ error: 'Uploaded file is not an image' }, { status: 400 });
     }
 
+    // Upload to Cloudinary
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
+    const uploadResult = await uploadToCloudinary(buffer, 'shubhkalyan');
 
-    // Create unique filename
-    const fileExtension = path.extname(file.name) || '.jpg';
-    const filename = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}${fileExtension}`;
-    
-    // Save directory: public/uploads
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-    
-    // Ensure uploads directory exists
-    await mkdir(uploadDir, { recursive: true });
-    
-    const filePath = path.join(uploadDir, filename);
-    await writeFile(filePath, buffer);
+    const fileUrl = uploadResult.secure_url;
+    const publicId = uploadResult.public_id;
 
-    const relativePath = `/uploads/${filename}`;
-
-    // Save in database
+    // Save to database
     const result = await db.run(
-      'INSERT INTO photos (event_id, file_path, caption) VALUES (?, ?, ?)',
-      [event.id, relativePath, caption]
+      'INSERT INTO photos (event_id, file_path, public_id, caption) VALUES (?, ?, ?, ?)',
+      [event.id, fileUrl, publicId, caption]
     );
 
     return NextResponse.json({
       message: 'Photo uploaded successfully',
       photo: {
         id: result.lastID,
-        file_path: relativePath,
+        file_path: fileUrl,
         caption
       }
     });
@@ -85,26 +94,29 @@ export async function DELETE(req) {
     }
 
     const db = await getDb();
-    
     const event = await db.get('SELECT id FROM events WHERE user_id = ?', [user.id]);
     if (!event) {
       return NextResponse.json({ error: 'Event not found' }, { status: 404 });
     }
 
-    const photo = await db.get('SELECT * FROM photos WHERE id = ? AND event_id = ?', [photoId, event.id]);
+    const photo = await db.get(
+      'SELECT * FROM photos WHERE id = ? AND event_id = ?',
+      [photoId, event.id]
+    );
     if (!photo) {
       return NextResponse.json({ error: 'Photo not found' }, { status: 404 });
     }
 
-    // Delete photo record from DB
+    // Delete from database
     await db.run('DELETE FROM photos WHERE id = ?', [photoId]);
 
-    // Delete the file from the disk
-    try {
-      const absolutePath = path.join(process.cwd(), 'public', photo.file_path);
-      await unlink(absolutePath);
-    } catch (e) {
-      console.warn('File not found on disk, but removed from database');
+    // Delete from Cloudinary if public_id is stored
+    if (photo.public_id) {
+      try {
+        await cloudinary.uploader.destroy(photo.public_id);
+      } catch (e) {
+        console.warn('Could not delete from Cloudinary:', e.message);
+      }
     }
 
     return NextResponse.json({ message: 'Photo deleted successfully' });

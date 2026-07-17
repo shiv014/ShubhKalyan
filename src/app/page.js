@@ -51,14 +51,7 @@ export default function LandingPage() {
       </nav>
 
       {/* ---- HERO ---- */}
-      <section style={{
-        background: 'linear-gradient(135deg, #1e0a0f 0%, #3d1020 40%, #2a1a35 100%)',
-        padding: '5rem 0 4rem',
-        position: 'relative',
-        minHeight: '88vh',
-        display: 'flex',
-        alignItems: 'center',
-      }}>
+      <section className="hero-section-wrapper">
         {/* Background decorative circles — clipped to section bounds only */}
         <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
           <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(207,168,48,0.12), transparent 70%)' }} />

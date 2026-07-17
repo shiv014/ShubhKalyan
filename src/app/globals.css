@@ -289,7 +289,21 @@ a:hover { color: var(--color-primary-hover); }
 .badge-minimalist { background: rgba(30,30,30,0.08); color: #333; }
 .badge-vintage { background: rgba(171,84,54,0.12); color: #ab5436; }
 
+.hero-section-wrapper {
+  background: linear-gradient(135deg, #1e0a0f 0%, #3d1020 40%, #2a1a35 100%);
+  padding: 5rem 0 4rem;
+  position: relative;
+  min-height: 88vh;
+  display: flex;
+  align-items: center;
+}
+
 @media (max-width: 768px) { 
+  .hero-section-wrapper {
+    align-items: flex-start;
+    padding-top: 8rem;
+    min-height: auto;
+  }
   .section { padding: 3rem 0; } 
   .container { padding: 0 1rem; }
   h1 { font-size: 2.2rem; } 

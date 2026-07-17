@@ -579,7 +579,7 @@ export default function TemplateRenderer({ event, template, photos = [], preview
         />
       )}
 
-      <AudioPlayer src={event?.audio_path || "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=piano-moment-9835.mp3"} />
+      <AudioPlayer src={event?.audio_path || "https://archive.org/download/dli.akashvani.sangeet.24/02_Bismillah_Khan_Shehnai_Raag_Poorvi_Dhun.mp3"} />
 
       {/* Floating Action Button for Download Poster */}
       {!previewMode && (

@@ -142,7 +142,7 @@ export default function LandingPage() {
             <span style={{ fontSize: '0.75rem', fontWeight: '700', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--color-secondary)', display: 'block', marginBottom: '0.75rem' }}>Simple Process</span>
             <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.4rem', color: 'var(--color-primary)', fontWeight: '700' }}>Create Your Site in 3 Steps</h2>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2.5rem' }}>
+          <div className="steps-grid">
             {[
               { step: '01', icon: <Paintbrush size={28} color="#fff" />, title: 'Pick a Template', desc: 'Browse 120+ beautifully crafted templates across Royal, Floral, Minimalist, and Vintage styles. No account needed to browse.' },
               { step: '02', icon: <Edit3 size={28} color="#fff" />, title: 'Add Your Details', desc: 'Fill in bride & groom names, wedding date, venue, and upload your favourite photos for the gallery.' },

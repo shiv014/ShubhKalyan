@@ -3,9 +3,15 @@
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { getTemplates, getTemplateById } from '@/lib/templates';
 import TemplateRenderer from '@/components/TemplateRenderer';
 import styles from './dashboard.module.css';
+
+const MapPicker = dynamic(() => import('@/components/MapPicker'), {
+  ssr: false,
+  loading: () => <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f5f5', color: '#666' }}>Loading Map...</div>
+});
 
 const STOCK_COVERS = [
   { name: 'Royal Palace', path: '/covers/cover_royal_1784272436002.jpg' },
@@ -558,23 +564,16 @@ function DashboardPortal() {
                     placeholder="e.g. Grand Imperial Ballroom, Mumbai"
                     required
                   />
-                  {venue && (
-                    <div style={{ marginTop: '1rem', width: '100%', height: '250px', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border-color)', position: 'relative' }}>
-                      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '0.4rem 0.8rem', background: 'rgba(255,255,255,0.9)', fontSize: '0.75rem', fontWeight: 'bold', borderBottom: '1px solid var(--border-color)', zIndex: 10, display: 'flex', justifyContent: 'space-between', backdropFilter: 'blur(4px)' }}>
-                        <span>📍 Live Map Preview</span>
-                        <span style={{ color: 'var(--text-muted)', fontWeight: 'normal' }}>Updates automatically</span>
-                      </div>
-                      <iframe 
-                        src={`https://www.google.com/maps?q=${encodeURIComponent(venue)}&output=embed`} 
-                        width="100%" 
-                        height="100%" 
-                        style={{ border: 0, paddingTop: '30px', boxSizing: 'content-box' }} 
-                        allowFullScreen="" 
-                        loading="lazy" 
-                        referrerPolicy="no-referrer-when-downgrade"
-                      ></iframe>
+                  
+                  <div style={{ marginTop: '1rem', width: '100%', height: '300px', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border-color)', position: 'relative' }}>
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '0.4rem 0.8rem', background: 'rgba(255,255,255,0.9)', fontSize: '0.75rem', fontWeight: 'bold', borderBottom: '1px solid var(--border-color)', zIndex: 1000, display: 'flex', justifyContent: 'space-between', backdropFilter: 'blur(4px)' }}>
+                      <span>📍 Interactive Map (Drag to pin)</span>
+                      <span style={{ color: 'var(--text-muted)', fontWeight: 'normal' }}>Updates address automatically</span>
                     </div>
-                  )}
+                    <div style={{ width: '100%', height: '100%', paddingTop: '30px', boxSizing: 'border-box' }}>
+                      <MapPicker venue={venue} setVenue={setVenue} />
+                    </div>
+                  </div>
                 </div>
 
                 <button 

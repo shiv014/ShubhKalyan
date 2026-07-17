@@ -136,6 +136,78 @@ function CalendarAndMap({ event, bride, groom, venue, template, dateStr }) {
   );
 }
 
+// ---- GALLERY GRID ----
+function GalleryGrid({ photos, template, onPhotoClick, containerStyle, imageStyle }) {
+  const [showAll, setShowAll] = useState(false);
+  
+  if (!photos || photos.length === 0) {
+    return (
+      <div style={{ textAlign: 'center', padding: '3rem', border: `2px dashed ${template.primaryColor}`, borderRadius: '8px', opacity: 0.5, background: template.accentColor }}>
+        <p style={{ fontFamily: template.fontTitle, fontSize: '1.1rem' }}>Gallery photos will appear here</p>
+      </div>
+    );
+  }
+
+  const displayPhotos = showAll ? photos : photos.slice(0, 3);
+
+  return (
+    <>
+      <style>{`
+        .gallery-row {
+          display: flex;
+          gap: 1.25rem;
+          overflow-x: auto;
+          padding-bottom: 1.5rem;
+          scroll-snap-type: x mandatory;
+          -webkit-overflow-scrolling: touch;
+        }
+        .gallery-item {
+          flex: 0 0 calc(33.333% - 0.85rem);
+          scroll-snap-align: start;
+        }
+        .gallery-grid-full {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+          gap: 1.25rem;
+        }
+        .gallery-grid-full .gallery-item {
+          flex: none;
+          width: 100%;
+        }
+        @media (max-width: 768px) {
+          .gallery-row {
+            flex-direction: column;
+            overflow-x: hidden;
+            gap: 1.5rem;
+          }
+          .gallery-item {
+            flex: 0 0 auto;
+            width: 100%;
+          }
+        }
+        .gallery-row::-webkit-scrollbar { height: 6px; }
+        .gallery-row::-webkit-scrollbar-thumb { background-color: ${template.primaryColor}50; border-radius: 10px; }
+      `}</style>
+      
+      <div className={showAll ? "gallery-grid-full" : "gallery-row"}>
+        {displayPhotos.map(p => (
+          <div key={p.id} className="gallery-item" onClick={() => onPhotoClick(p)} style={{ cursor: 'pointer', overflow: 'hidden', ...containerStyle }}>
+            <img src={p.file_path} alt={p.caption||''} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s', ...imageStyle }} onMouseEnter={e=>{e.target.style.transform='scale(1.05)'; if(imageStyle?.filter) e.target.style.filter=imageStyle.filter;}} onMouseLeave={e=>{e.target.style.transform='scale(1)'; if(imageStyle?.filter) e.target.style.filter=imageStyle.filter;}} />
+          </div>
+        ))}
+      </div>
+      
+      {photos.length > 3 && (
+        <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+          <button onClick={() => setShowAll(!showAll)} style={{ padding: '0.8rem 2.5rem', background: 'transparent', border: `1px solid ${template.primaryColor}`, color: template.primaryColor, borderRadius: '50px', fontSize: '0.75rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', transition: 'all 0.3s' }} onMouseEnter={e=>{e.target.style.background=template.primaryColor;e.target.style.color='#fff'}} onMouseLeave={e=>{e.target.style.background='transparent';e.target.style.color=template.primaryColor}}>
+            {showAll ? 'Show Less' : `View All ${photos.length} Photos`}
+          </button>
+        </div>
+      )}
+    </>
+  );
+}
+
 // ---- LAYOUT A: ROYAL ----
 function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick, coverImage }) {
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -186,19 +258,7 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
           <span style={{ fontSize: '0.65rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700', display: 'block', marginBottom: '0.5rem' }}>Moments</span>
           <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400' }}>Our Gallery</h2>
         </div>
-        {photos.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '3rem', border: `2px dashed ${template.secondaryColor}`, borderRadius: '8px', background: template.accentColor, opacity: 0.7 }}>
-            <p style={{ fontFamily: template.fontTitle, color: template.primaryColor }}>Our memories will appear here...</p>
-          </div>
-        ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(210px,1fr))', gap: '1rem' }}>
-            {photos.map(p => (
-              <div key={p.id} onClick={() => onPhotoClick(p)} style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden', borderRadius: '4px', border: `2px solid ${template.secondaryColor}`, cursor: 'pointer' }}>
-                <img src={p.file_path} alt={p.caption||''} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }} onMouseEnter={e=>e.target.style.transform='scale(1.05)'} onMouseLeave={e=>e.target.style.transform='scale(1)'} />
-              </div>
-            ))}
-          </div>
-        )}
+        <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ aspectRatio: '4/3', borderRadius: '4px', border: `2px solid ${template.secondaryColor}` }} />
       </section>
       {/* RSVP */}
       <section id="rsvp" style={{ padding: '5rem 1.5rem', background: template.accentColor }}>
@@ -254,17 +314,7 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
           <span style={{ fontSize: '0.65rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.55, display: 'block', marginBottom: '0.5rem' }}>Our Story</span>
           <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400' }}>Photo Gallery</h2>
         </div>
-        {photos.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '3rem', border: `2px dashed ${template.primaryColor}`, borderRadius: '24px', opacity: 0.5, background: template.accentColor }}><p>Your beautiful moments will appear here...</p></div>
-        ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: '1.25rem' }}>
-            {photos.map(p => (
-              <div key={p.id} onClick={() => onPhotoClick(p)} style={{ borderRadius: '20px', overflow: 'hidden', aspectRatio: '4/3', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', cursor: 'pointer' }}>
-                <img src={p.file_path} alt={p.caption||''} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }} onMouseEnter={e=>e.target.style.transform='scale(1.05)'} onMouseLeave={e=>e.target.style.transform='scale(1)'} />
-              </div>
-            ))}
-          </div>
-        )}
+        <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ aspectRatio: '4/3', borderRadius: '20px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }} />
       </section>
       <section id="rsvp" style={{ padding: '5rem 1.5rem', background: `linear-gradient(135deg,${template.accentColor},${template.bgColor})` }}>
         <div style={{ maxWidth: '520px', margin: '0 auto' }}>
@@ -327,17 +377,7 @@ function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, pho
       <section id="gallery" style={{ padding: '4rem 3rem', borderTop: `1px solid ${template.accentColor}` }}>
         <span style={{ fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, display: 'block', marginBottom: '1rem' }}>Gallery</span>
         <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '2rem' }}>Our Story</h2>
-        {photos.length === 0 ? (
-          <div style={{ padding: '3rem', border: `1px solid ${template.accentColor}`, textAlign: 'center', opacity: 0.5 }}><p style={{ fontSize: '0.85rem' }}>Gallery photos will appear here</p></div>
-        ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '2px' }}>
-            {photos.map(p => (
-              <div key={p.id} onClick={() => onPhotoClick(p)} style={{ aspectRatio: '1', overflow: 'hidden', cursor: 'pointer' }}>
-                <img src={p.file_path} alt={p.caption||''} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }} onMouseEnter={e=>e.target.style.transform='scale(1.05)'} onMouseLeave={e=>e.target.style.transform='scale(1)'} />
-              </div>
-            ))}
-          </div>
-        )}
+        <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ aspectRatio: '1' }} />
       </section>
       <section id="rsvp" style={{ padding: '5rem 3rem', background: template.accentColor }}>
         <div style={{ maxWidth: '460px' }}>
@@ -394,17 +434,7 @@ function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos
           <div style={{ fontSize: '1.8rem', color: template.secondaryColor, marginBottom: '0.5rem' }}>❧</div>
           <h2 style={{ fontFamily: template.fontTitle, fontSize: '1.8rem', color: template.primaryColor, letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '400' }}>Our Memories</h2>
         </div>
-        {photos.length === 0 ? (
-          <div style={{ padding: '3rem', border: `2px solid ${template.primaryColor}`, textAlign: 'center', opacity: 0.5, background: '#fffdf4', boxShadow: `4px 4px 0 ${template.secondaryColor}` }}><p style={{ fontFamily: template.fontTitle }}>Photographs to follow...</p></div>
-        ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(210px,1fr))', gap: '1.25rem' }}>
-            {photos.map(p => (
-              <div key={p.id} onClick={() => onPhotoClick(p)} style={{ border: `3px solid ${template.primaryColor}`, overflow: 'hidden', aspectRatio: '4/3', boxShadow: `4px 4px 0 ${template.secondaryColor}`, cursor: 'pointer' }}>
-                <img src={p.file_path} alt={p.caption||''} style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'sepia(0.2)', transition: 'transform 0.4s' }} onMouseEnter={e=>e.target.style.transform='scale(1.05) sepia(0.2)'} onMouseLeave={e=>e.target.style.transform='scale(1) sepia(0.2)'} />
-              </div>
-            ))}
-          </div>
-        )}
+        <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ border: `3px solid ${template.primaryColor}`, aspectRatio: '4/3', boxShadow: `4px 4px 0 ${template.secondaryColor}` }} imageStyle={{ filter: 'sepia(0.2)' }} />
       </section>
       <section id="rsvp" style={{ padding: '5rem 1.5rem', background: '#fffdf4', borderTop: `1px solid ${template.accentColor}` }}>
         <div style={{ maxWidth: '520px', margin: '0 auto' }}>

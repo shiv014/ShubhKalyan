@@ -219,6 +219,10 @@ function LoginForm() {
                 style={{ display: 'flex', alignItems: 'center', padding: '12px 36px', cursor: 'pointer', transition: 'background 0.1s', borderTop: '1px solid #dadce0' }}
                 onMouseEnter={e => e.currentTarget.style.background = '#f8f9fa'}
                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                onClick={() => {
+                  alert('This is a simulated OAuth flow. Account addition is not available in the mock.');
+                  setShowOauthModal(null);
+                }}
               >
                 <div style={{ width: '32px', height: '32px', marginRight: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5f6368" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -230,6 +234,10 @@ function LoginForm() {
                 style={{ display: 'flex', alignItems: 'center', padding: '12px 36px', cursor: 'pointer', transition: 'background 0.1s', borderTop: '1px solid #dadce0', borderBottom: '1px solid #dadce0' }}
                 onMouseEnter={e => e.currentTarget.style.background = '#f8f9fa'}
                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                onClick={() => {
+                  alert('This is a simulated OAuth flow. Account removal is not available in the mock.');
+                  setShowOauthModal(null);
+                }}
               >
                 <div style={{ width: '32px', height: '32px', marginRight: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5f6368" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="8"/></svg>

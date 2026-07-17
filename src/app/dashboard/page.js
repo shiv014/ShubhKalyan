@@ -7,6 +7,17 @@ import { getTemplates, getTemplateById } from '@/lib/templates';
 import TemplateRenderer from '@/components/TemplateRenderer';
 import styles from './dashboard.module.css';
 
+const STOCK_COVERS = [
+  { name: 'Royal Palace', path: '/covers/cover_royal_1784272436002.jpg' },
+  { name: 'Floral Garden', path: '/covers/cover_floral_1784272450659.jpg' },
+  { name: 'Minimalist Marble', path: '/covers/cover_minimalist_1784272467100.jpg' },
+  { name: 'Vintage Sepia', path: '/covers/cover_vintage_1784272482211.jpg' },
+  { name: 'Beach Sunset', path: '/covers/cover_beach_1784272520709.jpg' },
+  { name: 'Rustic Barn', path: '/covers/cover_rustic_1784272532607.jpg' },
+  { name: 'Modern Gold', path: '/covers/cover_modern_1784272543611.jpg' },
+  { name: 'Classic Church', path: '/covers/cover_classic_1784272554643.jpg' }
+];
+
 function DashboardPortal() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -247,6 +258,33 @@ function DashboardPortal() {
       });
       if (res.ok) {
         setPhotos(photos.map(p => ({ ...p, is_cover: p.id === photoId ? 1 : 0 })));
+        showToast('success', 'Cover photo updated!');
+      } else {
+        showToast('danger', 'Failed to update cover photo');
+      }
+    } catch (err) {
+      showToast('danger', 'Error updating cover photo');
+    }
+  };
+
+  // 4c. Set Stock Cover
+  const handleSetStockCover = async (filePath) => {
+    try {
+      const res = await fetch(`/api/upload/stock-cover`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filePath })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        const updatedPhotos = photos.map(p => ({ ...p, is_cover: 0 }));
+        const existing = updatedPhotos.find(p => p.file_path === filePath);
+        if (existing) {
+          existing.is_cover = 1;
+          setPhotos(updatedPhotos);
+        } else {
+          setPhotos([data.photo, ...updatedPhotos]);
+        }
         showToast('success', 'Cover photo updated!');
       } else {
         showToast('danger', 'Failed to update cover photo');
@@ -690,6 +728,23 @@ function DashboardPortal() {
                     disabled={uploadingPhoto}
                   />
                 </div>
+              </div>
+
+              {/* Stock Cover Grid */}
+              <h3 style={{ fontSize: '1.2rem', marginTop: '2.5rem', marginBottom: '1rem' }}>Or Choose a Premium Theme Cover</h3>
+              <div className={styles.photoGrid}>
+                {STOCK_COVERS.map((stock) => (
+                  <div key={stock.name} className={styles.photoCard}>
+                    <img src={stock.path} alt={stock.name} className={styles.photoThumb} />
+                    <button 
+                      onClick={() => handleSetStockCover(stock.path)} 
+                      style={{ position: 'absolute', top: '8px', left: '8px', background: photos.find(p=>p.file_path===stock.path && p.is_cover) ? 'var(--color-primary)' : 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '4px', padding: '0.3rem 0.6rem', fontSize: '0.75rem', cursor: 'pointer', zIndex: 10, fontWeight: 'bold' }}
+                    >
+                      {photos.find(p=>p.file_path===stock.path && p.is_cover) ? '★ Cover' : 'Set Cover'}
+                    </button>
+                    <div className={styles.photoCaption}>{stock.name}</div>
+                  </div>
+                ))}
               </div>
 
               {/* Uploaded Gallery Grid */}

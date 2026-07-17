@@ -288,10 +288,6 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
           <div style={{ fontFamily: template.fontNames, fontSize: 'clamp(2.2rem, 8vw, 3.2rem)', color: '#fff', lineHeight: 1.1, textShadow: '0 2px 12px rgba(0,0,0,0.5)' }}>{bride} <span style={{ fontFamily: template.fontTitle, fontSize: '1.2rem', fontWeight: '400' }}>&amp;</span> {groom}</div>
           <div style={{ width: '35px', height: '1px', background: template.secondaryColor, opacity: 0.7 }} />
           <span style={{ fontSize: '0.6rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.9)', fontWeight: '600' }}>{dateStr}</span>
-            <button onClick={() => scrollTo('rsvp')} style={{ marginTop: '0.5rem', padding: '0.6rem 2rem', background: 'transparent', border: `1px solid ${template.secondaryColor}`, color: template.secondaryColor, fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', transition: 'all 0.3s' }}
-              onMouseEnter={e=>{e.currentTarget.style.background=template.secondaryColor;e.currentTarget.style.color='#fff';}} onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.color=template.secondaryColor;}}>
-              RSVP Online
-            </button>
             <CountdownTimer eventDate={event?.event_date} />
           </div>
           <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '60px', background: template.bgColor, borderRadius: '50% 50% 0 0 / 100% 100% 0 0', zIndex: 3 }} />
@@ -579,7 +575,7 @@ export default function TemplateRenderer({ event, template, photos = [], preview
         />
       )}
 
-      <AudioPlayer src={event?.audio_path || "https://archive.org/download/dli.akashvani.sangeet.24/02_Bismillah_Khan_Shehnai_Raag_Poorvi_Dhun.mp3"} />
+      <AudioPlayer src={event?.audio_path || "https://cdn.pixabay.com/download/audio/2022/11/22/audio_03d987a02c.mp3?filename=indian-background-music-126273.mp3"} />
 
       {/* Floating Action Button for Download Poster */}
       {!previewMode && (

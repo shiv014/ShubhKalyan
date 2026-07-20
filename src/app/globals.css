@@ -383,7 +383,6 @@ a:hover { color: var(--color-primary-hover); }
   background-size: 400% 400%;
   animation: gradientBgMove 15s ease infinite;
   position: relative;
-  overflow: hidden;
 }
 
 .reveal-on-scroll {

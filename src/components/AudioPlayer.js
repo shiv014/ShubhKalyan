@@ -10,13 +10,48 @@ export default function AudioPlayer({ src = "/audio/romantic-bg.mp3" }) {
 
   useEffect(() => {
     setIsClient(true);
-    // Initialize audio but DO NOT auto-play (browsers block it).
-    // We rely on the user to click the button.
     audioRef.current = new Audio(src);
     audioRef.current.loop = true;
     audioRef.current.volume = 0.5;
 
+    let interactionHandled = false;
+
+    const playAudio = async () => {
+      if (!audioRef.current) return;
+      try {
+        await audioRef.current.play();
+        setIsPlaying(true);
+        removeListeners();
+      } catch (err) {
+        console.log("Autoplay blocked. Waiting for user interaction...");
+      }
+    };
+
+    const handleInteraction = () => {
+      if (!interactionHandled) {
+        interactionHandled = true;
+        playAudio();
+      }
+    };
+
+    const removeListeners = () => {
+      document.removeEventListener('click', handleInteraction);
+      document.removeEventListener('scroll', handleInteraction);
+      document.removeEventListener('keydown', handleInteraction);
+      document.removeEventListener('touchstart', handleInteraction);
+    };
+
+    // Attempt autoplay immediately
+    playAudio();
+
+    // Attach listeners to catch the first interaction
+    document.addEventListener('click', handleInteraction);
+    document.addEventListener('scroll', handleInteraction, { passive: true });
+    document.addEventListener('keydown', handleInteraction);
+    document.addEventListener('touchstart', handleInteraction, { passive: true });
+
     return () => {
+      removeListeners();
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current = null;

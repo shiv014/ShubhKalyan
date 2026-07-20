@@ -781,6 +781,25 @@ function DashboardPortal() {
                         position: 'relative'
                       }}
                     >
+                      {tpl.isSignature && (
+                        <div style={{
+                          position: 'absolute',
+                          top: '8px',
+                          left: '8px',
+                          background: 'linear-gradient(135deg, #cfa830, #e4c45a)',
+                          color: '#1e0a0f',
+                          fontSize: '0.55rem',
+                          fontWeight: '850',
+                          letterSpacing: '1px',
+                          textTransform: 'uppercase',
+                          padding: '0.15rem 0.45rem',
+                          borderRadius: '12px',
+                          zIndex: 10,
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+                        }}>
+                          Signature
+                        </div>
+                      )}
                       {/* Dark Overlay */}
                       <div style={{
                         position: 'absolute',

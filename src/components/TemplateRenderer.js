@@ -272,8 +272,41 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   const cover = coverImage;
   const rsvpDeadline = getRsvpDeadline(event?.event_date);
+  
+  const subLayout = template.subLayout;
+  let layoutBg = template.bgColor;
+  let cardBorder = `1px solid ${template.secondaryColor}`;
+  let cardShadow = `6px 6px 0 ${template.secondaryColor}`;
+  let cardBg = template.accentColor;
+  let separator = '✦';
+  let borderOverlay = null;
+
+  if (subLayout === 'rajputana') {
+    separator = '🕌';
+    cardBg = '#fdfaf2';
+    borderOverlay = (
+      <div style={{ position: 'absolute', inset: '2rem', border: `2px solid ${template.secondaryColor}`, borderRadius: '4px', outline: `1px solid ${template.secondaryColor}`, outlineOffset: '4px', pointerEvents: 'none', opacity: 0.4 }} />
+    );
+  } else if (subLayout === 'victorian') {
+    separator = '❦';
+    layoutBg = 'radial-gradient(circle, #fdfbf7 0%, #f6f1e5 100%)';
+    cardBg = '#fffcf7';
+    borderOverlay = (
+      <div style={{ position: 'absolute', inset: '2.5rem', border: `1px solid ${template.secondaryColor}`, pointerEvents: 'none', opacity: 0.3 }} />
+    );
+  } else if (subLayout === 'artdeco') {
+    separator = '♦';
+    layoutBg = '#121212';
+    cardBg = '#1c1c1c';
+    cardBorder = `3px double ${template.secondaryColor}`;
+    cardShadow = 'none';
+    borderOverlay = (
+      <div style={{ position: 'absolute', inset: '1.5rem', border: `2px double ${template.secondaryColor}`, pointerEvents: 'none', opacity: 0.3 }} />
+    );
+  }
+
   return (
-    <div style={{ fontFamily: template.fontBody, background: template.bgColor, color: template.textColor, minHeight: '100vh', overflowX: 'hidden' }}>
+    <div style={{ fontFamily: template.fontBody, background: layoutBg, color: template.textColor, minHeight: '100vh', overflowX: 'hidden' }}>
       {/* Nav */}
       <nav style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', justifyContent: 'center', gap: '2.5rem', padding: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
         {['home','details','gallery','rsvp'].map(id => (
@@ -283,32 +316,40 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
       </nav>
       {/* Hero */}
       <header id="home" style={{ height: '92vh', position: 'relative', backgroundImage: `url(${cover})`, backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.25) 50%,rgba(0,0,0,0.65) 100%)' }} />
-        <div style={{ position: 'relative', zIndex: 2, padding: '2.5rem 3.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', maxWidth: '440px', margin: '0 1rem' }}>
-          <span style={{ fontSize: '0.55rem', letterSpacing: '5px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700' }}>✦ Cordially Invited ✦</span>
+        <div style={{ position: 'absolute', inset: 0, background: subLayout === 'artdeco' ? 'linear-gradient(180deg,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.4) 50%,rgba(0,0,0,0.9) 100%)' : 'linear-gradient(180deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.25) 50%,rgba(0,0,0,0.65) 100%)' }} />
+        {borderOverlay}
+        <div style={{ position: 'relative', zIndex: 2, padding: '2.5rem 3.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', maxWidth: '440px', margin: '0 1rem', border: subLayout === 'artdeco' ? `3px double ${template.secondaryColor}` : undefined, background: subLayout === 'artdeco' ? 'rgba(18,18,18,0.8)' : undefined, backdropFilter: subLayout === 'artdeco' ? 'blur(8px)' : undefined }}>
+          <span style={{ fontSize: '0.55rem', letterSpacing: '5px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700' }}>{separator} {subLayout === 'rajputana' ? 'Shubh Vivah' : 'Cordially Invited'} {separator}</span>
           <div style={{ width: '35px', height: '1px', background: template.secondaryColor, opacity: 0.7 }} />
           <div style={{ fontFamily: template.fontNames, fontSize: 'clamp(2.2rem, 8vw, 3.2rem)', color: '#fff', lineHeight: 1.1, textShadow: '0 2px 12px rgba(0,0,0,0.5)' }}>{bride} <span style={{ fontFamily: template.fontTitle, fontSize: '1.2rem', fontWeight: '400' }}>&amp;</span> {groom}</div>
           <div style={{ width: '35px', height: '1px', background: template.secondaryColor, opacity: 0.7 }} />
           <span style={{ fontSize: '0.6rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.9)', fontWeight: '600' }}>{dateStr}</span>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', marginTop: '1.25rem' }}>
+            <button onClick={() => scrollTo('rsvp')} style={{ padding: '0.6rem 2rem', background: subLayout === 'artdeco' ? template.secondaryColor : 'transparent', border: `1px solid ${template.secondaryColor}`, color: subLayout === 'artdeco' ? '#121212' : template.secondaryColor, fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', transition: 'all 0.3s' }}
+              onMouseEnter={e=>{e.currentTarget.style.background=subLayout === 'artdeco' ? '#fff' : template.secondaryColor;e.currentTarget.style.color=subLayout === 'artdeco' ? '#121212' : '#fff';}} onMouseLeave={e=>{e.currentTarget.style.background=subLayout === 'artdeco' ? template.secondaryColor : 'transparent';e.currentTarget.style.color=subLayout === 'artdeco' ? '#121212' : template.secondaryColor;}}>
+              RSVP Online
+            </button>
             <CountdownTimer eventDate={event?.event_date} />
           </div>
-          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '60px', background: template.bgColor, borderRadius: '50% 50% 0 0 / 100% 100% 0 0', zIndex: 3 }} />
+        </div>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '60px', background: subLayout === 'artdeco' ? '#121212' : template.bgColor, borderRadius: '50% 50% 0 0 / 100% 100% 0 0', zIndex: 3 }} />
       </header>
       {/* Details */}
       <section id="details" className="tpl-section-standard" style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto' }}>
         <span style={{ fontSize: '0.65rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700', display: 'block', marginBottom: '0.5rem' }}>Save the Date</span>
         <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '1rem' }}>Ceremony &amp; Celebration</h2>
         <p style={{ opacity: 0.7, maxWidth: '500px', margin: '0 auto 2.5rem', fontSize: '0.95rem' }}>Join us as we celebrate our union surrounded by those we cherish most.</p>
-        <div style={{ background: template.accentColor, border: `1px solid ${template.secondaryColor}`, borderLeft: `4px solid ${template.secondaryColor}`, borderRadius: '8px', padding: '2.5rem 2rem', display: 'inline-block', minWidth: '300px', textAlign: 'left' }}>
+        <div style={{ background: cardBg, border: cardBorder, borderLeft: subLayout === 'artdeco' ? cardBorder : `4px solid ${template.secondaryColor}`, borderRadius: subLayout === 'artdeco' ? '0px' : '8px', padding: '2.5rem 2rem', display: 'inline-block', minWidth: '300px', textAlign: 'left', boxShadow: cardShadow }}>
           <div style={{ fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700', marginBottom: '0.5rem' }}>DATE &amp; TIME</div>
           <div style={{ fontFamily: template.fontTitle, fontSize: '1.2rem', color: template.primaryColor, marginBottom: '0.25rem' }}>{dateStr}</div>
           <div style={{ fontSize: '0.9rem', color: template.primaryColor, opacity: 0.7, marginBottom: '1.5rem' }}>at {timeStr}</div>
           <div style={{ width: '100%', height: '1px', background: template.secondaryColor, opacity: 0.3, marginBottom: '1.5rem' }} />
           <div style={{ fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700', marginBottom: '0.5rem' }}>VENUE</div>
-          <div style={{ fontFamily: template.fontTitle, fontSize: '1rem', color: template.primaryColor, fontStyle: 'italic' }}>{venue}</div>
+          <div style={{ fontFamily: template.fontTitle, fontSize: '1rem', color: template.primaryColor, fontStyle: 'italic', marginBottom: '1.5rem' }}>{venue}</div>
           <CalendarAndMap event={event} bride={bride} groom={groom} venue={venue} template={template} dateStr={dateStr} />
         </div>
       </section>
+
       {/* Gallery */}
       <section id="gallery" className="tpl-section-standard" style={{ maxWidth: '900px', margin: '0 auto', borderTop: `1px solid ${template.accentColor}` }}>
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
@@ -339,8 +380,38 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   const cover = coverImage;
   const rsvpDeadline = getRsvpDeadline(event?.event_date);
+  
+  const subLayout = template.subLayout;
+  let layoutBg = template.bgColor;
+  let detailsCardStyle = { background: template.accentColor, borderRadius: '32px', padding: '2.5rem 2rem', marginTop: '1.5rem' };
+  let separator = '❀';
+
+  if (subLayout === 'boho') {
+    separator = '🌾';
+    detailsCardStyle = {
+      background: template.accentColor,
+      backgroundImage: 'linear-gradient(rgba(171,84,54,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(171,84,54,0.03) 1px, transparent 1px)',
+      backgroundSize: '20px 20px',
+      borderRadius: '16px',
+      padding: '2.5rem 2rem',
+      marginTop: '1.5rem',
+      border: `1px dashed ${template.primaryColor}`
+    };
+  } else if (subLayout === 'enchanted') {
+    separator = '🌿';
+    layoutBg = 'linear-gradient(to bottom, #f4f7f5 0%, #e8efe9 100%)';
+    detailsCardStyle = {
+      background: '#ffffff',
+      border: `2px solid ${template.secondaryColor}`,
+      borderRadius: '24px',
+      padding: '2.5rem 2rem',
+      marginTop: '1.5rem',
+      boxShadow: '0 10px 35px rgba(26,51,40,0.05)'
+    };
+  }
+
   return (
-    <div style={{ fontFamily: template.fontBody, background: template.bgColor, color: template.textColor, minHeight: '100vh', overflowX: 'hidden' }}>
+    <div style={{ fontFamily: template.fontBody, background: layoutBg, color: template.textColor, minHeight: '100vh', overflowX: 'hidden' }}>
       <nav style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', justifyContent: 'center', gap: '2.5rem', padding: '1.25rem' }}>
         {['home','details','gallery','rsvp'].map(id => (
           <span key={id} onClick={() => scrollTo(id)} style={{ color: 'rgba(255,255,255,0.92)', fontSize: '0.65rem', fontWeight: '600', letterSpacing: '2.5px', textTransform: 'uppercase', cursor: 'pointer' }}>{id}</span>
@@ -349,7 +420,7 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
       <header id="home" style={{ height: '85vh', position: 'relative', backgroundImage: `url(${cover})`, backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', borderRadius: '0 0 50% 50% / 0 0 80px 80px' }}>
         <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to bottom,rgba(0,0,0,0.4),rgba(0,0,0,0.5))` }} />
         <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', padding: '2rem' }}>
-          <span style={{ display: 'block', fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700', marginBottom: '1rem', textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>❀ We Are Getting Married ❀</span>
+          <span style={{ display: 'block', fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700', marginBottom: '1rem', textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>{separator} We Are Getting Married {separator}</span>
           <div style={{ fontFamily: template.fontNames, fontSize: 'clamp(2.5rem, 9vw, 3.5rem)', color: '#fff', textShadow: '0 3px 15px rgba(0,0,0,0.4)', lineHeight: 1.15, margin: '0.5rem 0' }}>{bride} <span style={{ fontFamily: template.fontTitle, fontSize: 'clamp(1.2rem, 4vw, 1.6rem)' }}>&amp;</span> {groom}</div>
           <div style={{ width: '50px', height: '2px', background: template.secondaryColor, margin: '1rem auto', borderRadius: '2px', opacity: 0.85 }} />
           <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.75rem', letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: '600' }}>{dateStr}</p>
@@ -362,11 +433,11 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
       <section id="details" className="tpl-section-standard" style={{ textAlign: 'center', maxWidth: '650px', margin: '0 auto' }}>
         <span style={{ fontSize: '0.65rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.55, display: 'block', marginBottom: '0.5rem' }}>Join Us</span>
         <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '1.5rem' }}>The Celebration</h2>
-        <div style={{ background: template.accentColor, borderRadius: '32px', padding: '2.5rem 2rem', marginTop: '1.5rem' }}>
+        <div style={detailsCardStyle}>
           <div style={{ fontSize: '1.3rem', fontFamily: template.fontTitle, color: template.primaryColor, marginBottom: '0.5rem' }}>{dateStr}</div>
           <div style={{ fontSize: '0.85rem', color: template.primaryColor, opacity: 0.65, marginBottom: '1.5rem' }}>{timeStr}</div>
           <div style={{ width: '40px', height: '2px', background: template.primaryColor, opacity: 0.2, margin: '0 auto 1.5rem' }} />
-          <div style={{ fontSize: '0.95rem', fontStyle: 'italic', color: template.primaryColor, opacity: 0.8 }}>📍 {venue}</div>
+          <div style={{ fontSize: '0.95rem', fontStyle: 'italic', color: template.primaryColor, opacity: 0.8, marginBottom: '1.5rem' }}>📍 {venue}</div>
           <CalendarAndMap event={event} bride={bride} groom={groom} venue={venue} template={template} dateStr={dateStr} />
         </div>
       </section>
@@ -375,7 +446,7 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
           <span style={{ fontSize: '0.65rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.55, display: 'block', marginBottom: '0.5rem' }}>Our Story</span>
           <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400' }}>Photo Gallery</h2>
         </div>
-        <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ aspectRatio: '4/3', borderRadius: '20px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }} />
+        <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ aspectRatio: '4/3', borderRadius: subLayout === 'boho' ? '4px' : '20px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }} />
       </section>
       <section id="rsvp" className="tpl-section-standard" style={{ background: `linear-gradient(135deg,${template.accentColor},${template.bgColor})` }}>
         <div style={{ maxWidth: '520px', margin: '0 auto' }}>
@@ -383,7 +454,7 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
             <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '0.5rem' }}>RSVP</h2>
             <p style={{ opacity: 0.65, fontSize: '0.85rem' }}>We hope to see you there! Kindly respond by {rsvpDeadline}.</p>
           </div>
-          <div style={{ background: '#fff', borderRadius: '24px', padding: '2rem 2.5rem', boxShadow: '0 8px 40px rgba(0,0,0,0.07)' }}>
+          <div style={{ background: '#fff', borderRadius: subLayout === 'boho' ? '8px' : '24px', padding: '2rem 2.5rem', boxShadow: '0 8px 40px rgba(0,0,0,0.07)' }}>
             <RsvpForm event={event} previewMode={previewMode} primary={template.primaryColor} secondary={template.secondaryColor} />
           </div>
         </div>
@@ -393,13 +464,35 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
 }
 
 // ---- LAYOUT C: MINIMALIST ----
+// ---- LAYOUT C: MINIMALIST ----
 function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick, coverImage }) {
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   const cover = coverImage;
   const rsvpDeadline = getRsvpDeadline(event?.event_date);
+  
+  const subLayout = template.subLayout;
+  let wrapperStyle = { fontFamily: template.fontBody, background: '#fff', color: template.textColor, minHeight: '100vh', overflowX: 'hidden' };
+  let cardClass = "";
+  let detailsStyle = { borderTop: `2px solid ${template.primaryColor}`, paddingTop: '1.5rem' };
+  let mainBg = '#fff';
+
+  if (subLayout === 'glassmorphism') {
+    wrapperStyle.background = 'linear-gradient(135deg, #f5f3f7 0%, #e8eaf6 100%)';
+    cardClass = "frosted-card";
+    mainBg = 'transparent';
+  } else if (subLayout === 'zen') {
+    wrapperStyle.background = '#fafaf9';
+    mainBg = '#fafaf9';
+    detailsStyle = { borderTop: `1px solid ${template.primaryColor}`, paddingTop: '2rem' };
+  } else if (subLayout === 'coastal') {
+    wrapperStyle.background = '#f4f8fa';
+    mainBg = '#f4f8fa';
+    detailsStyle = { borderTop: `2px solid #8fa89b`, paddingTop: '1.5rem' };
+  }
+
   return (
-    <div style={{ fontFamily: template.fontBody, background: '#fff', color: template.textColor, minHeight: '100vh', overflowX: 'hidden' }}>
-      <nav style={{ borderBottom: `1px solid ${template.accentColor}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', position: 'sticky', top: 0, background: '#fff', zIndex: 100 }}>
+    <div style={wrapperStyle}>
+      <nav style={{ borderBottom: `1px solid ${template.accentColor}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', position: 'sticky', top: 0, background: subLayout === 'glassmorphism' ? 'rgba(255,255,255,0.7)' : mainBg, backdropFilter: subLayout === 'glassmorphism' ? 'blur(10px)' : 'none', zIndex: 100 }}>
         <span style={{ fontFamily: template.fontTitle, fontSize: '0.85rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.primaryColor }}>{bride} &amp; {groom}</span>
         <div style={{ display: 'flex', gap: '2rem' }}>
           {['details','gallery','rsvp'].map(id => (
@@ -407,47 +500,53 @@ function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, pho
           ))}
         </div>
       </nav>
-      <header id="home" className="tr-hero-grid" style={{ minHeight: '82vh' }}>
+      <header id="home" className="tr-hero-grid" style={{ minHeight: '82vh', background: subLayout === 'glassmorphism' ? 'linear-gradient(45deg, #ffdde1 0%, #ee9ca7 100%)' : undefined }}>
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '4rem 3rem' }}>
-          <span style={{ fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, display: 'block', marginBottom: '1.5rem' }}>Save the Date</span>
-          <div style={{ fontFamily: template.fontNames, fontSize: 'clamp(2.2rem, 7vw, 2.8rem)', color: template.primaryColor, lineHeight: 1.1, marginBottom: '1.5rem' }}>{bride}<br /><span style={{ fontSize: 'clamp(1rem, 3.5vw, 1.4rem)' }}>&amp;</span><br />{groom}</div>
-          <div style={{ width: '40px', height: '2px', background: template.primaryColor, marginBottom: '1.5rem' }} />
-          <p style={{ fontSize: '0.75rem', letterSpacing: '2px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.55, marginBottom: '0.5rem', lineHeight: 1.9 }}>{dateStr}</p>
-          <p style={{ fontSize: '0.75rem', color: template.primaryColor, opacity: 0.45, lineHeight: 1.9 }}>{venue}</p>
-          <button onClick={() => scrollTo('rsvp')} style={{ marginTop: '2rem', padding: '0.8rem 2rem', background: template.primaryColor, color: '#fff', border: 'none', fontSize: '0.65rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', alignSelf: 'flex-start' }}>RSVP</button>
-          <div style={{ alignSelf: 'flex-start' }}><CountdownTimer eventDate={event?.event_date} /></div>
+          <div className={cardClass} style={{ padding: subLayout === 'glassmorphism' ? '2.5rem' : '0px', borderRadius: subLayout === 'glassmorphism' ? '20px' : '0px' }}>
+            <span style={{ fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.55, display: 'block', marginBottom: '1.5rem' }}>Save the Date</span>
+            <div style={{ fontFamily: template.fontNames, fontSize: 'clamp(2.2rem, 7vw, 2.8rem)', color: template.primaryColor, lineHeight: 1.1, marginBottom: '1.5rem' }}>{bride}<br /><span style={{ fontSize: 'clamp(1rem, 3.5vw, 1.4rem)' }}>&amp;</span><br />{groom}</div>
+            <div style={{ width: '40px', height: '2px', background: template.primaryColor, marginBottom: '1.5rem' }} />
+            <p style={{ fontSize: '0.75rem', letterSpacing: '2px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.65, marginBottom: '0.5rem', lineHeight: 1.9 }}>{dateStr}</p>
+            <p style={{ fontSize: '0.75rem', color: template.primaryColor, opacity: 0.55, lineHeight: 1.9 }}>{venue}</p>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1.25rem', marginTop: '2rem' }}>
+              <button onClick={() => scrollTo('rsvp')} style={{ padding: '0.8rem 2rem', background: template.primaryColor, color: '#fff', border: 'none', fontSize: '0.65rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer' }}>RSVP</button>
+              <CountdownTimer eventDate={event?.event_date} />
+            </div>
+          </div>
         </div>
         <div style={{ overflow: 'hidden' }}>
           <img src={cover} alt="Wedding" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
         </div>
       </header>
-      <section id="details" className="tpl-section-minimal" style={{ maxWidth: '700px', margin: '0 auto' }}>
+      <section id="details" className="tpl-section-minimal" style={{ maxWidth: '700px', margin: '0 auto', background: mainBg }}>
         <span style={{ fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, display: 'block', marginBottom: '1rem' }}>Details</span>
         <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '2rem' }}>Ceremony &amp; Reception</h2>
-        <div className="tr-details-grid">
-          <div style={{ borderTop: `2px solid ${template.primaryColor}`, paddingTop: '1.5rem' }}>
+        <div className={`tr-details-grid ${cardClass}`} style={{ padding: subLayout === 'glassmorphism' ? '2rem' : '0px', borderRadius: subLayout === 'glassmorphism' ? '16px' : '0px' }}>
+          <div style={detailsStyle}>
             <div style={{ fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, marginBottom: '0.5rem' }}>When</div>
             <div style={{ fontFamily: template.fontTitle, fontSize: '1rem', color: template.primaryColor, marginBottom: '0.25rem' }}>{dateStr}</div>
             <div style={{ fontSize: '0.85rem', opacity: 0.55 }}>{timeStr}</div>
           </div>
-          <div style={{ borderTop: `2px solid ${template.primaryColor}`, paddingTop: '1.5rem' }}>
+          <div style={detailsStyle}>
             <div style={{ fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, marginBottom: '0.5rem' }}>Where</div>
-            <div style={{ fontFamily: template.fontTitle, fontSize: '1rem', color: template.primaryColor }}>{venue}</div>
+            <div style={{ fontFamily: template.fontTitle, fontSize: '1rem', color: template.primaryColor, marginBottom: '1rem' }}>{venue}</div>
           </div>
         </div>
         <CalendarAndMap event={event} bride={bride} groom={groom} venue={venue} template={template} dateStr={dateStr} />
       </section>
-      <section id="gallery" className="tpl-section-minimal" style={{ borderTop: `1px solid ${template.accentColor}` }}>
+      <section id="gallery" className="tpl-section-minimal" style={{ borderTop: `1px solid ${template.accentColor}`, background: mainBg }}>
         <span style={{ fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, display: 'block', marginBottom: '1rem' }}>Gallery</span>
         <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '2rem' }}>Our Story</h2>
-        <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ aspectRatio: '1' }} />
+        <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ aspectRatio: '1', borderRadius: subLayout === 'glassmorphism' ? '12px' : '4px' }} />
       </section>
-      <section id="rsvp" className="tpl-section-minimal" style={{ background: template.accentColor }}>
-        <div style={{ maxWidth: '460px', margin: '0 auto' }}>
-          <span style={{ fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, display: 'block', marginBottom: '1rem' }}>Response</span>
-          <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '0.5rem' }}>Will You Attend?</h2>
-          <p style={{ fontSize: '0.85rem', opacity: 0.55, marginBottom: '2rem' }}>Please respond by {rsvpDeadline}.</p>
-          <RsvpForm event={event} previewMode={previewMode} primary={template.primaryColor} secondary={template.secondaryColor} />
+      <section id="rsvp" className="tpl-section-minimal" style={{ background: subLayout === 'glassmorphism' ? 'transparent' : template.accentColor }}>
+        <div style={{ maxWidth: '460px', margin: '0 auto' }} className={cardClass}>
+          <div style={{ padding: subLayout === 'glassmorphism' ? '2.5rem' : '0px', borderRadius: subLayout === 'glassmorphism' ? '24px' : '0px' }}>
+            <span style={{ fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, display: 'block', marginBottom: '1rem' }}>Response</span>
+            <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '0.5rem' }}>Will You Attend?</h2>
+            <p style={{ fontSize: '0.85rem', opacity: 0.55, marginBottom: '2rem' }}>Please respond by {rsvpDeadline}.</p>
+            <RsvpForm event={event} previewMode={previewMode} primary={template.primaryColor} secondary={template.secondaryColor} />
+          </div>
         </div>
       </section>
     </div>
@@ -455,62 +554,101 @@ function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, pho
 }
 
 // ---- LAYOUT D: VINTAGE ----
+// ---- LAYOUT D: VINTAGE ----
 function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick, coverImage }) {
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   const cover = coverImage;
   const rsvpDeadline = getRsvpDeadline(event?.event_date);
+  
+  const subLayout = template.subLayout;
+  let layoutBg = subLayout === 'celestial' ? '#0f172a' : '#faf7ef';
+  let layoutColor = subLayout === 'celestial' ? '#f8fafc' : template.textColor;
+  let cardBg = subLayout === 'celestial' ? '#1e293b' : '#fffdf4';
+  let cardBorder = subLayout === 'celestial' ? `1.5px solid rgba(255,255,255,0.15)` : `2px solid ${template.primaryColor}`;
+  let cardShadow = subLayout === 'celestial' ? `0 10px 30px rgba(0,0,0,0.4)` : `5px 5px 0 ${template.secondaryColor}`;
+  let separator = '❧';
+  let navStyle = { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', justifyContent: 'center', gap: '2.5rem', padding: '1.25rem', background: 'rgba(0,0,0,0.25)', backdropFilter: 'blur(3px)' };
+
+  if (subLayout === 'celestial') {
+    separator = '✨';
+  } else if (subLayout === 'haldi') {
+    separator = '🌼';
+    layoutBg = '#fffdf0';
+    cardBg = '#fef3c7';
+    cardShadow = `5px 5px 0 ${template.primaryColor}`;
+  }
+
   return (
-    <div style={{ fontFamily: template.fontBody, background: '#faf7ef', color: template.textColor, minHeight: '100vh', overflowX: 'hidden' }}>
-      <nav style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', justifyContent: 'center', gap: '2.5rem', padding: '1.25rem', background: 'rgba(0,0,0,0.25)', backdropFilter: 'blur(3px)' }}>
+    <div style={{ fontFamily: template.fontBody, background: layoutBg, color: layoutColor, minHeight: '100vh', overflowX: 'hidden' }}>
+      <nav style={navStyle}>
         {['home','details','gallery','rsvp'].map(id => (
-          <span key={id} onClick={() => scrollTo(id)} style={{ color: 'rgba(255,245,220,0.9)', fontSize: '0.6rem', fontWeight: '700', letterSpacing: '3.5px', textTransform: 'uppercase', cursor: 'pointer', fontFamily: template.fontTitle }}>{id}</span>
+          <span key={id} onClick={() => scrollTo(id)} style={{ color: 'rgba(255,245,220,0.9)', fontSize: '0.65rem', fontWeight: '700', letterSpacing: '3.5px', textTransform: 'uppercase', cursor: 'pointer', fontFamily: template.fontTitle }}>{id}</span>
         ))}
       </nav>
       <header id="home" style={{ height: '92vh', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <img src={cover} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'sepia(0.45) brightness(0.6)', zIndex: 0 }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(50,25,0,0.45)', zIndex: 1 }} />
-        <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', padding: '2.5rem', border: '1px solid rgba(220,180,100,0.55)', borderRadius: '4px', maxWidth: '420px', margin: '0 1rem' }}>
-          <div style={{ border: '3px double rgba(220,180,100,0.75)', padding: '2rem', borderRadius: '2px' }}>
-            <span style={{ display: 'block', fontSize: '0.5rem', letterSpacing: '5px', textTransform: 'uppercase', color: '#dca658', marginBottom: '1rem' }}>— Est. 2026 —</span>
+        <img src={cover} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: subLayout === 'celestial' ? 'brightness(0.35) contrast(1.1)' : 'sepia(0.45) brightness(0.6)', zIndex: 0 }} />
+        <div style={{ position: 'absolute', inset: 0, background: subLayout === 'celestial' ? 'rgba(10,20,40,0.4)' : 'rgba(50,25,0,0.45)', zIndex: 1 }} />
+        
+        {/* Celestial Star Overlay */}
+        {subLayout === 'celestial' && (
+          <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none' }}>
+            {Array.from({ length: 20 }).map((_, i) => (
+              <div key={i} className="star animate-twinkle" style={{
+                position: 'absolute',
+                left: `${(i * 7.7) % 100}%`,
+                top: `${(i * 13.3) % 100}%`,
+                width: `${(i % 3) + 2}px`,
+                height: `${(i % 3) + 2}px`,
+                backgroundColor: '#fff',
+                borderRadius: '50%',
+                opacity: 0.7
+              }} />
+            ))}
+          </div>
+        )}
+
+        <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', padding: '2.5rem', border: subLayout === 'celestial' ? `1px solid ${template.secondaryColor}` : '1px solid rgba(220,180,100,0.55)', borderRadius: '4px', maxWidth: '420px', margin: '0 1rem', background: subLayout === 'celestial' ? 'rgba(15,23,42,0.85)' : undefined, backdropFilter: subLayout === 'celestial' ? 'blur(8px)' : undefined }}>
+          <div style={{ border: subLayout === 'celestial' ? `1.5px solid ${template.secondaryColor}` : '3px double rgba(220,180,100,0.75)', padding: '2rem', borderRadius: '2px' }}>
+            <span style={{ display: 'block', fontSize: '0.5rem', letterSpacing: '5px', textTransform: 'uppercase', color: template.secondaryColor, marginBottom: '1rem' }}>{separator} Est. {new Date().getFullYear()} {separator}</span>
             <div style={{ fontFamily: template.fontTitle, fontSize: '0.9rem', letterSpacing: '5px', textTransform: 'uppercase', color: 'rgba(255,245,220,0.8)', marginBottom: '0.75rem' }}>The Wedding of</div>
             <div style={{ fontFamily: template.fontNames, fontSize: 'clamp(2.2rem, 8vw, 2.8rem)', color: '#fff', textShadow: '0 2px 8px rgba(0,0,0,0.6)', lineHeight: 1.1, marginBottom: '0.25rem' }}>{bride}</div>
-            <div style={{ color: '#dca658', fontSize: '0.85rem', fontFamily: template.fontTitle, letterSpacing: '3px', margin: '0.25rem 0' }}>AND</div>
+            <div style={{ color: template.secondaryColor, fontSize: '0.85rem', fontFamily: template.fontTitle, letterSpacing: '3px', margin: '0.25rem 0' }}>AND</div>
             <div style={{ fontFamily: template.fontNames, fontSize: 'clamp(2.2rem, 8vw, 2.8rem)', color: '#fff', textShadow: '0 2px 8px rgba(0,0,0,0.6)', lineHeight: 1.1, marginTop: '0.25rem' }}>{groom}</div>
-            <div style={{ width: '60px', height: '1px', background: '#dca658', margin: '1rem auto', opacity: 0.6 }} />
+            <div style={{ width: '60px', height: '1px', background: template.secondaryColor, margin: '1rem auto', opacity: 0.6 }} />
             <span style={{ fontSize: '0.6rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,245,220,0.8)' }}>{dateStr}</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', marginTop: '1.25rem' }}>
-            <button onClick={() => scrollTo('rsvp')} style={{ padding: '0.65rem 2rem', background: 'transparent', border: '1px solid #dca658', color: '#dca658', fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', fontFamily: template.fontTitle }}>Kindly Reply</button>
+            <button onClick={() => scrollTo('rsvp')} style={{ padding: '0.65rem 2rem', background: subLayout === 'celestial' ? template.secondaryColor : 'transparent', border: `1px solid ${template.secondaryColor}`, color: subLayout === 'celestial' ? '#1e293b' : template.secondaryColor, fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', fontFamily: template.fontTitle }}>Kindly Reply</button>
             <CountdownTimer eventDate={event?.event_date} />
           </div>
         </div>
       </header>
       <section id="details" className="tpl-section-standard" style={{ textAlign: 'center', maxWidth: '650px', margin: '0 auto' }}>
-        <div style={{ fontSize: '1.8rem', color: template.secondaryColor, marginBottom: '0.5rem' }}>❧</div>
+        <div style={{ fontSize: '1.8rem', color: template.secondaryColor, marginBottom: '0.5rem' }}>{separator}</div>
         <h2 style={{ fontFamily: template.fontTitle, fontSize: '1.8rem', color: template.primaryColor, letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '400', marginBottom: '2rem' }}>Ceremony Details</h2>
-        <div style={{ border: `2px solid ${template.primaryColor}`, boxShadow: `5px 5px 0 ${template.secondaryColor}`, padding: '2.5rem', display: 'inline-block', textAlign: 'left', minWidth: '300px', background: '#fffdf4' }}>
+        <div style={{ border: cardBorder, boxShadow: cardShadow, padding: '2.5rem', display: 'inline-block', textAlign: 'left', minWidth: '300px', background: cardBg }}>
           <div style={{ marginBottom: '1.5rem' }}><div style={{ fontSize: '0.55rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.secondaryColor, marginBottom: '0.4rem' }}>Date</div><div style={{ fontFamily: template.fontTitle, fontSize: '1rem', color: template.primaryColor }}>{dateStr}</div></div>
           <div style={{ marginBottom: '1.5rem' }}><div style={{ fontSize: '0.55rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.secondaryColor, marginBottom: '0.4rem' }}>Time</div><div style={{ fontFamily: template.fontTitle, fontSize: '1rem', color: template.primaryColor }}>{timeStr}</div></div>
-          <div><div style={{ fontSize: '0.55rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.secondaryColor, marginBottom: '0.4rem' }}>Venue</div><div style={{ fontFamily: template.fontTitle, fontSize: '1rem', color: template.primaryColor, fontStyle: 'italic' }}>{venue}</div></div>
+          <div style={{ marginBottom: '1.5rem' }}><div style={{ fontSize: '0.55rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.secondaryColor, marginBottom: '0.4rem' }}>Venue</div><div style={{ fontFamily: template.fontTitle, fontSize: '1rem', color: template.primaryColor, fontStyle: 'italic' }}>{venue}</div></div>
           <CalendarAndMap event={event} bride={bride} groom={groom} venue={venue} template={template} dateStr={dateStr} />
         </div>
-        <div style={{ fontSize: '1.8rem', color: template.secondaryColor, marginTop: '2rem' }}>❦</div>
+        <div style={{ fontSize: '1.8rem', color: template.secondaryColor, marginTop: '2rem' }}>{separator}</div>
       </section>
       <section id="gallery" className="tpl-section-standard" style={{ maxWidth: '900px', margin: '0 auto', borderTop: `1px solid ${template.accentColor}` }}>
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <div style={{ fontSize: '1.8rem', color: template.secondaryColor, marginBottom: '0.5rem' }}>❧</div>
+          <div style={{ fontSize: '1.8rem', color: template.secondaryColor, marginBottom: '0.5rem' }}>{separator}</div>
           <h2 style={{ fontFamily: template.fontTitle, fontSize: '1.8rem', color: template.primaryColor, letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '400' }}>Our Memories</h2>
         </div>
-        <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ border: `3px solid ${template.primaryColor}`, aspectRatio: '4/3', boxShadow: `4px 4px 0 ${template.secondaryColor}` }} imageStyle={{ filter: 'sepia(0.2)' }} />
+        <GalleryGrid photos={photos} template={template} onPhotoClick={onPhotoClick} containerStyle={{ border: subLayout === 'celestial' ? `1px solid rgba(255,255,255,0.15)` : `3px solid ${template.primaryColor}`, aspectRatio: '4/3', boxShadow: cardShadow }} imageStyle={{ filter: subLayout === 'celestial' ? 'none' : 'sepia(0.2)' }} />
       </section>
-      <section id="rsvp" className="tpl-section-standard" style={{ background: '#fffdf4', borderTop: `1px solid ${template.accentColor}` }}>
+      <section id="rsvp" className="tpl-section-standard" style={{ background: subLayout === 'celestial' ? '#0b0f19' : '#fffdf4', borderTop: `1px solid ${template.accentColor}` }}>
         <div style={{ maxWidth: '520px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-            <div style={{ fontSize: '1.8rem', color: template.secondaryColor, marginBottom: '0.5rem' }}>❧</div>
+            <div style={{ fontSize: '1.8rem', color: template.secondaryColor, marginBottom: '0.5rem' }}>{separator}</div>
             <h2 style={{ fontFamily: template.fontTitle, fontSize: '1.8rem', color: template.primaryColor, letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '400', marginBottom: '0.5rem' }}>Kindly Reply</h2>
             <p style={{ opacity: 0.6, fontSize: '0.85rem' }}>Please respond by {rsvpDeadline}</p>
           </div>
-          <div style={{ background: '#fff', border: `2px solid ${template.primaryColor}`, boxShadow: `5px 5px 0 ${template.secondaryColor}`, padding: '2rem 2.5rem' }}>
+          <div style={{ background: cardBg, border: cardBorder, boxShadow: cardShadow, padding: '2rem 2.5rem' }}>
             <RsvpForm event={event} previewMode={previewMode} primary={template.primaryColor} secondary={template.secondaryColor} />
           </div>
         </div>

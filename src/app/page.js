@@ -310,6 +310,12 @@ export default function LandingPage() {
                 {/* Thumbnail */}
                 <div style={{ height: '220px', backgroundImage: `url(${tpl.bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative', overflow: 'hidden' }}>
                   <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.55))' }} />
+                  
+                  {tpl.isSignature && (
+                    <div style={{ position: 'absolute', top: '12px', left: '12px', background: 'linear-gradient(135deg, #cfa830, #e4c45a)', color: '#1e0a0f', fontSize: '0.62rem', fontWeight: '800', letterSpacing: '1px', textTransform: 'uppercase', padding: '0.25rem 0.65rem', borderRadius: '50px', zIndex: 10, boxShadow: '0 4px 10px rgba(0,0,0,0.15)' }}>
+                      Signature
+                    </div>
+                  )}
 
                   {/* Category-specific inner card preview */}
                   <div style={{

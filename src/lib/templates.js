@@ -357,6 +357,66 @@ const SIGNATURE_TEMPLATES = [
     bgImage: 'https://images.unsplash.com/photo-1520854221256-17451cc35d53?auto=format&fit=crop&w=1200&q=80',
     tagline: 'SAVE THE DATE BY THE OCEAN',
     isSignature: true
+  },
+  {
+    id: 'tpl-sig-11',
+    name: 'Modern Editorial',
+    category: 'Minimalist',
+    layout: 'minimalist',
+    subLayout: 'editorial',
+    primaryColor: '#263238',
+    secondaryColor: '#c6924b',
+    bgColor: '#f7f4ef',
+    textColor: '#263238',
+    accentColor: '#e8dfd0',
+    fontTitle: 'var(--font-playfair)',
+    fontBody: 'var(--font-inter)',
+    fontNames: 'var(--font-playfair)',
+    cardStyle: 'border-editorial',
+    coupleNames: 'Arjun & Kavya',
+    bgImage: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1200&q=85',
+    tagline: 'A MODERN CELEBRATION OF LOVE',
+    isSignature: true
+  },
+  {
+    id: 'tpl-sig-12',
+    name: 'Sage Garden',
+    category: 'Floral',
+    layout: 'floral',
+    subLayout: 'enchanted',
+    primaryColor: '#355c4a',
+    secondaryColor: '#d8b36a',
+    bgColor: '#f7faf5',
+    textColor: '#25372c',
+    accentColor: '#e3eddf',
+    fontTitle: 'var(--font-playfair)',
+    fontBody: 'var(--font-inter)',
+    fontNames: 'var(--font-great-vibes)',
+    cardStyle: 'border-rounded-soft',
+    coupleNames: 'Ishita & Veer',
+    bgImage: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1200&q=85',
+    tagline: 'TOGETHER WITH THEIR FAMILIES',
+    isSignature: true
+  },
+  {
+    id: 'tpl-sig-13',
+    name: 'Ivory Celebration',
+    category: 'Royal',
+    layout: 'royal',
+    subLayout: 'rajputana',
+    primaryColor: '#6b3b2a',
+    secondaryColor: '#c9a66b',
+    bgColor: '#fffaf2',
+    textColor: '#2d1b15',
+    accentColor: '#f4e8d2',
+    fontTitle: 'var(--font-playfair)',
+    fontBody: 'var(--font-inter)',
+    fontNames: 'var(--font-great-vibes)',
+    cardStyle: 'border-double',
+    coupleNames: 'Aanya & Reyansh',
+    bgImage: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=1200&q=85',
+    tagline: 'REQUEST THE PLEASURE OF YOUR COMPANY',
+    isSignature: true
   }
 ];
 
@@ -420,4 +480,3 @@ export function searchTemplates(query = '', category = 'All') {
   }
   return filtered;
 }
-

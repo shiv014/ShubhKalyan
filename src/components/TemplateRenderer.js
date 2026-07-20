@@ -475,6 +475,7 @@ function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, pho
   let cardClass = "";
   let detailsStyle = { borderTop: `2px solid ${template.primaryColor}`, paddingTop: '1.5rem' };
   let mainBg = '#fff';
+  const isEditorial = subLayout === 'editorial';
 
   if (subLayout === 'glassmorphism') {
     wrapperStyle.background = 'linear-gradient(135deg, #f5f3f7 0%, #e8eaf6 100%)';
@@ -488,24 +489,90 @@ function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, pho
     wrapperStyle.background = '#f4f8fa';
     mainBg = '#f4f8fa';
     detailsStyle = { borderTop: `2px solid #8fa89b`, paddingTop: '1.5rem' };
+  } else if (isEditorial) {
+    wrapperStyle.background = '#f7f4ef';
+    mainBg = '#f7f4ef';
+    detailsStyle = { borderTop: `1px solid ${template.secondaryColor}`, paddingTop: '1.5rem' };
   }
 
   return (
     <div style={wrapperStyle}>
-      <nav style={{ borderBottom: `1px solid ${template.accentColor}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', position: 'sticky', top: 0, background: subLayout === 'glassmorphism' ? 'rgba(255,255,255,0.7)' : mainBg, backdropFilter: subLayout === 'glassmorphism' ? 'blur(10px)' : 'none', zIndex: 100 }}>
-        <span style={{ fontFamily: template.fontTitle, fontSize: '0.85rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.primaryColor }}>{bride} &amp; {groom}</span>
-        <div style={{ display: 'flex', gap: '2rem' }}>
+      <style>{`
+        .tr-hero-grid-overlay {
+          display: none;
+        }
+        @media (max-width: 768px) {
+          .tpl-minimal-nav {
+            padding: 0.8rem 1rem !important;
+          }
+          .tpl-minimal-nav-name {
+            font-size: 0.65rem !important;
+            letter-spacing: 1.6px !important;
+            white-space: nowrap;
+          }
+          .tpl-minimal-nav-links {
+            gap: 0.7rem !important;
+          }
+          .tpl-minimal-nav-links span {
+            font-size: 0.56rem !important;
+            letter-spacing: 1.2px !important;
+          }
+          .tr-hero-grid {
+            background-image: url(${cover}) !important;
+            background-size: cover !important;
+            background-position: center !important;
+            position: relative !important;
+            min-height: 85vh !important;
+          }
+          .tr-hero-grid-overlay {
+            display: block !important;
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45) !important;
+            z-index: 1;
+          }
+          .tr-hero-text-col {
+            z-index: 2;
+            width: 100% !important;
+            padding: 2.5rem 1.5rem !important;
+          }
+          .tr-hero-img-col {
+            display: none !important;
+          }
+          .tr-mobile-white-text, .tr-mobile-white-text * {
+            color: #ffffff !important;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.4) !important;
+          }
+          .tr-mobile-white-text button {
+            background: #ffffff !important;
+            color: ${template.primaryColor} !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15) !important;
+          }
+          /* Custom styles for Glassmorphism card elements on mobile overlay */
+          .tr-mobile-white-text .frosted-card {
+            background: rgba(255, 255, 255, 0.22) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15) !important;
+          }
+        }
+      `}</style>
+      <nav className="tpl-minimal-nav" style={{ borderBottom: `1px solid ${template.accentColor}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', position: 'sticky', top: 0, background: subLayout === 'glassmorphism' ? 'rgba(255,255,255,0.7)' : mainBg, backdropFilter: subLayout === 'glassmorphism' ? 'blur(10px)' : 'none', zIndex: 100 }}>
+        <span className="tpl-minimal-nav-name" style={{ fontFamily: template.fontTitle, fontSize: '0.85rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.primaryColor }}>{bride} &amp; {groom}</span>
+        <div className="tpl-minimal-nav-links" style={{ display: 'flex', gap: '2rem' }}>
           {['details','gallery','rsvp'].map(id => (
             <span key={id} onClick={() => scrollTo(id)} style={{ fontSize: '0.65rem', letterSpacing: '2.5px', textTransform: 'uppercase', cursor: 'pointer', color: template.textColor, fontWeight: '500' }}>{id}</span>
           ))}
         </div>
       </nav>
-      <header id="home" className="tr-hero-grid" style={{ minHeight: '82vh', background: subLayout === 'glassmorphism' ? 'linear-gradient(45deg, #ffdde1 0%, #ee9ca7 100%)' : undefined }}>
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '4rem 3rem' }}>
-          <div className={cardClass} style={{ padding: subLayout === 'glassmorphism' ? '2.5rem' : '0px', borderRadius: subLayout === 'glassmorphism' ? '20px' : '0px' }}>
+      <header id="home" className="tr-hero-grid" style={{ minHeight: '82vh', background: subLayout === 'glassmorphism' ? 'linear-gradient(45deg, #ffdde1 0%, #ee9ca7 100%)' : isEditorial ? 'linear-gradient(135deg, #f7f4ef 0%, #ece3d4 100%)' : undefined }}>
+        <div className="tr-hero-grid-overlay" />
+        <div className="tr-hero-text-col tr-mobile-white-text" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '4rem 3rem' }}>
+          <div className={cardClass} style={{ padding: subLayout === 'glassmorphism' ? '2.5rem' : isEditorial ? '2rem' : '0px', borderRadius: subLayout === 'glassmorphism' ? '20px' : isEditorial ? '2px' : '0px', borderLeft: isEditorial ? `3px solid ${template.secondaryColor}` : undefined }}>
             <span style={{ fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.55, display: 'block', marginBottom: '1.5rem' }}>Save the Date</span>
             <div style={{ fontFamily: template.fontNames, fontSize: 'clamp(2.2rem, 7vw, 2.8rem)', color: template.primaryColor, lineHeight: 1.1, marginBottom: '1.5rem' }}>{bride}<br /><span style={{ fontSize: 'clamp(1rem, 3.5vw, 1.4rem)' }}>&amp;</span><br />{groom}</div>
-            <div style={{ width: '40px', height: '2px', background: template.primaryColor, marginBottom: '1.5rem' }} />
+            <div style={{ width: isEditorial ? '72px' : '40px', height: '2px', background: template.secondaryColor, marginBottom: '1.5rem' }} />
             <p style={{ fontSize: '0.75rem', letterSpacing: '2px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.65, marginBottom: '0.5rem', lineHeight: 1.9 }}>{dateStr}</p>
             <p style={{ fontSize: '0.75rem', color: template.primaryColor, opacity: 0.55, lineHeight: 1.9 }}>{venue}</p>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1.25rem', marginTop: '2rem' }}>
@@ -514,7 +581,7 @@ function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, pho
             </div>
           </div>
         </div>
-        <div style={{ overflow: 'hidden' }}>
+        <div className="tr-hero-img-col" style={{ overflow: 'hidden' }}>
           <img src={cover} alt="Wedding" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
         </div>
       </header>

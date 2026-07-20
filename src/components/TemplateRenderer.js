@@ -577,6 +577,8 @@ export default function TemplateRenderer({ event, template, photos = [], preview
           currentIndex={carouselIndex} 
           onNavigate={setCarouselIndex} 
           onClose={() => setCarouselIndex(null)} 
+          bride={bride}
+          groom={groom}
         />
       )}
 

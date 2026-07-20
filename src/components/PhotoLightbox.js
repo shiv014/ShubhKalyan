@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Download } from 'lucide-react';
 
-export default function PhotoLightbox({ photos, currentIndex, onClose, onNavigate }) {
+export default function PhotoLightbox({ photos, currentIndex, onClose, onNavigate, bride = 'Bride', groom = 'Groom' }) {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -39,6 +39,27 @@ export default function PhotoLightbox({ photos, currentIndex, onClose, onNavigat
     onNavigate(newIdx);
   };
 
+  const handleDownload = async (e) => {
+    if (e) e.stopPropagation();
+    const photo = photos[currentIndex];
+    if (!photo) return;
+    
+    try {
+      const response = await fetch(photo.file_path);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Wedding-${bride}-${groom}-${photo.id || 'photo'}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      // Fallback: open image in a new tab if cors restriction prevents direct blob download
+      window.open(photo.file_path, '_blank');
+    }
+  };
+
   return (
     <div 
       style={{
@@ -56,6 +77,25 @@ export default function PhotoLightbox({ photos, currentIndex, onClose, onNavigat
       }}
       onClick={onClose}
     >
+      {/* Download Button */}
+      <button 
+        onClick={handleDownload}
+        title="Download Photo"
+        aria-label="Download Photo"
+        style={{
+          position: 'absolute', top: '20px', right: '80px',
+          background: 'rgba(255,255,255,0.1)', border: 'none',
+          color: '#fff', borderRadius: '50%', width: '44px', height: '44px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', transition: 'background 0.2s', zIndex: 10
+        }}
+        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
+        onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+      >
+        <Download size={20} />
+      </button>
+
+      {/* Close Button */}
       <button 
         onClick={onClose}
         style={{

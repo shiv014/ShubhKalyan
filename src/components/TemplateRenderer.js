@@ -575,7 +575,7 @@ export default function TemplateRenderer({ event, template, photos = [], preview
         />
       )}
 
-      <AudioPlayer src={event?.audio_path || "/audio/default-indian.wav"} />
+      <AudioPlayer src={event?.audio_path || "/audio/shehnai-short.m4a"} />
 
       {/* Floating Action Button for Download Poster */}
       {!previewMode && (

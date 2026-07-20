@@ -114,12 +114,21 @@ export default function LandingPage() {
                 Create Free Account
               </Link>
             </div>
+            
+            {/* Social proof stars */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1.5rem', color: 'rgba(255,255,255,0.75)', fontSize: '0.88rem' }}>
+              <div style={{ color: '#cfa830', display: 'flex', gap: '2px', fontSize: '1.1rem' }}>
+                ★ ★ ★ ★ ★
+              </div>
+              <span>Loved by 500+ couples across India</span>
+            </div>
+
             {/* Trust markers */}
-            <div className="hero-features-grid">
+            <div className="hero-features-grid" style={{ borderTop: '1px solid rgba(255,255,255,0.12)', paddingTop: '2rem' }}>
               {[['120+', 'Designer Templates'], ['Free', 'To Publish'], ['Custom', 'Wedding URL'], ['RSVP', 'Management']].map(([val, lbl]) => (
                 <div key={lbl}>
-                  <div style={{ fontSize: '1.4rem', fontFamily: 'var(--font-serif)', color: '#cfa830', fontWeight: '700' }}>{val}</div>
-                  <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.5px', marginTop: '2px' }}>{lbl}</div>
+                  <div style={{ fontSize: '1.6rem', fontFamily: 'var(--font-serif)', color: '#cfa830', fontWeight: '700' }}>{val}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.65)', letterSpacing: '0.5px', marginTop: '2px', fontWeight: '500' }}>{lbl}</div>
                 </div>
               ))}
             </div>
@@ -128,29 +137,29 @@ export default function LandingPage() {
           {/* Right: Floating phone mockup */}
           <div style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
             {/* Glow */}
-            <div style={{ position: 'absolute', width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(207,168,48,0.15), transparent 70%)', borderRadius: '50%', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', pointerEvents: 'none' }} />
-            <div className="animate-float" style={{ width: '270px', height: '480px', border: '10px solid #2a2a2a', borderRadius: '36px', background: '#1a0a10', boxShadow: '0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05)', overflow: 'hidden', position: 'relative' }}>
+            <div style={{ position: 'absolute', width: '320px', height: '320px', background: 'radial-gradient(circle, rgba(207,168,48,0.15), transparent 70%)', borderRadius: '50%', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', pointerEvents: 'none' }} />
+            <div className="animate-float" style={{ width: '290px', height: '510px', border: '10px solid #2a2a2a', borderRadius: '36px', background: '#1a0a10', boxShadow: '0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05)', overflow: 'hidden', position: 'relative' }}>
               {/* Phone notch */}
-              <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '80px', height: '18px', background: '#2a2a2a', borderRadius: '0 0 12px 12px', zIndex: 10 }} />
+              <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '85px', height: '18px', background: '#2a2a2a', borderRadius: '0 0 12px 12px', zIndex: 10 }} />
               {/* Simulated wedding page */}
               <div style={{ height: '55%', backgroundImage: 'url(https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=400&q=80)', backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,rgba(0,0,0,0.45),rgba(0,0,0,0.3))' }} />
                 <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', border: '1.5px solid rgba(207,168,48,0.7)', outline: '3px double rgba(207,168,48,0.4)', outlineOffset: '4px', padding: '1rem 1.5rem' }}>
-                  <div style={{ fontSize: '0.4rem', letterSpacing: '3px', color: '#cfa830', textTransform: 'uppercase', marginBottom: '0.4rem' }}>✦ Cordially Invited ✦</div>
-                  <div style={{ fontFamily: 'var(--font-great-vibes)', fontSize: '1.6rem', color: '#fff', lineHeight: 1.1 }}>Alice &amp; Bob</div>
-                  <div style={{ fontSize: '0.38rem', letterSpacing: '1.5px', color: 'rgba(255,255,255,0.8)', textTransform: 'uppercase', marginTop: '0.4rem' }}>October 10, 2026</div>
+                  <div style={{ fontSize: '0.42rem', letterSpacing: '3px', color: '#cfa830', textTransform: 'uppercase', marginBottom: '0.4rem' }}>✦ Cordially Invited ✦</div>
+                  <div style={{ fontFamily: 'var(--font-great-vibes)', fontSize: '1.8rem', color: '#fff', lineHeight: 1.1 }}>Alice &amp; Bob</div>
+                  <div style={{ fontSize: '0.4rem', letterSpacing: '1.5px', color: 'rgba(255,255,255,0.8)', textTransform: 'uppercase', marginTop: '0.4rem' }}>October 10, 2026</div>
                 </div>
               </div>
-              <div style={{ background: '#fbf9f5', height: '45%', padding: '0.75rem', overflow: 'hidden' }}>
-                <div style={{ fontSize: '0.55rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#cfa830', fontWeight: '700', marginBottom: '0.4rem' }}>Save the Date</div>
-                <div style={{ fontFamily: 'var(--font-serif)', fontSize: '0.9rem', color: '#7c2230', marginBottom: '0.3rem' }}>Ceremony &amp; Celebration</div>
-                <div style={{ fontSize: '0.5rem', color: '#666', lineHeight: 1.8 }}>Saturday, October 10, 2026<br />4:00 PM · Grand Palace, Mumbai</div>
+              <div style={{ background: '#fbf9f5', height: '45%', padding: '0.85rem', overflow: 'hidden' }}>
+                <div style={{ fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#cfa830', fontWeight: '700', marginBottom: '0.4rem' }}>Save the Date</div>
+                <div style={{ fontFamily: 'var(--font-serif)', fontSize: '0.95rem', color: '#7c2230', marginBottom: '0.3rem' }}>Ceremony &amp; Celebration</div>
+                <div style={{ fontSize: '0.55rem', color: '#666', lineHeight: 1.8 }}>Saturday, October 10, 2026<br />4:00 PM · Grand Palace, Mumbai</div>
                 <div style={{ marginTop: '0.6rem', height: '1px', background: '#e8d9c5' }} />
-                <div style={{ fontSize: '0.45rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#cfa830', fontWeight: '700', marginTop: '0.5rem' }}>Gallery</div>
+                <div style={{ fontSize: '0.5rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#cfa830', fontWeight: '700', marginTop: '0.5rem' }}>Gallery</div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px', marginTop: '0.3rem' }}>
                   {['https://images.unsplash.com/photo-1543157145-f78c636d023d?auto=format&fit=crop&w=100&q=60',
                     'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=100&q=60'].map(src => (
-                    <div key={src} style={{ height: '32px', background: '#ddd', borderRadius: '2px', overflow: 'hidden' }}>
+                    <div key={src} style={{ height: '36px', background: '#ddd', borderRadius: '2px', overflow: 'hidden' }}>
                       <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
                   ))}
@@ -196,15 +205,29 @@ export default function LandingPage() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
             {[
-              { quote: "ShubhKalyan made sharing our wedding details so easy! Our family loved the design and the RSVPs were updated instantly in our dashboard.", author: "Pooja & Rohan", role: "Married in Mumbai" },
-              { quote: "The templates are gorgeous and very cultural. We picked the Royal theme and it matched our physical card invitations perfectly.", author: "Anjali & Vikram", role: "Married in Delhi" },
-              { quote: "Creating our site took less than 10 minutes. The map integration was super useful for guests travelling from out of town.", author: "Deepika & Rahul", role: "Married in Bangalore" }
+              { quote: "ShubhKalyan made sharing our wedding details so easy! Our family loved the design and the RSVPs were updated instantly in our dashboard.", author: "Pooja & Rohan", role: "Married in Mumbai", initials: "PR" },
+              { quote: "The templates are gorgeous and very cultural. We picked the Royal theme and it matched our physical card invitations perfectly.", author: "Anjali & Vikram", role: "Married in Delhi", initials: "AV" },
+              { quote: "Creating our site took less than 10 minutes. The map integration was super useful for guests travelling from out of town.", author: "Deepika & Rahul", role: "Married in Bangalore", initials: "DR" }
             ].map((t, idx) => (
-              <div key={idx} className="card" style={{ padding: '2rem', background: '#fff', borderRadius: '12px', boxShadow: 'var(--shadow-card)', border: '1px solid var(--border-color)' }}>
-                <div style={{ color: 'var(--color-secondary)', fontSize: '2rem', lineHeight: 1, marginBottom: '1rem', fontFamily: 'serif' }}>“</div>
-                <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '1.5rem', fontStyle: 'italic' }}>{t.quote}</p>
-                <div style={{ fontWeight: '700', fontSize: '0.9rem', color: 'var(--color-primary)' }}>{t.author}</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>{t.role}</div>
+              <div key={idx} className="card" style={{ padding: '2rem', background: '#fff', borderRadius: '16px', boxShadow: 'var(--shadow-card)', border: '1px solid var(--border-color)', position: 'relative' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <div style={{ color: '#cfa830', fontSize: '0.85rem', display: 'flex', gap: '2px' }}>
+                    ★ ★ ★ ★ ★
+                  </div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--color-secondary)', background: 'rgba(207,168,48,0.1)', padding: '0.2rem 0.5rem', borderRadius: '4px', fontWeight: '700' }}>
+                    ✓ Verified Couple
+                  </div>
+                </div>
+                <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '1.5rem', fontStyle: 'italic' }}>"{t.quote}"</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--bg-tertiary)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', fontSize: '0.9rem' }}>
+                    {t.initials}
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: '700', fontSize: '0.9rem', color: 'var(--color-primary)' }}>{t.author}</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{t.role}</div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -285,7 +308,7 @@ export default function LandingPage() {
                 onMouseLeave={() => setHoveredId(null)}
               >
                 {/* Thumbnail */}
-                <div style={{ height: '180px', backgroundImage: `url(${tpl.bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative', overflow: 'hidden' }}>
+                <div style={{ height: '220px', backgroundImage: `url(${tpl.bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative', overflow: 'hidden' }}>
                   <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.55))' }} />
 
                   {/* Category-specific inner card preview */}
@@ -320,11 +343,36 @@ export default function LandingPage() {
                       </div>
                     )}
                   </div>
+
+                  {/* Hover Quick actions overlay */}
+                  {hoveredId === tpl.id && (
+                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(124,34,48,0.85)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', padding: '1rem', zIndex: 10, transition: 'all 0.3s' }}>
+                      <button style={{ width: '80%', padding: '0.65rem 1rem', background: '#fff', color: 'var(--color-primary)', border: 'none', borderRadius: '50px', fontSize: '0.8rem', fontWeight: '700', letterSpacing: '1px', textTransform: 'uppercase', cursor: 'pointer' }} onClick={(e) => { e.stopPropagation(); setSelectedPreviewTpl(tpl); }}>
+                        Quick Preview
+                      </button>
+                      <Link href={`/register?template=${tpl.id}`} style={{ width: '80%', padding: '0.65rem 1rem', background: 'var(--color-secondary)', color: '#fff', textAlign: 'center', borderRadius: '50px', fontSize: '0.8rem', fontWeight: '700', letterSpacing: '1px', textTransform: 'uppercase' }} onClick={(e) => e.stopPropagation()}>
+                        Use Template
+                      </Link>
+                    </div>
+                  )}
+
+                  {/* Featured Badge */}
+                  {['tpl-1', 'tpl-2'].includes(tpl.id) && (
+                    <div style={{ position: 'absolute', top: '12px', left: '12px', background: 'var(--color-secondary)', color: '#fff', padding: '0.25rem 0.65rem', borderRadius: '4px', fontSize: '0.65rem', fontWeight: '800', letterSpacing: '1px', textTransform: 'uppercase', zIndex: 5, boxShadow: '0 2px 6px rgba(0,0,0,0.15)' }}>
+                      Popular
+                    </div>
+                  )}
                 </div>
 
                 {/* Card Info */}
                 <div style={{ padding: '1.1rem 1.25rem' }}>
-                  <h3 style={{ fontSize: '0.9rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '0.6rem', lineHeight: 1.4 }}>{tpl.name}</h3>
+                  <h3 style={{ fontSize: '0.9rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '0.3rem', lineHeight: 1.4 }}>{tpl.name}</h3>
+                  
+                  {/* Rating */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '0.6rem', color: '#cfa830', fontSize: '0.75rem' }}>
+                    ★ ★ ★ ★ ★ <span style={{ color: 'var(--text-muted)', fontSize: '0.7rem', marginLeft: '2px' }}>(4.9)</span>
+                  </div>
+
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={{
                       fontSize: '0.72rem',
@@ -366,24 +414,33 @@ export default function LandingPage() {
       </section>
 
       {/* ---- CTA BAND ---- */}
-      <section style={{ background: 'linear-gradient(135deg, #7c2230, #5d1722)', padding: '4rem 0' }}>
-        <div className="container" style={{ textAlign: 'center' }}>
-          <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.4rem', color: '#fff', fontWeight: '700', marginBottom: '1rem' }}>
-            Ready to Create Your Wedding Site?
+      <section style={{ background: 'linear-gradient(135deg, #7c2230, #5d1722)', padding: '5rem 0', position: 'relative', overflow: 'hidden' }}>
+        {/* Subtle decorative background detail */}
+        <div style={{ position: 'absolute', inset: 0, opacity: 0.04, backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '24px 24px', pointerEvents: 'none' }} />
+        <div className="container" style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
+          <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.8rem, 3.5vw, 2.4rem)', color: '#fff', fontWeight: '700', marginBottom: '1rem' }}>
+            Your wedding deserves to be remembered — beautifully.
           </h2>
-          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1rem', marginBottom: '2rem', maxWidth: '480px', margin: '0 auto 2rem' }}>
-            It&apos;s completely free. Pick a template, add your details, and publish in minutes.
+          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1.05rem', marginBottom: '2rem', maxWidth: '520px', margin: '0 auto 2.5rem', lineHeight: 1.7 }}>
+            Free forever. No credit card required. Pick a theme, add your details, and publish in minutes.
           </p>
-          <Link href="/register" className="btn btn-gold" style={{ padding: '1rem 2.5rem', fontSize: '1rem' }}>
+          <Link href="/register" className="btn btn-gold" style={{ padding: '1.1rem 2.75rem', fontSize: '1rem' }}>
             Create Your Wedding Site — Free
           </Link>
+
+          {/* Trust badges */}
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap', marginTop: '2.5rem', color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem', fontWeight: '500' }}>
+            <span>🔒 No Credit Card Required</span>
+            <span>⚡ Setup in 5 Minutes</span>
+            <span>📱 Perfect on All Screen Sizes</span>
+          </div>
         </div>
       </section>
 
       {/* ---- FOOTER ---- */}
-      <footer style={{ background: '#1a0e12', color: 'rgba(255,255,255,0.6)', padding: '3rem 0 2rem' }}>
+      <footer style={{ background: '#1a0e12', color: 'rgba(255,255,255,0.6)', padding: '4rem 0 2.5rem' }}>
         <div className="container">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '2rem', marginBottom: '2.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '2.5rem', marginBottom: '3rem' }}>
             <div>
               <div style={{ background: '#fff', padding: '0.5rem 0.75rem', borderRadius: '8px', display: 'inline-block', marginBottom: '1rem' }}>
                 <img src="/logo.png" alt="ShubhKalyan Logo" className="brand-logo-footer" />
@@ -408,6 +465,13 @@ export default function LandingPage() {
                   <a href="#" onClick={e=>e.preventDefault()} style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.85rem' }}>About Us</a>
                   <a href="#" onClick={e=>e.preventDefault()} style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.85rem' }}>Terms of Service</a>
                   <a href="#" onClick={e=>e.preventDefault()} style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.85rem' }}>Privacy Policy</a>
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize: '0.72rem', fontWeight: '700', letterSpacing: '2px', textTransform: 'uppercase', color: '#cfa830', marginBottom: '0.75rem' }}>Connect</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.85rem' }}>Instagram</a>
+                  <a href="https://wa.me/?text=Check%20out%20ShubhKalyan.in%20for%20your%20wedding%20website!" target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.85rem' }}>Share on WhatsApp</a>
                 </div>
               </div>
             </div>

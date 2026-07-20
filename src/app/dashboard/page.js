@@ -127,8 +127,18 @@ function DashboardPortal() {
           // Always clear param from URL on first load
           if (templateParam) router.replace('/dashboard');
 
-          // Get username from cookie (we can fetch it or mock it)
-          setUser({ name: 'Guest Host' });
+          // Get authenticated user name
+          try {
+            const meRes = await fetch('/api/auth/me');
+            if (meRes.ok) {
+              const meData = await meRes.json();
+              setUser(meData.user || { name: 'Wedding Planner' });
+            } else {
+              setUser({ name: 'Wedding Planner' });
+            }
+          } catch {
+            setUser({ name: 'Wedding Planner' });
+          }
         } else {
           showToast('danger', data.error || 'Failed to load details');
         }
@@ -562,9 +572,16 @@ function DashboardPortal() {
             <button 
               onClick={() => { setActiveTab('rsvp'); setIsMobileSidebarOpen(false); }} 
               className={`${styles.tabBtn} ${activeTab === 'rsvp' ? styles.activeTabBtn : ''}`}
-              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', position: 'relative' }}
             >
               <Mail size={16} /> RSVPs ({rsvps.length})
+              {rsvps.length > 0 && (
+                <span style={{ 
+                  position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
+                  width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-success)',
+                  boxShadow: '0 0 0 2px rgba(60,125,83,0.2)'
+                }} />
+              )}
             </button>
             <button 
               onClick={() => { setActiveTab('url'); setIsMobileSidebarOpen(false); }} 

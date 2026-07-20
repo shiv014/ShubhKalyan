@@ -310,8 +310,8 @@ a:hover { color: var(--color-primary-hover); }
 
 @media (max-width: 768px) { 
   .hero-section-wrapper {
-    align-items: flex-start;
-    padding-top: 3.5rem;
+    display: block;
+    padding-top: 5rem;
     min-height: auto;
   }
   .brand-logo { height: 42px !important; }

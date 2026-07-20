@@ -6,19 +6,9 @@ import { Search, Crown, Flower2, Sparkles, ScrollText, Paintbrush, Edit3, Link a
 import { getTemplates } from '@/lib/templates';
 
 function useScrollReveal() {
+  // Disabled on mobile for stability, we just let everything render normally.
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('reveal-visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
-    
-    return () => observer.disconnect();
+    // No-op for now to ensure 100% visibility
   }, []);
 }
 
@@ -96,7 +86,7 @@ export default function LandingPage() {
 
         <div className="container hero-grid" style={{ position: 'relative', zIndex: 1 }}>
           {/* Left: Text */}
-          <div className="animate-fade-in-up">
+          <div>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(207,168,48,0.12)', border: '1px solid rgba(207,168,48,0.3)', borderRadius: '999px', padding: '0.35rem 1rem', marginBottom: '1.5rem' }}>
               <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#cfa830', display: 'inline-block' }} />
               <span style={{ fontSize: '0.75rem', fontWeight: '700', letterSpacing: '2px', textTransform: 'uppercase', color: '#cfa830' }}>Auspicious Weddings, Online</span>
@@ -129,7 +119,7 @@ export default function LandingPage() {
           </div>
 
           {/* Right: Floating phone mockup */}
-          <div style={{ display: 'flex', justifyContent: 'center', position: 'relative' }} className="animate-fade-in animate-delay-200">
+          <div style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
             {/* Glow */}
             <div style={{ position: 'absolute', width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(207,168,48,0.15), transparent 70%)', borderRadius: '50%', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', pointerEvents: 'none' }} />
             <div className="animate-float" style={{ width: '270px', height: '480px', border: '10px solid #2a2a2a', borderRadius: '36px', background: '#1a0a10', boxShadow: '0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05)', overflow: 'hidden', position: 'relative' }}>
@@ -166,7 +156,7 @@ export default function LandingPage() {
 
       {/* ---- HOW IT WORKS ---- */}
       <section id="how-it-works" style={{ padding: '5rem 0', background: '#fff', borderBottom: '1px solid var(--border-color)' }}>
-        <div className="container reveal-on-scroll">
+        <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: '700', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--color-secondary)', display: 'block', marginBottom: '0.75rem' }}>Simple Process</span>
             <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.4rem', color: 'var(--color-primary)', fontWeight: '700' }}>Create Your Site in 3 Steps</h2>

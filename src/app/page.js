@@ -191,7 +191,7 @@ export default function LandingPage() {
       </section>
 
       {/* ---- TEMPLATES BROWSER ---- */}
-      <section id="browse" className="section reveal-on-scroll" style={{ padding: '5.5rem 0', background: 'var(--bg-primary)' }}>
+      <section id="browse" className="section" style={{ padding: '5.5rem 0', background: 'var(--bg-primary)' }}>
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: '700', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--color-secondary)', display: 'block', marginBottom: '0.75rem' }}>120+ Designs</span>

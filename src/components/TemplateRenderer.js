@@ -31,6 +31,17 @@ function formatTime(dateStr) {
   } catch { return ''; }
 }
 
+function getRsvpDeadline(eventDateStr) {
+  if (!eventDateStr) return 'September 15, 2026';
+  try {
+    const eventDate = new Date(eventDateStr);
+    eventDate.setDate(eventDate.getDate() - 25);
+    return eventDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  } catch {
+    return 'September 15, 2026';
+  }
+}
+
 // ---- RSVP FORM ----
 function RsvpForm({ event, previewMode, primary, secondary }) {
   const [rsvpName, setRsvpName] = useState('');
@@ -72,31 +83,31 @@ function RsvpForm({ event, previewMode, primary, secondary }) {
       {status === 'success' && <div style={{ padding: '0.85rem 1rem', background: '#e6f4ea', color: '#137333', border: '1px solid #ceead6', borderRadius: '6px', marginBottom: '1.25rem', fontSize: '0.9rem', textAlign: 'center', fontWeight: '500' }}>✓ {statusMsg}</div>}
       {status === 'error' && <div style={{ padding: '0.85rem 1rem', background: '#fce8e6', color: '#c5221f', border: '1px solid #fad2cf', borderRadius: '6px', marginBottom: '1.25rem', fontSize: '0.9rem', textAlign: 'center', fontWeight: '500' }}>⚠ {statusMsg}</div>}
       <div style={{ marginBottom: '1.25rem' }}>
-        <label style={labelStyle}>Full Name</label>
-        <input type="text" required value={rsvpName} onChange={e => setRsvpName(e.target.value)} placeholder="Your full name" style={inputStyle} onFocus={e => {e.target.style.borderColor=primary; e.target.style.boxShadow=`0 0 0 3px rgba(0,0,0,0.05)`}} onBlur={e => {e.target.style.borderColor=secondary; e.target.style.boxShadow='none'}} />
+        <label htmlFor="rsvp-name" style={labelStyle}>Full Name</label>
+        <input id="rsvp-name" type="text" required value={rsvpName} onChange={e => setRsvpName(e.target.value)} placeholder="Your full name" style={inputStyle} onFocus={e => {e.target.style.borderColor=primary; e.target.style.boxShadow=`0 0 0 3px rgba(0,0,0,0.05)`}} onBlur={e => {e.target.style.borderColor=secondary; e.target.style.boxShadow='none'}} />
       </div>
       <div style={{ marginBottom: '1.25rem' }}>
-        <label style={labelStyle}>Email Address</label>
-        <input type="email" required value={rsvpEmail} onChange={e => setRsvpEmail(e.target.value)} placeholder="your.email@example.com" style={inputStyle} onFocus={e => {e.target.style.borderColor=primary; e.target.style.boxShadow=`0 0 0 3px rgba(0,0,0,0.05)`}} onBlur={e => {e.target.style.borderColor=secondary; e.target.style.boxShadow='none'}} />
+        <label htmlFor="rsvp-email" style={labelStyle}>Email Address</label>
+        <input id="rsvp-email" type="email" required value={rsvpEmail} onChange={e => setRsvpEmail(e.target.value)} placeholder="your.email@example.com" style={inputStyle} onFocus={e => {e.target.style.borderColor=primary; e.target.style.boxShadow=`0 0 0 3px rgba(0,0,0,0.05)`}} onBlur={e => {e.target.style.borderColor=secondary; e.target.style.boxShadow='none'}} />
       </div>
       <div className="grid-2-col" style={{ marginBottom: '1.25rem' }}>
         <div style={{ textAlign: 'left' }}>
-          <label style={labelStyle}>Attending?</label>
-          <select value={rsvpAttending} onChange={e => setRsvpAttending(e.target.value)} style={inputStyle} onFocus={e => {e.target.style.borderColor=primary}} onBlur={e => {e.target.style.borderColor=secondary}}>
+          <label htmlFor="rsvp-attending" style={labelStyle}>Attending?</label>
+          <select id="rsvp-attending" value={rsvpAttending} onChange={e => setRsvpAttending(e.target.value)} style={inputStyle} onFocus={e => {e.target.style.borderColor=primary}} onBlur={e => {e.target.style.borderColor=secondary}}>
             <option value="1">Joyfully Accept ✓</option>
             <option value="0">Regretfully Decline</option>
           </select>
         </div>
         <div>
-          <label style={labelStyle}>Total Guests</label>
-          <select value={rsvpGuests} onChange={e => setRsvpGuests(e.target.value)} disabled={rsvpAttending === '0'} style={{...inputStyle, backgroundColor: rsvpAttending === '0' ? '#f5f5f5' : '#fff'}} onFocus={e => {e.target.style.borderColor=primary}} onBlur={e => {e.target.style.borderColor=secondary}}>
+          <label htmlFor="rsvp-guests" style={labelStyle}>Total Guests</label>
+          <select id="rsvp-guests" value={rsvpGuests} onChange={e => setRsvpGuests(e.target.value)} disabled={rsvpAttending === '0'} style={{...inputStyle, backgroundColor: rsvpAttending === '0' ? '#f5f5f5' : '#fff'}} onFocus={e => {e.target.style.borderColor=primary}} onBlur={e => {e.target.style.borderColor=secondary}}>
             {[1,2,3,4,5].map(n => <option key={n} value={String(n)}>{n}{n===5?' +':''} guest{n>1?'s':''}</option>)}
           </select>
         </div>
       </div>
       <div style={{ marginBottom: '1.5rem' }}>
-        <label style={labelStyle}>Message for the Couple</label>
-        <textarea value={rsvpMessage} onChange={e => setRsvpMessage(e.target.value)} rows={3} placeholder="Send a warm wish..." style={{ ...inputStyle, resize: 'vertical' }} onFocus={e => {e.target.style.borderColor=primary; e.target.style.boxShadow=`0 0 0 3px rgba(0,0,0,0.05)`}} onBlur={e => {e.target.style.borderColor=secondary; e.target.style.boxShadow='none'}}></textarea>
+        <label htmlFor="rsvp-message" style={labelStyle}>Message for the Couple</label>
+        <textarea id="rsvp-message" value={rsvpMessage} onChange={e => setRsvpMessage(e.target.value)} rows={3} placeholder="Send a warm wish..." style={{ ...inputStyle, resize: 'vertical' }} onFocus={e => {e.target.style.borderColor=primary; e.target.style.boxShadow=`0 0 0 3px rgba(0,0,0,0.05)`}} onBlur={e => {e.target.style.borderColor=secondary; e.target.style.boxShadow='none'}}></textarea>
       </div>
       <button type="submit" disabled={status === 'submitting'} style={{ width: '100%', padding: '1rem', background: primary, color: '#fff', border: 'none', borderRadius: '6px', fontSize: '0.85rem', fontWeight: '700', letterSpacing: '2px', textTransform: 'uppercase', cursor: status === 'submitting' ? 'not-allowed' : 'pointer', transition: 'all 0.3s', opacity: status === 'submitting' ? 0.7 : 1, boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }} onMouseEnter={e => {if(status !== 'submitting') e.target.style.transform = 'translateY(-2px)'}} onMouseLeave={e => {if(status !== 'submitting') e.target.style.transform = 'translateY(0)'}}>
         {status === 'submitting' ? 'Sending RSVP...' : 'Confirm Reservation'}
@@ -164,38 +175,6 @@ function CalendarAndMap({ event, bride, groom, venue, template, dateStr }) {
 // ---- GALLERY GRID ----
 function GalleryGrid({ photos, template, onPhotoClick, containerStyle, imageStyle }) {
   const [showAll, setShowAll] = useState(false);
-  const scrollRef = useRef(null);
-  const reqRef = useRef(null);
-  
-  useEffect(() => {
-    if (showAll || !photos || photos.length === 0) {
-      if (reqRef.current) cancelAnimationFrame(reqRef.current);
-      return;
-    }
-    
-    let scrollPos = scrollRef.current ? scrollRef.current.scrollLeft : 0;
-    
-    const animate = () => {
-      if (scrollRef.current) {
-        scrollPos += 0.6; // pixels per frame (speed)
-        
-        // We rendered 4 identical sets of photos.
-        // Once we scroll past exactly half the total width (2 sets),
-        // we instantly snap back to 0. Because set 3 matches set 1 perfectly,
-        // it creates a seamless infinite loop.
-        const halfWidth = scrollRef.current.scrollWidth / 2;
-        if (scrollPos >= halfWidth) {
-          scrollPos -= halfWidth; 
-        }
-        scrollRef.current.scrollLeft = scrollPos;
-      }
-      reqRef.current = requestAnimationFrame(animate);
-    };
-    
-    reqRef.current = requestAnimationFrame(animate);
-    
-    return () => cancelAnimationFrame(reqRef.current);
-  }, [showAll, photos]);
   
   if (!photos || photos.length === 0) {
     return (
@@ -205,15 +184,16 @@ function GalleryGrid({ photos, template, onPhotoClick, containerStyle, imageStyl
     );
   }
 
-  // To ensure the continuous marquee fills the screen and loops seamlessly, 
-  // we duplicate the array 4 times when not showing the full grid.
   let displayPhotos = [];
   if (showAll) {
     displayPhotos = photos;
   } else {
-    for (let i = 0; i < 4; i++) {
-      displayPhotos = displayPhotos.concat(photos.map(p => ({ ...p, _uniqueKey: `${p.id}-${i}` })));
+    // Repeat photos array to have at least 8 elements, then double it for the marquee translation
+    let basePhotos = [...photos];
+    while (basePhotos.length < 8) {
+      basePhotos = basePhotos.concat(photos);
     }
+    displayPhotos = basePhotos.concat(basePhotos.map((p, idx) => ({ ...p, _uniqueKey: `${p.id}-dup-${idx}` })));
   }
 
   return (
@@ -221,12 +201,26 @@ function GalleryGrid({ photos, template, onPhotoClick, containerStyle, imageStyl
       <style>{`
         .gallery-row {
           display: flex;
-          gap: 1.25rem;
           overflow-x: hidden; /* Hide scrollbar for continuous marquee */
           padding-bottom: 1.5rem;
+          width: 100%;
+        }
+        .marquee-track {
+          display: flex;
+          gap: 1.25rem;
+          width: max-content;
+          animation: marquee 30s linear infinite;
+        }
+        .marquee-track:hover {
+          animation-play-state: paused;
+        }
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
         }
         .gallery-item {
-          flex: 0 0 calc(33.333% - 0.85rem);
+          flex: 0 0 280px;
+          border-radius: inherit;
         }
         .gallery-grid-full {
           display: grid;
@@ -238,21 +232,28 @@ function GalleryGrid({ photos, template, onPhotoClick, containerStyle, imageStyl
           width: 100%;
         }
         @media (max-width: 768px) {
-          .gallery-row {
-            gap: 1rem;
-          }
           .gallery-item {
-            flex: 0 0 80%; /* Show 80% of one image so the next one peeks in */
+            flex: 0 0 200px;
           }
         }
       `}</style>
       
-      <div ref={scrollRef} className={showAll ? "gallery-grid-full" : "gallery-row"}>
-        {displayPhotos.map(p => (
-          <div key={p._uniqueKey || p.id} className="gallery-item" onClick={() => onPhotoClick(p)} style={{ cursor: 'pointer', overflow: 'hidden', ...containerStyle }}>
-            <img src={p.file_path} alt={p.caption||''} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s', ...imageStyle }} onMouseEnter={e=>{e.target.style.transform='scale(1.05)'; if(imageStyle?.filter) e.target.style.filter=imageStyle.filter;}} onMouseLeave={e=>{e.target.style.transform='scale(1)'; if(imageStyle?.filter) e.target.style.filter=imageStyle.filter;}} />
+      <div className={showAll ? "gallery-grid-full" : "gallery-row"}>
+        {showAll ? (
+          displayPhotos.map(p => (
+            <div key={p.id} className="gallery-item" onClick={() => onPhotoClick(p)} style={{ cursor: 'pointer', overflow: 'hidden', ...containerStyle }}>
+              <img src={p.file_path} alt={p.caption||''} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s', ...imageStyle }} onMouseEnter={e=>{e.target.style.transform='scale(1.05)';}} onMouseLeave={e=>{e.target.style.transform='scale(1)';}} />
+            </div>
+          ))
+        ) : (
+          <div className="marquee-track">
+            {displayPhotos.map((p, idx) => (
+              <div key={p._uniqueKey || `${p.id}-${idx}`} className="gallery-item" onClick={() => onPhotoClick(p)} style={{ cursor: 'pointer', overflow: 'hidden', ...containerStyle }}>
+                <img src={p.file_path} alt={p.caption||''} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s', ...imageStyle }} onMouseEnter={e=>{e.target.style.transform='scale(1.05)';}} onMouseLeave={e=>{e.target.style.transform='scale(1)';}} />
+              </div>
+            ))}
           </div>
-        ))}
+        )}
       </div>
       
       {photos.length > 3 && (
@@ -270,6 +271,7 @@ function GalleryGrid({ photos, template, onPhotoClick, containerStyle, imageStyl
 function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick, coverImage }) {
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   const cover = coverImage;
+  const rsvpDeadline = getRsvpDeadline(event?.event_date);
   return (
     <div style={{ fontFamily: template.fontBody, background: template.bgColor, color: template.textColor, minHeight: '100vh', overflowX: 'hidden' }}>
       {/* Nav */}
@@ -321,7 +323,7 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
             <span style={{ fontSize: '0.65rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700', display: 'block', marginBottom: '0.5rem' }}>Reservation</span>
             <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '0.5rem' }}>Will You Attend?</h2>
-            <p style={{ opacity: 0.65, fontSize: '0.85rem' }}>Please respond by September 15, 2026</p>
+            <p style={{ opacity: 0.65, fontSize: '0.85rem' }}>Please respond by {rsvpDeadline}</p>
           </div>
           <div style={{ background: '#fff', borderRadius: '8px', padding: '2rem 2.5rem', boxShadow: '0 8px 30px rgba(0,0,0,0.06)', border: `1px solid ${template.secondaryColor}` }}>
             <RsvpForm event={event} previewMode={previewMode} primary={template.primaryColor} secondary={template.secondaryColor} />
@@ -336,6 +338,7 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
 function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick, coverImage }) {
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   const cover = coverImage;
+  const rsvpDeadline = getRsvpDeadline(event?.event_date);
   return (
     <div style={{ fontFamily: template.fontBody, background: template.bgColor, color: template.textColor, minHeight: '100vh', overflowX: 'hidden' }}>
       <nav style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', justifyContent: 'center', gap: '2.5rem', padding: '1.25rem' }}>
@@ -376,7 +379,7 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
         <div style={{ maxWidth: '520px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
             <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '0.5rem' }}>RSVP</h2>
-            <p style={{ opacity: 0.65, fontSize: '0.85rem' }}>We hope to see you there! Kindly respond by September 15th.</p>
+            <p style={{ opacity: 0.65, fontSize: '0.85rem' }}>We hope to see you there! Kindly respond by {rsvpDeadline}.</p>
           </div>
           <div style={{ background: '#fff', borderRadius: '24px', padding: '2rem 2.5rem', boxShadow: '0 8px 40px rgba(0,0,0,0.07)' }}>
             <RsvpForm event={event} previewMode={previewMode} primary={template.primaryColor} secondary={template.secondaryColor} />
@@ -391,6 +394,7 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
 function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick, coverImage }) {
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   const cover = coverImage;
+  const rsvpDeadline = getRsvpDeadline(event?.event_date);
   return (
     <div style={{ fontFamily: template.fontBody, background: '#fff', color: template.textColor, minHeight: '100vh', overflowX: 'hidden' }}>
       <nav style={{ borderBottom: `1px solid ${template.accentColor}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', position: 'sticky', top: 0, background: '#fff', zIndex: 100 }}>
@@ -440,7 +444,7 @@ function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, pho
         <div style={{ maxWidth: '460px', margin: '0 auto' }}>
           <span style={{ fontSize: '0.6rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.primaryColor, opacity: 0.45, display: 'block', marginBottom: '1rem' }}>Response</span>
           <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '0.5rem' }}>Will You Attend?</h2>
-          <p style={{ fontSize: '0.85rem', opacity: 0.55, marginBottom: '2rem' }}>Please respond by September 15, 2026.</p>
+          <p style={{ fontSize: '0.85rem', opacity: 0.55, marginBottom: '2rem' }}>Please respond by {rsvpDeadline}.</p>
           <RsvpForm event={event} previewMode={previewMode} primary={template.primaryColor} secondary={template.secondaryColor} />
         </div>
       </section>
@@ -452,6 +456,7 @@ function MinimalistLayout({ bride, groom, dateStr, timeStr, venue, template, pho
 function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos, event, previewMode, onPhotoClick, coverImage }) {
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   const cover = coverImage;
+  const rsvpDeadline = getRsvpDeadline(event?.event_date);
   return (
     <div style={{ fontFamily: template.fontBody, background: '#faf7ef', color: template.textColor, minHeight: '100vh', overflowX: 'hidden' }}>
       <nav style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', justifyContent: 'center', gap: '2.5rem', padding: '1.25rem', background: 'rgba(0,0,0,0.25)', backdropFilter: 'blur(3px)' }}>
@@ -499,7 +504,7 @@ function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
             <div style={{ fontSize: '1.8rem', color: template.secondaryColor, marginBottom: '0.5rem' }}>❧</div>
             <h2 style={{ fontFamily: template.fontTitle, fontSize: '1.8rem', color: template.primaryColor, letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '400', marginBottom: '0.5rem' }}>Kindly Reply</h2>
-            <p style={{ opacity: 0.6, fontSize: '0.85rem' }}>Please respond by September 15, 2026</p>
+            <p style={{ opacity: 0.6, fontSize: '0.85rem' }}>Please respond by {rsvpDeadline}</p>
           </div>
           <div style={{ background: '#fff', border: `2px solid ${template.primaryColor}`, boxShadow: `5px 5px 0 ${template.secondaryColor}`, padding: '2rem 2.5rem' }}>
             <RsvpForm event={event} previewMode={previewMode} primary={template.primaryColor} secondary={template.secondaryColor} />

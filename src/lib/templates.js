@@ -140,6 +140,23 @@ const LAYOUT_MAP = {
   Vintage: 'vintage'
 };
 
+const WEDDING_IMAGES = [
+  'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1543157145-f78c636d023d?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1532712938310-34cb3982ef74?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1508973379184-7517410fb0bc?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1519225495810-7512c696af05?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1507504038482-7621c51871f8?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1520854221256-17451cc35d53?auto=format&fit=crop&w=400&q=80'
+];
+
 const generatedTemplates = [];
 let index = 1;
 
@@ -150,7 +167,7 @@ for (const category of CATEGORIES) {
       
       generatedTemplates.push({
         id: `tpl-${index}`,
-        name: `${category} ${palette.name} (${font.name})`,
+        name: `${palette.name} (${font.name})`,
         category,
         layout: LAYOUT_MAP[category],
         primaryColor: palette.primary,
@@ -169,7 +186,7 @@ for (const category of CATEGORIES) {
           ? 'border-rounded-soft' 
           : 'border-classic-double',
         coupleNames: `${couple.bride} & ${couple.groom}`,
-        bgImage: palette.bgImage,
+        bgImage: WEDDING_IMAGES[index % WEDDING_IMAGES.length],
         tagline: category === 'Royal' ? 'CORDIALLY INVITED TO CELEBRATE' : 'SAVE THE DATE FOR THE WEDDING OF'
       });
       index++;

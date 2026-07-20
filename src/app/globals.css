@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap');
+/* Font setup handled via Next.js variable fonts */
 
 :root {
   --bg-primary: #fcfbfa;
@@ -401,3 +401,60 @@ a:hover { color: var(--color-primary-hover); }
   opacity: 1;
   transform: translateY(0);
 }
+
+/* ---- Layout & Helper Utilities ---- */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-sand {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.btn-outline {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+  border: 1.5px solid var(--border-color) !important;
+}
+.btn-outline:hover {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-color: var(--text-muted) !important;
+}
+
+/* Keyboard focus indicators */
+*:focus-visible {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+/* Keyframes for Audio Player */
+@keyframes pulseGlow {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+    box-shadow: 0 0 0 0 rgba(124, 34, 48, 0.5);
+  }
+  70% {
+    transform: scale(1.15);
+    opacity: 0;
+    box-shadow: 0 0 0 10px rgba(124, 34, 48, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0;
+    box-shadow: 0 0 0 0 rgba(124, 34, 48, 0);
+  }
+}
+
+/* Touch-action tap highlight for mobile nav elements */
+nav span, nav a, .nav-links a, .navbar-container span, .navbar-container a {
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.2);
+}
+nav span:active, nav a:active, .nav-links a:active {
+  opacity: 0.6;
+}
+
+

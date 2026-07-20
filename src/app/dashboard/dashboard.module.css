@@ -273,3 +273,77 @@
 .badge { padding: 0.25rem 0.65rem; font-size: 0.75rem; font-weight: 700; border-radius: var(--radius-sm); display: inline-block; }
 .badgeSuccess { background: rgba(60,125,83,0.1); color: var(--color-success); }
 .badgeDanger { background: rgba(169,60,60,0.1); color: var(--color-danger); }
+
+/* Pulsing Published Status Dot */
+.liveDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-success);
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  box-shadow: 0 0 0 0 rgba(60, 125, 83, 0.4);
+  animation: dotPulse 2s infinite;
+}
+
+@keyframes dotPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(60, 125, 83, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(60, 125, 83, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(60, 125, 83, 0);
+  }
+}
+
+/* Empty State Styling */
+.emptyState {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  background: #ffffff;
+  border: 1.5px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+  margin: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.emptyStateIcon {
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  opacity: 0.6;
+}
+
+.emptyStateTitle {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+}
+
+.emptyStateText {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+/* Sidebar Smooth Mobile Transitions */
+@media (max-width: 768px) {
+  .sidebarMenu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.2s ease-out;
+    opacity: 0;
+  }
+  
+  .sidebarMenuOpen {
+    max-height: 500px;
+    opacity: 1;
+  }
+}
+

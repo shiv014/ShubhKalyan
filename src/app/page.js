@@ -5,13 +5,6 @@ import Link from 'next/link';
 import { Search, Crown, Flower2, Sparkles, ScrollText, Paintbrush, Edit3, Link as LinkIcon, Check, ArrowRight, ArrowDown, X, Menu } from 'lucide-react';
 import { getTemplates } from '@/lib/templates';
 
-function useScrollReveal() {
-  // Disabled on mobile for stability, we just let everything render normally.
-  useEffect(() => {
-    // No-op for now to ensure 100% visibility
-  }, []);
-}
-
 const CATEGORY_COLORS = {
   Royal: { bg: 'rgba(124,34,48,0.08)', color: '#7c2230' },
   Floral: { bg: 'rgba(201,125,128,0.1)', color: '#a85060' },
@@ -33,7 +26,16 @@ export default function LandingPage() {
   const [selectedPreviewTpl, setSelectedPreviewTpl] = useState(null);
   const [hoveredId, setHoveredId] = useState(null);
 
-  useScrollReveal();
+  // Modal Escape key support
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setSelectedPreviewTpl(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const allTemplates = getTemplates();
 
@@ -56,11 +58,12 @@ export default function LandingPage() {
           <div className="nav-links">
             <a href="#browse" className="nav-link">Templates</a>
             <a href="#how-it-works" className="nav-link">How It Works</a>
+            <Link href="/demo" className="nav-link">Live Demo</Link>
             <Link href="/login" className="nav-link">Log In</Link>
             <Link href="/register" className="btn btn-primary" style={{ padding: '0.6rem 1.5rem' }}>Get Started Free</Link>
           </div>
           
-          <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ background: 'transparent', border: 'none', color: 'var(--color-primary)', cursor: 'pointer' }}>
+          <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} aria-label="Toggle Navigation Menu" aria-expanded={isMobileMenuOpen} style={{ background: 'transparent', border: 'none', color: 'var(--color-primary)', cursor: 'pointer' }}>
             {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
@@ -70,6 +73,7 @@ export default function LandingPage() {
           <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#fff', borderBottom: '1px solid var(--border-color)', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', boxShadow: '0 10px 20px rgba(0,0,0,0.05)', zIndex: 99 }}>
             <a href="#browse" className="nav-link" onClick={() => setIsMobileMenuOpen(false)} style={{ fontSize: '1.1rem' }}>Templates</a>
             <a href="#how-it-works" className="nav-link" onClick={() => setIsMobileMenuOpen(false)} style={{ fontSize: '1.1rem' }}>How It Works</a>
+            <Link href="/demo" className="nav-link" onClick={() => setIsMobileMenuOpen(false)} style={{ fontSize: '1.1rem' }}>Live Demo</Link>
             <Link href="/login" className="nav-link" onClick={() => setIsMobileMenuOpen(false)} style={{ fontSize: '1.1rem' }}>Log In</Link>
             <Link href="/register" className="btn btn-primary" onClick={() => setIsMobileMenuOpen(false)} style={{ padding: '0.8rem 1.5rem', textAlign: 'center' }}>Get Started Free</Link>
           </div>
@@ -98,6 +102,9 @@ export default function LandingPage() {
             </h1>
             <p style={{ fontSize: '1.1rem', color: 'rgba(255,255,255,0.7)', marginBottom: '2.5rem', maxWidth: '480px', lineHeight: 1.75 }}>
               Browse 120+ designer templates, fill in your details, and publish your personalized wedding invitation page at your own custom URL — all for free.
+              <Link href="/demo" target="_blank" style={{ display: 'block', marginTop: '0.75rem', color: '#e4c45a', fontSize: '0.95rem', fontWeight: '600', textDecoration: 'underline' }}>
+                View a Live Invitation Example →
+              </Link>
             </p>
             <div className="hero-buttons-container">
               <a href="#browse" className="btn btn-gold" style={{ padding: '1rem 2rem', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -128,7 +135,7 @@ export default function LandingPage() {
               {/* Simulated wedding page */}
               <div style={{ height: '55%', backgroundImage: 'url(https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=400&q=80)', backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,rgba(0,0,0,0.45),rgba(0,0,0,0.3))' }} />
-                <div style={{ position: 'relative', textAlign: 'center', border: '1.5px solid rgba(207,168,48,0.7)', outline: '3px double rgba(207,168,48,0.4)', outlineOffset: '4px', padding: '1rem 1.5rem' }}>
+                <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', border: '1.5px solid rgba(207,168,48,0.7)', outline: '3px double rgba(207,168,48,0.4)', outlineOffset: '4px', padding: '1rem 1.5rem' }}>
                   <div style={{ fontSize: '0.4rem', letterSpacing: '3px', color: '#cfa830', textTransform: 'uppercase', marginBottom: '0.4rem' }}>✦ Cordially Invited ✦</div>
                   <div style={{ fontFamily: 'var(--font-great-vibes)', fontSize: '1.6rem', color: '#fff', lineHeight: 1.1 }}>Alice &amp; Bob</div>
                   <div style={{ fontSize: '0.38rem', letterSpacing: '1.5px', color: 'rgba(255,255,255,0.8)', textTransform: 'uppercase', marginTop: '0.4rem' }}>October 10, 2026</div>
@@ -180,6 +187,30 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ---- TESTIMONIALS ---- */}
+      <section style={{ padding: '5rem 0', background: 'var(--bg-tertiary)', borderBottom: '1px solid var(--border-color)' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: '700', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--color-primary)', display: 'block', marginBottom: '0.75rem' }}>Love Stories</span>
+            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.4rem', color: 'var(--color-primary)', fontWeight: '700' }}>Loved by Happy Couples</h2>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+            {[
+              { quote: "ShubhKalyan made sharing our wedding details so easy! Our family loved the design and the RSVPs were updated instantly in our dashboard.", author: "Pooja & Rohan", role: "Married in Mumbai" },
+              { quote: "The templates are gorgeous and very cultural. We picked the Royal theme and it matched our physical card invitations perfectly.", author: "Anjali & Vikram", role: "Married in Delhi" },
+              { quote: "Creating our site took less than 10 minutes. The map integration was super useful for guests travelling from out of town.", author: "Deepika & Rahul", role: "Married in Bangalore" }
+            ].map((t, idx) => (
+              <div key={idx} className="card" style={{ padding: '2rem', background: '#fff', borderRadius: '12px', boxShadow: 'var(--shadow-card)', border: '1px solid var(--border-color)' }}>
+                <div style={{ color: 'var(--color-secondary)', fontSize: '2rem', lineHeight: 1, marginBottom: '1rem', fontFamily: 'serif' }}>“</div>
+                <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '1.5rem', fontStyle: 'italic' }}>{t.quote}</p>
+                <div style={{ fontWeight: '700', fontSize: '0.9rem', color: 'var(--color-primary)' }}>{t.author}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>{t.role}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ---- TEMPLATES BROWSER ---- */}
       <section id="browse" className="section" style={{ padding: '5.5rem 0', background: 'var(--bg-primary)' }}>
         <div className="container">
@@ -218,9 +249,12 @@ export default function LandingPage() {
           {/* Search */}
           <div style={{ maxWidth: '480px', margin: '0 auto 2.5rem' }}>
             <div style={{ position: 'relative' }}>
+              <label htmlFor="template-search" className="hide-on-mobile" style={{ display: 'none' }}>Search Templates</label>
               <Search size={16} style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
               <input
                 type="text"
+                id="template-search"
+                aria-label="Search wedding templates"
                 className="form-input"
                 placeholder="Search by name, palette, or style..."
                 value={search}
@@ -363,8 +397,17 @@ export default function LandingPage() {
                 <div style={{ fontSize: '0.72rem', fontWeight: '700', letterSpacing: '2px', textTransform: 'uppercase', color: '#cfa830', marginBottom: '0.75rem' }}>Product</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                   <a href="#browse" style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.85rem' }}>Browse Templates</a>
+                  <Link href="/demo" style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.85rem' }}>Live Demo Invitation</Link>
                   <Link href="/register" style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.85rem' }}>Create Account</Link>
                   <Link href="/login" style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.85rem' }}>Log In</Link>
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize: '0.72rem', fontWeight: '700', letterSpacing: '2px', textTransform: 'uppercase', color: '#cfa830', marginBottom: '0.75rem' }}>Company</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <a href="#" onClick={e=>e.preventDefault()} style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.85rem' }}>About Us</a>
+                  <a href="#" onClick={e=>e.preventDefault()} style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.85rem' }}>Terms of Service</a>
+                  <a href="#" onClick={e=>e.preventDefault()} style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.85rem' }}>Privacy Policy</a>
                 </div>
               </div>
             </div>
@@ -379,6 +422,8 @@ export default function LandingPage() {
       {/* ---- PREVIEW MODAL ---- */}
       {selectedPreviewTpl && (
         <div
+          role="dialog"
+          aria-modal="true"
           style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1.5rem', backdropFilter: 'blur(4px)' }}
           onClick={() => setSelectedPreviewTpl(null)}
         >
@@ -392,7 +437,7 @@ export default function LandingPage() {
                 <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem', fontWeight: '600', color: 'var(--color-primary)', marginBottom: '0.1rem' }}>{selectedPreviewTpl.name}</h3>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Category: {selectedPreviewTpl.category}</span>
               </div>
-              <button onClick={() => setSelectedPreviewTpl(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'color 0.2s' }} onMouseEnter={e=>e.target.style.color='#111'} onMouseLeave={e=>e.target.style.color='var(--text-muted)'}>
+              <button aria-label="Close Preview" onClick={() => setSelectedPreviewTpl(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'color 0.2s' }} onMouseEnter={e=>e.currentTarget.style.color='#111'} onMouseLeave={e=>e.currentTarget.style.color='var(--text-muted)'}>
                 <X size={24} />
               </button>
             </div>

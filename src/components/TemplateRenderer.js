@@ -353,8 +353,10 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
           <div style={{ fontFamily: template.fontNames, fontSize: 'clamp(2.5rem, 9vw, 3.5rem)', color: '#fff', textShadow: '0 3px 15px rgba(0,0,0,0.4)', lineHeight: 1.15, margin: '0.5rem 0' }}>{bride} <span style={{ fontFamily: template.fontTitle, fontSize: 'clamp(1.2rem, 4vw, 1.6rem)' }}>&amp;</span> {groom}</div>
           <div style={{ width: '50px', height: '2px', background: template.secondaryColor, margin: '1rem auto', borderRadius: '2px', opacity: 0.85 }} />
           <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.75rem', letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: '600' }}>{dateStr}</p>
-          <button onClick={() => scrollTo('rsvp')} style={{ marginTop: '1.5rem', padding: '0.7rem 2rem', background: template.primaryColor, border: 'none', borderRadius: '50px', color: '#fff', fontSize: '0.7rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer' }}>RSVP Now</button>
-          <CountdownTimer eventDate={event?.event_date} />
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', marginTop: '1.5rem' }}>
+            <button onClick={() => scrollTo('rsvp')} style={{ padding: '0.7rem 2rem', background: template.primaryColor, border: 'none', borderRadius: '50px', color: '#fff', fontSize: '0.7rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer' }}>RSVP Now</button>
+            <CountdownTimer eventDate={event?.event_date} />
+          </div>
         </div>
       </header>
       <section id="details" className="tpl-section-standard" style={{ textAlign: 'center', maxWidth: '650px', margin: '0 auto' }}>
@@ -477,8 +479,10 @@ function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos
             <div style={{ width: '60px', height: '1px', background: '#dca658', margin: '1rem auto', opacity: 0.6 }} />
             <span style={{ fontSize: '0.6rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,245,220,0.8)' }}>{dateStr}</span>
           </div>
-          <button onClick={() => scrollTo('rsvp')} style={{ marginTop: '1.25rem', padding: '0.65rem 2rem', background: 'transparent', border: '1px solid #dca658', color: '#dca658', fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', fontFamily: template.fontTitle }}>Kindly Reply</button>
-          <CountdownTimer eventDate={event?.event_date} />
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', marginTop: '1.25rem' }}>
+            <button onClick={() => scrollTo('rsvp')} style={{ padding: '0.65rem 2rem', background: 'transparent', border: '1px solid #dca658', color: '#dca658', fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '700', cursor: 'pointer', fontFamily: template.fontTitle }}>Kindly Reply</button>
+            <CountdownTimer eventDate={event?.event_date} />
+          </div>
         </div>
       </header>
       <section id="details" className="tpl-section-standard" style={{ textAlign: 'center', maxWidth: '650px', margin: '0 auto' }}>

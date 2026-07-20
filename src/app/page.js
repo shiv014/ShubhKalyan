@@ -171,7 +171,7 @@ export default function LandingPage() {
       </section>
 
       {/* ---- HOW IT WORKS ---- */}
-      <section id="how-it-works" style={{ padding: '5rem 0', background: '#fff', borderBottom: '1px solid var(--border-color)' }}>
+      <section id="how-it-works" style={{ padding: '5rem 0', background: '#fff', borderBottom: '1px solid var(--border-color)', flexShrink: 0 }}>
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: '700', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--color-secondary)', display: 'block', marginBottom: '0.75rem' }}>Simple Process</span>
@@ -197,7 +197,7 @@ export default function LandingPage() {
       </section>
 
       {/* ---- TESTIMONIALS ---- */}
-      <section style={{ padding: '5rem 0', background: 'var(--bg-tertiary)', borderBottom: '1px solid var(--border-color)' }}>
+      <section style={{ padding: '5rem 0', background: 'var(--bg-tertiary)', borderBottom: '1px solid var(--border-color)', flexShrink: 0 }}>
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: '700', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--color-primary)', display: 'block', marginBottom: '0.75rem' }}>Love Stories</span>
@@ -235,7 +235,7 @@ export default function LandingPage() {
       </section>
 
       {/* ---- TEMPLATES BROWSER ---- */}
-      <section id="browse" className="section" style={{ padding: '5.5rem 0', background: 'var(--bg-primary)' }}>
+      <section id="browse" className="section" style={{ padding: '5.5rem 0', background: 'var(--bg-primary)', flexShrink: 0 }}>
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: '700', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--color-secondary)', display: 'block', marginBottom: '0.75rem' }}>120+ Designs</span>
@@ -414,7 +414,7 @@ export default function LandingPage() {
       </section>
 
       {/* ---- CTA BAND ---- */}
-      <section style={{ background: 'linear-gradient(135deg, #7c2230, #5d1722)', padding: '5rem 0', position: 'relative', overflow: 'hidden' }}>
+      <section style={{ background: 'linear-gradient(135deg, #7c2230, #5d1722)', padding: '5rem 0', position: 'relative', overflow: 'hidden', flexShrink: 0 }}>
         {/* Subtle decorative background detail */}
         <div style={{ position: 'absolute', inset: 0, opacity: 0.04, backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '24px 24px', pointerEvents: 'none' }} />
         <div className="container" style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
@@ -438,7 +438,7 @@ export default function LandingPage() {
       </section>
 
       {/* ---- FOOTER ---- */}
-      <footer style={{ background: '#1a0e12', color: 'rgba(255,255,255,0.6)', padding: '4rem 0 2.5rem' }}>
+      <footer style={{ background: '#1a0e12', color: 'rgba(255,255,255,0.6)', padding: '4rem 0 2.5rem', flexShrink: 0 }}>
         <div className="container">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '2.5rem', marginBottom: '3rem' }}>
             <div>

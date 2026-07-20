@@ -120,7 +120,7 @@ function RsvpForm({ event, previewMode, primary, secondary }) {
 function CalendarAndMap({ event, bride, groom, venue, template, dateStr }) {
   const handleDownloadIcs = () => {
     const title = `Wedding of ${bride} & ${groom}`;
-    const date = new Date(event.event_date || Date.now());
+    const date = new Date(event.event_date || '2026-10-10T16:00:00');
     const start = date.toISOString().replace(/-|:|\.\d+/g, '');
     const endDate = new Date(date.getTime() + 4 * 60 * 60 * 1000);
     const end = endDate.toISOString().replace(/-|:|\.\d+/g, '');
@@ -140,7 +140,7 @@ function CalendarAndMap({ event, bride, groom, venue, template, dateStr }) {
     const title = encodeURIComponent(`Wedding of ${bride} & ${groom}`);
     const details = encodeURIComponent(`Join us in celebrating the wedding of ${bride} & ${groom}.`);
     const location = encodeURIComponent(venue || '');
-    const date = new Date(event.event_date || Date.now());
+    const date = new Date(event.event_date || '2026-10-10T16:00:00');
     const start = date.toISOString().replace(/-|:|\.\d+/g, '');
     const endDate = new Date(date.getTime() + 4 * 60 * 60 * 1000);
     const end = endDate.toISOString().replace(/-|:|\.\d+/g, '');
@@ -287,6 +287,14 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
     borderOverlay = (
       <div style={{ position: 'absolute', inset: '2rem', border: `2px solid ${template.secondaryColor}`, borderRadius: '4px', outline: `1px solid ${template.secondaryColor}`, outlineOffset: '4px', pointerEvents: 'none', opacity: 0.4 }} />
     );
+  } else if (subLayout === 'temple') {
+    separator = '🪔';
+    layoutBg = '#fff8e7';
+    cardBg = '#fffdf5';
+    cardShadow = `0 12px 32px rgba(83, 45, 16, 0.12)`;
+    borderOverlay = (
+      <div style={{ position: 'absolute', inset: '1.5rem', border: `1px solid ${template.secondaryColor}`, borderRadius: '999px 999px 0 0', pointerEvents: 'none', opacity: 0.45 }} />
+    );
   } else if (subLayout === 'victorian') {
     separator = '❦';
     layoutBg = 'radial-gradient(circle, #fdfbf7 0%, #f6f1e5 100%)';
@@ -307,8 +315,34 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
 
   return (
     <div style={{ fontFamily: template.fontBody, background: layoutBg, color: template.textColor, minHeight: '100vh', overflowX: 'hidden' }}>
+      <style>{`
+        @media (max-width: 768px) {
+          .tpl-royal-nav {
+            justify-content: space-around !important;
+            gap: 0 !important;
+            padding: 0.85rem 0.35rem !important;
+          }
+          .tpl-royal-nav span {
+            font-size: 0.52rem !important;
+            letter-spacing: 1.2px !important;
+          }
+          .tpl-royal-hero-card {
+            max-width: calc(100vw - 2rem) !important;
+            padding: 1.75rem 1.25rem !important;
+          }
+          .tpl-royal-details-card {
+            display: block !important;
+            width: 100% !important;
+            min-width: 0 !important;
+            padding: 1.5rem 1.25rem !important;
+          }
+          .tpl-royal-rsvp-card {
+            padding: 1.5rem 1.25rem !important;
+          }
+        }
+      `}</style>
       {/* Nav */}
-      <nav style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', justifyContent: 'center', gap: '2.5rem', padding: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
+      <nav className="tpl-royal-nav" style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', justifyContent: 'center', gap: '2.5rem', padding: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
         {['home','details','gallery','rsvp'].map(id => (
           <span key={id} onClick={() => scrollTo(id)} style={{ color: '#fff', fontSize: '0.65rem', fontWeight: '700', letterSpacing: '3px', textTransform: 'uppercase', cursor: 'pointer', textShadow: '0 1px 3px rgba(0,0,0,0.5)', transition: 'color 0.3s' }}
             onMouseEnter={e=>e.target.style.color=template.secondaryColor} onMouseLeave={e=>e.target.style.color='#fff'}>{id}</span>
@@ -318,8 +352,8 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
       <header id="home" style={{ height: '92vh', position: 'relative', backgroundImage: `url(${cover})`, backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: subLayout === 'artdeco' ? 'linear-gradient(180deg,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.4) 50%,rgba(0,0,0,0.9) 100%)' : 'linear-gradient(180deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.25) 50%,rgba(0,0,0,0.65) 100%)' }} />
         {borderOverlay}
-        <div style={{ position: 'relative', zIndex: 2, padding: '2.5rem 3.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', maxWidth: '440px', margin: '0 1rem', border: subLayout === 'artdeco' ? `3px double ${template.secondaryColor}` : undefined, background: subLayout === 'artdeco' ? 'rgba(18,18,18,0.8)' : undefined, backdropFilter: subLayout === 'artdeco' ? 'blur(8px)' : undefined }}>
-          <span style={{ fontSize: '0.55rem', letterSpacing: '5px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700' }}>{separator} {subLayout === 'rajputana' ? 'Shubh Vivah' : 'Cordially Invited'} {separator}</span>
+        <div className="tpl-royal-hero-card" style={{ position: 'relative', zIndex: 2, padding: '2.5rem 3.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', maxWidth: '440px', margin: '0 1rem', border: subLayout === 'artdeco' ? `3px double ${template.secondaryColor}` : undefined, background: subLayout === 'artdeco' ? 'rgba(18,18,18,0.8)' : undefined, backdropFilter: subLayout === 'artdeco' ? 'blur(8px)' : undefined }}>
+          <span style={{ fontSize: '0.55rem', letterSpacing: '5px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700' }}>{separator} {subLayout === 'rajputana' || subLayout === 'temple' ? 'Shubh Vivah' : 'Cordially Invited'} {separator}</span>
           <div style={{ width: '35px', height: '1px', background: template.secondaryColor, opacity: 0.7 }} />
           <div style={{ fontFamily: template.fontNames, fontSize: 'clamp(2.2rem, 8vw, 3.2rem)', color: '#fff', lineHeight: 1.1, textShadow: '0 2px 12px rgba(0,0,0,0.5)' }}>{bride} <span style={{ fontFamily: template.fontTitle, fontSize: '1.2rem', fontWeight: '400' }}>&amp;</span> {groom}</div>
           <div style={{ width: '35px', height: '1px', background: template.secondaryColor, opacity: 0.7 }} />
@@ -339,7 +373,7 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
         <span style={{ fontSize: '0.65rem', letterSpacing: '4px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700', display: 'block', marginBottom: '0.5rem' }}>Save the Date</span>
         <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '1rem' }}>Ceremony &amp; Celebration</h2>
         <p style={{ opacity: 0.7, maxWidth: '500px', margin: '0 auto 2.5rem', fontSize: '0.95rem' }}>Join us as we celebrate our union surrounded by those we cherish most.</p>
-        <div style={{ background: cardBg, border: cardBorder, borderLeft: subLayout === 'artdeco' ? cardBorder : `4px solid ${template.secondaryColor}`, borderRadius: subLayout === 'artdeco' ? '0px' : '8px', padding: '2.5rem 2rem', display: 'inline-block', minWidth: '300px', textAlign: 'left', boxShadow: cardShadow }}>
+        <div className="tpl-royal-details-card" style={{ background: cardBg, border: cardBorder, borderLeft: subLayout === 'artdeco' ? cardBorder : `4px solid ${template.secondaryColor}`, borderRadius: subLayout === 'artdeco' ? '0px' : '8px', padding: '2.5rem 2rem', display: 'inline-block', minWidth: '300px', textAlign: 'left', boxShadow: cardShadow }}>
           <div style={{ fontSize: '0.6rem', letterSpacing: '3px', textTransform: 'uppercase', color: template.secondaryColor, fontWeight: '700', marginBottom: '0.5rem' }}>DATE &amp; TIME</div>
           <div style={{ fontFamily: template.fontTitle, fontSize: '1.2rem', color: template.primaryColor, marginBottom: '0.25rem' }}>{dateStr}</div>
           <div style={{ fontSize: '0.9rem', color: template.primaryColor, opacity: 0.7, marginBottom: '1.5rem' }}>at {timeStr}</div>
@@ -366,7 +400,7 @@ function RoyalLayout({ bride, groom, dateStr, timeStr, venue, template, photos, 
             <h2 style={{ fontFamily: template.fontTitle, fontSize: '2rem', color: template.primaryColor, fontWeight: '400', marginBottom: '0.5rem' }}>Will You Attend?</h2>
             <p style={{ opacity: 0.65, fontSize: '0.85rem' }}>Please respond by {rsvpDeadline}</p>
           </div>
-          <div style={{ background: '#fff', borderRadius: '8px', padding: '2rem 2.5rem', boxShadow: '0 8px 30px rgba(0,0,0,0.06)', border: `1px solid ${template.secondaryColor}` }}>
+          <div className="tpl-royal-rsvp-card" style={{ background: '#fff', borderRadius: '8px', padding: '2rem 2.5rem', boxShadow: '0 8px 30px rgba(0,0,0,0.06)', border: `1px solid ${template.secondaryColor}` }}>
             <RsvpForm event={event} previewMode={previewMode} primary={template.primaryColor} secondary={template.secondaryColor} />
           </div>
         </div>
@@ -412,7 +446,7 @@ function FloralLayout({ bride, groom, dateStr, timeStr, venue, template, photos,
 
   return (
     <div style={{ fontFamily: template.fontBody, background: layoutBg, color: template.textColor, minHeight: '100vh', overflowX: 'hidden' }}>
-      <nav style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', justifyContent: 'center', gap: '2.5rem', padding: '1.25rem' }}>
+      <nav className="tpl-floral-nav" style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', justifyContent: 'center', gap: '2.5rem', padding: '1.25rem' }}>
         {['home','details','gallery','rsvp'].map(id => (
           <span key={id} onClick={() => scrollTo(id)} style={{ color: 'rgba(255,255,255,0.92)', fontSize: '0.65rem', fontWeight: '600', letterSpacing: '2.5px', textTransform: 'uppercase', cursor: 'pointer' }}>{id}</span>
         ))}
@@ -647,7 +681,7 @@ function VintageLayout({ bride, groom, dateStr, timeStr, venue, template, photos
 
   return (
     <div style={{ fontFamily: template.fontBody, background: layoutBg, color: layoutColor, minHeight: '100vh', overflowX: 'hidden' }}>
-      <nav style={navStyle}>
+      <nav className="tpl-vintage-nav" style={navStyle}>
         {['home','details','gallery','rsvp'].map(id => (
           <span key={id} onClick={() => scrollTo(id)} style={{ color: 'rgba(255,245,220,0.9)', fontSize: '0.65rem', fontWeight: '700', letterSpacing: '3.5px', textTransform: 'uppercase', cursor: 'pointer', fontFamily: template.fontTitle }}>{id}</span>
         ))}

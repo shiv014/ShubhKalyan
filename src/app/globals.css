@@ -363,6 +363,16 @@ a:hover { color: var(--color-primary-hover); }
   .tpl-section-standard { padding: 3rem 1rem !important; }
   .tpl-section-minimal { padding: 3rem 1.25rem !important; }
 
+  .tpl-floral-nav, .tpl-vintage-nav {
+    justify-content: space-around !important;
+    gap: 0 !important;
+    padding: 0.85rem 0.35rem !important;
+  }
+  .tpl-floral-nav span, .tpl-vintage-nav span {
+    font-size: 0.52rem !important;
+    letter-spacing: 1.2px !important;
+  }
+
   .nav-links { 
     display: none; 
   }
@@ -596,4 +606,3 @@ nav span:active, nav a:active, .nav-links a:active {
 @keyframes scaleUpEffect {
   to { transform: scale(1); }
 }
-

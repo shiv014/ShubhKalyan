@@ -185,6 +185,11 @@ a:hover { color: var(--color-primary-hover); }
   gap: 2rem;
   margin-top: 3rem;
 }
+.hero-buttons-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
 @media (max-width: 768px) {
   .hero-features-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -324,6 +329,7 @@ a:hover { color: var(--color-primary-hover); }
   h2 { font-size: 1.6rem; } 
   .grid-2-col { grid-template-columns: 1fr; gap: 1rem; }
   .hero-grid { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
+  .hero-buttons-container { justify-content: center; }
   .steps-grid { grid-template-columns: 1fr; gap: 1.5rem; }
   .template-grid-responsive { grid-template-columns: 1fr; gap: 1.25rem; }
   .tr-hero-grid, .tr-details-grid { grid-template-columns: 1fr; }

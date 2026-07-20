@@ -99,7 +99,7 @@ export default function LandingPage() {
             <p style={{ fontSize: '1.1rem', color: 'rgba(255,255,255,0.7)', marginBottom: '2.5rem', maxWidth: '480px', lineHeight: 1.75 }}>
               Browse 120+ designer templates, fill in your details, and publish your personalized wedding invitation page at your own custom URL — all for free.
             </p>
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <div className="hero-buttons-container">
               <a href="#browse" className="btn btn-gold" style={{ padding: '1rem 2rem', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 Browse 120+ Templates <ArrowDown size={18} />
               </a>
